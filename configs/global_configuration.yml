@@ -1,0 +1,22 @@
+
+# Arguments not to be spec via CLI
+random_seed: 222 
+
+# Image parsing specific 
+impa_image_format: jpg
+impa_clip_areas: [2750, 4900]
+impa_gaussian_blur: [21, 21]
+impa_gaussian_blur_passes: 3
+impa_adaptive_threshold: 351
+impa_mask_postprocess_kernel: [11, 11]
+impa_mask_postprocess_passes: 5
+impa_save_full_mask_dir: data/raw/project_portable_flume/full_image_masks
+impa_bounding_box_buffer: 100
+impa_save_clips_plus_features: True
+
+# Run classification routine on image clips 
+## Preparation of learning sets (run once if output folder is not there)
+## these data will need to be doctored, to move classes like errors 
+## and such into specific subfolers
+lset_class_cut: order
+lset_val_size: 0.1

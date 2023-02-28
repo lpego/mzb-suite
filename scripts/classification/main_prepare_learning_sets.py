@@ -1,0 +1,107 @@
+# %% 
+# This script takes the curated dataset (raw_leanrin_set) and prepares a refined learning set according to the taxonomy file.
+# Each class will be aggregated to a single class according to the taxonomy file and where the cut (eg order, family, genus) is specified in the config file.
+# The output structure is a directory tree with training and validation sets, each containing a folder for each class.
+
+# The input directory tree is speficied and curated by the user.
+
+import shutil
+import sys
+import argparse
+import yaml
+
+from pathlib import Path
+
+import numpy as np
+import pandas as pd
+
+try:
+    __IPYTHON__
+except:
+    prefix = ""  # or "../"
+    PLOTS = False
+else:
+    prefix = "../"  # or "../"
+    PLOTS = True
+
+
+sys.path.append(prefix)
+
+
+from mzb_workflow.image_parsing.utils import cfg_to_arguments
+
+# %% 
+parser = argparse.ArgumentParser()
+parser.add_argument("--config_file", type=str, required=True)
+parser.add_argument("--input_dir", type=str, required=True)
+parser.add_argument("--taxonomy_file", type=str, required=False, default=None)
+parser.add_argument("--output_dir", type=str, required=True)
+parser.add_argument("--verbose", "-v", action='store_true')
+args = parser.parse_args()
+
+print(args.config_file)
+
+with open(str(args.config_file), "r") as f:
+    cfg = yaml.load(f, Loader=yaml.FullLoader)
+
+cfg = cfg_to_arguments(cfg)
+
+if args.verbose:
+    print(f"main args: {args}")
+    print(f"scripts config: {cfg}")
+# %%
+# rood of raw clip data
+root_data = Path(args.input_dir)
+outdir = Path(args.output_dir) 
+outdir.mkdir(parents=True, exist_ok=True)
+
+target_trn = outdir / "trn_set/"
+target_val = outdir / "val_set/"
+
+# make dictionary to recode: key is current classification, value is target reclassif. 
+# forward fill to get last valid entry and subset to desired column
+mzb_taxonomy = pd.read_csv(Path(args.taxonomy_file))
+mzb_taxonomy = mzb_taxonomy.drop(columns=["Unnamed: 0"])
+mzb_taxonomy = mzb_taxonomy.ffill(axis=1)
+
+recode_order = dict(zip(mzb_taxonomy["query"], mzb_taxonomy[cfg.lset_class_cut].str.lower()))
+
+if args.verbose:
+    print(f"Cutting phyl tree at {cfg.lset_class_cut}")
+
+
+for s_fo in recode_order: 
+    
+    target_folder = target_trn / recode_order[s_fo] 
+    target_folder.mkdir(exist_ok = True, parents=True)
+
+    for file in list((root_data / s_fo).glob("*")): 
+        shutil.copy(file, target_folder)
+
+# %%
+# make a small val set, 10% or 1 file, what is possible... 
+np.random.seed(cfg.glob_random_seed)
+
+size = cfg.lset_val_size
+trn_folds = [a.name for a in sorted(list(target_trn.glob("*")))]
+
+for s_fo in trn_folds: 
+    
+    target_folder = target_val / s_fo 
+    target_folder.mkdir(exist_ok = True, parents=True)
+    
+    list_class = list((target_trn / s_fo).glob("*"))
+    n_val_sam = np.max((1, np.ceil(0.1*len(list_class))))
+
+    val_files = np.random.choice(list_class, int(n_val_sam))
+
+    if args.verbose:
+        print(len(val_files), n_val_sam, len(list_class))
+
+    for file in val_files: 
+        try:
+            shutil.move(str(file), target_folder)
+        except:
+            print(f"{str(file)} into {target_folder}")
+
+
