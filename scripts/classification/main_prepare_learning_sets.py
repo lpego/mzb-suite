@@ -5,15 +5,14 @@
 
 # The input directory tree is speficied and curated by the user.
 
+import argparse
 import shutil
 import sys
-import argparse
-import yaml
-
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
+import yaml
 
 try:
     __IPYTHON__
@@ -21,14 +20,13 @@ except:
     prefix = ""  # or "../"
     PLOTS = False
 else:
-    prefix = "../"  # or "../"
+    prefix = "../../"  # or "../"
     PLOTS = True
 
 
 sys.path.append(prefix)
 
-
-from mzb_workflow.image_parsing.utils import cfg_to_arguments
+from mzb_workflow.utils import cfg_to_arguments
 
 # %% 
 parser = argparse.ArgumentParser()
@@ -39,7 +37,13 @@ parser.add_argument("--output_dir", type=str, required=True)
 parser.add_argument("--verbose", "-v", action='store_true')
 args = parser.parse_args()
 
-print(args.config_file)
+# args = {}
+# args["config_file"]=f"{prefix}configs/global_configuration.yaml"
+# args["input_dir"] = f"{prefix}data/learning_sets/project_portable_flume/curated_learning_sets_flume/"
+# args["taxonomy_file"]=f"{prefix}data/MZB_taxonomy.csv"
+# args["output_dir"]=f"{prefix}data/learning_sets/project_portable_flume/aggregated_learning_sets"
+# args["verbose"] = True
+# args = cfg_to_arguments(args)
 
 with open(str(args.config_file), "r") as f:
     cfg = yaml.load(f, Loader=yaml.FullLoader)
@@ -50,6 +54,9 @@ if args.verbose:
     print(f"main args: {args}")
     print(f"scripts config: {cfg}")
 # %%
+
+np.random.seed(cfg.glob_random_seed)
+
 # rood of raw clip data
 root_data = Path(args.input_dir)
 outdir = Path(args.output_dir) 
@@ -63,7 +70,6 @@ target_val = outdir / "val_set/"
 mzb_taxonomy = pd.read_csv(Path(args.taxonomy_file))
 mzb_taxonomy = mzb_taxonomy.drop(columns=["Unnamed: 0"])
 mzb_taxonomy = mzb_taxonomy.ffill(axis=1)
-
 recode_order = dict(zip(mzb_taxonomy["query"], mzb_taxonomy[cfg.lset_class_cut].str.lower()))
 
 if args.verbose:
@@ -78,10 +84,7 @@ for s_fo in recode_order:
     for file in list((root_data / s_fo).glob("*")): 
         shutil.copy(file, target_folder)
 
-# %%
 # make a small val set, 10% or 1 file, what is possible... 
-np.random.seed(cfg.glob_random_seed)
-
 size = cfg.lset_val_size
 trn_folds = [a.name for a in sorted(list(target_trn.glob("*")))]
 
@@ -105,3 +108,13 @@ for s_fo in trn_folds:
             print(f"{str(file)} into {target_folder}")
 
 
+
+if (root_data / "mixed").is_dir():
+    target_tst = outdir / "mixed_set/"
+    target_tst.mkdir(exist_ok = True, parents=True)
+    
+    for file in list((root_data / "mixed").glob("*")): 
+        shutil.copy(file, target_tst)
+
+
+# %%

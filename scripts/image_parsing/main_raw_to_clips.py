@@ -1,4 +1,3 @@
-
 # %%
 import argparse
 import sys
@@ -26,13 +25,31 @@ import argparse
 
 from mzb_workflow.image_parsing.utils import cfg_to_arguments
 
-# %% 
+# %%
 parser = argparse.ArgumentParser()
-parser.add_argument("--config_file", type=str, required=True, help="path to config file with per-script args")
-parser.add_argument("--input_dir", type=str, required=True, help="path to directory with raw images")
-parser.add_argument("--output_dir", type=str, required=True, help="path to directory where to clip images")
-parser.add_argument("--save_full_mask_dir", type=str, required=False, default=None, help="path to directory where to save labeled full masks")
-parser.add_argument("--verbose", "-v", action='store_true', help="print more info")
+parser.add_argument(
+    "--config_file",
+    type=str,
+    required=True,
+    help="path to config file with per-script args",
+)
+parser.add_argument(
+    "--input_dir", type=str, required=True, help="path to directory with raw images"
+)
+parser.add_argument(
+    "--output_dir",
+    type=str,
+    required=True,
+    help="path to directory where to clip images",
+)
+parser.add_argument(
+    "--save_full_mask_dir",
+    type=str,
+    required=False,
+    default=None,
+    help="path to directory where to save labeled full masks",
+)
+parser.add_argument("--verbose", "-v", action="store_true", help="print more info")
 args = parser.parse_args()
 
 print(args.config_file)
@@ -47,7 +64,7 @@ if args.verbose:
     print(f"scripts config: {cfg}")
 # %%
 main_root = Path(args.input_dir)
-outdir = Path(args.output_dir) 
+outdir = Path(args.output_dir)
 outdir.mkdir(parents=True, exist_ok=True)
 
 if args.save_full_mask_dir is not None:
@@ -69,7 +86,7 @@ norm = lambda x: (x - np.min(x)) / (np.max(x) - np.min(x))
 # make sure that this will be general enough
 if "project_portable_flume" in str(main_root):
     location_cutout = [int(a) for a in cfg.impa_clip_areas]
-    
+
 for i, fo in enumerate(files_proc[:]):
 
     print(f"{i+1}/{len(files_proc)}: {fo.name}")
@@ -78,8 +95,8 @@ for i, fo in enumerate(files_proc[:]):
     # get image path
     raw_image_in = fo
     full_path_raw_image_in = fo.resolve()
-    
-    # read image and convert to HSV   
+
+    # read image and convert to HSV
     img = cv2.imread(str(full_path_raw_image_in))[:, :, [2, 1, 0]]
 
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
@@ -90,27 +107,32 @@ for i, fo in enumerate(files_proc[:]):
     for _ in range(cfg.impa_gaussian_blur_passes):
         im_t = cv2.GaussianBlur(im_t, tuple(cfg.impa_gaussian_blur), 0)
 
-    # prepare for morphological reconstruction 
+    # prepare for morphological reconstruction
     seed = np.copy(im_t)
     seed[1:-1, 1:-1] = im_t.min()
     mask = np.copy(im_t)
-    
+
     # remove the background
     dil = morphology.reconstruction(seed, im_t, method="dilation")
     im_t = (im_t - dil).astype(np.uint8)
-    
+
     # adaptive local thresholding of foreground vs background
     # weighted cross correlation with gaussian filter
     ad_thresh = cv2.adaptiveThreshold(
-        im_t, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 351, -2,
+        im_t,
+        255,
+        cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+        cv2.THRESH_BINARY,
+        351,
+        -2,
     )
-    # additional global threhsold to remove foreground vs background 
+    # additional global threhsold to remove foreground vs background
     t, thresh = cv2.threshold(im_t, 0, 255, cv2.THRESH_OTSU)
 
-    # merge thresholds to globally get foreground masks 
+    # merge thresholds to globally get foreground masks
     # thresh = thresh | ad_thresh
-    thresh = thresh + ad_thresh > 0 
-    
+    thresh = thresh + ad_thresh > 0
+
     # postprocess masking to remove small objects and fill holes
     kernel = np.ones(cfg.impa_mask_postprocess_kernel, np.uint8)
     for _ in range(cfg.impa_mask_postprocess_passes):
@@ -122,11 +144,11 @@ for i, fo in enumerate(files_proc[:]):
         )
     thresh = ndimage.binary_fill_holes(thresh)
 
-    # cut out area related to measurement/color calibration widget 
+    # cut out area related to measurement/color calibration widget
     if "project_portable_flume" in str(main_root):
         thresh[location_cutout[0] :, location_cutout[1] :] = 0
 
-    # get labels of connected components 
+    # get labels of connected components
     labels = measure.label(thresh, connectivity=2, background=0)
 
     if PLOTS:
@@ -141,10 +163,13 @@ for i, fo in enumerate(files_proc[:]):
     # Save the labels as a jpg for the full image
     if args.save_full_mask_dir is not None:
         args.save_full_mask_dir.mkdir(parents=True, exist_ok=True)
-        cv2.imwrite(str(args.save_full_mask_dir / f"labels_{fo.stem}.jpg"), (labels).astype(np.uint8))
-        if not cfg.impa_save_clips_plus_features: 
+        cv2.imwrite(
+            str(args.save_full_mask_dir / f"labels_{fo.stem}.jpg").lower(),
+            (labels).astype(np.uint8),
+        )
+        if not cfg.impa_save_clips_plus_features:
             if args.verbose:
-                print("skipping clip generation")  
+                print("skipping clip generation")
             continue
 
     rprop = measure.regionprops(labels)
@@ -170,7 +195,12 @@ for i, fo in enumerate(files_proc[:]):
         current_mask[labels == reg_pro.label] = 1
 
         # coordinates of bounding box
-        (min_row, min_col, max_row, max_col,) = reg_pro.bbox  # cv2.boundingRect(approx)
+        (
+            min_row,
+            min_col,
+            max_row,
+            max_col,
+        ) = reg_pro.bbox  # cv2.boundingRect(approx)
         (x, y, w, h) = (min_col, min_row, max_col - min_col, max_row - min_row)
 
         # get the bounding box with some buffer
@@ -183,7 +213,7 @@ for i, fo in enumerate(files_proc[:]):
 
         if PLOTS:
             f, a = plt.subplots(1, 1, figsize=(10, 6))
-            a.imshow(img[:, :, [0,1,2]], aspect="auto")
+            a.imshow(img[:, :, [0, 1, 2]], aspect="auto")
             rect = plt.Rectangle(
                 (x_e, y_e), w_e, h_e, fc="none", ec="black", linewidth=2
             )
@@ -198,18 +228,28 @@ for i, fo in enumerate(files_proc[:]):
         crop_mask = current_mask[y_e : y_e + h_e, x_e : x_e + w_e]
         crop_im_t = im_t[y_e : y_e + h_e, x_e : x_e + w_e]
 
-        im_crop_m = crop.reshape(-1, 3)[crop_mask.reshape(-1,).astype(bool), :]
-        hsv_crop_m = crop_hsv.reshape(-1, 3)[crop_mask.reshape(-1,).astype(bool), :]
+        im_crop_m = crop.reshape(-1, 3)[
+            crop_mask.reshape(
+                -1,
+            ).astype(bool),
+            :,
+        ]
+        hsv_crop_m = crop_hsv.reshape(-1, 3)[
+            crop_mask.reshape(
+                -1,
+            ).astype(bool),
+            :,
+        ]
 
         # save actual image and mask crops
         cv2.imwrite(
-            str(outdir / (f"{fo.stem}_{c}_mask.{cfg.impa_image_format}")),
-            crop_mask,
+            str(outdir / (f"{fo.stem}_{c}_mask.{cfg.impa_image_format}").lower()),
+            (255 * crop_mask / crop_mask).astype(np.uint8),
             [cv2.IMWRITE_JPEG_QUALITY, 100],
         )
 
         cv2.imwrite(
-            str(outdir / (f"{fo.stem}_{c}_rgb.{cfg.impa_image_format}")),
+            str(outdir / (f"{fo.stem}_{c}_rgb.{cfg.impa_image_format}").lower()),
             crop,
             [cv2.IMWRITE_JPEG_QUALITY, 100],
         )
@@ -233,15 +273,16 @@ for i, fo in enumerate(files_proc[:]):
                 )
             )
             im_t_crop_m = crop_im_t.reshape(-1, 1)[
-                crop_mask.reshape(-1,).astype(bool), :
+                crop_mask.reshape(
+                    -1,
+                ).astype(bool),
+                :,
             ]
             a[3].hist(im_t_crop_m, bins=50)
 
             plt.show()
 
-        sub_df = (
-            {}
-        ) 
+        sub_df = {}
         sub_df["input_file"] = raw_image_in
         sub_df["species"] = raw_image_in.name.split(".")[0]
         sub_df["png_mask_id"] = c

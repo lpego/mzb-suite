@@ -1,0 +1,35 @@
+
+# Arguments not to be spec via CLI
+glob_random_seed: 222 
+
+# Image parsing specific 
+impa_image_format: jpg
+impa_clip_areas: [2750, 4900]
+impa_gaussian_blur: [21, 21]
+impa_gaussian_blur_passes: 3
+impa_adaptive_threshold: 351
+impa_mask_postprocess_kernel: [11, 11]
+impa_mask_postprocess_passes: 5
+impa_save_full_mask_dir: data/derived/project_portable_flume/full_image_masks
+impa_bounding_box_buffer: 200
+impa_save_clips_plus_features: True
+
+# Run classification routine on image clips 
+## Preparation of learning sets (run once if output folder is not there)
+## these data will need to be doctored, to move classes like errors 
+## and such into specific subfolers
+lset_class_cut: order
+lset_val_size: 0.1
+lset_taxonomy: data/MZB_taxonomy.csv
+
+## Inference config
+infe_model_folder: models/mzb-pil/ # likely not used to allow renku parse as input
+infe_model_ckpt: last
+infe_num_classes: 8
+infe_image_glob: "*_rgb.png"
+
+## Skeletonization
+# unsupervised skeletonization
+skel_class_exclude: errors
+skel_conv_rate: 131.6625 #[133.1, 136.6, 133.2, 133.2, 133.2, 118.6, 133.4, 132.0])  # px / mm
+skel_save_masks: data/derived/project_portable_flume/skeletons/skeleton_labels/
