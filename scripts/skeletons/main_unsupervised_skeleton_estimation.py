@@ -77,9 +77,9 @@ if cfg.skel_save_masks is not None:
 # setup some area-specific parameters for filtering
 area_class = {
     0: {"area": [0, 10000], "thinning": 1, "lmode": "skeleton"},
-    2: {"area": [10000, 15000], "thinning": 11, "lmode": "skeleton"},
-    3: {"area": [15000, 20000], "thinning": 13, "lmode": "skeleton"},
-    4: {"area": [20000, 50000], "thinning": 13, "lmode": "skeleton"},
+    2: {"area": [10000, 15000], "thinning": 9, "lmode": "skeleton"},
+    3: {"area": [15000, 20000], "thinning": 11, "lmode": "skeleton"},
+    4: {"area": [20000, 50000], "thinning": 11, "lmode": "skeleton"},
     5: {"area": [50000, 100000], "thinning": 15, "lmode": "skeleton"},
     6: {"area": [100000, np.inf], "thinning": 20, "lmode": "skeleton"},
 }
