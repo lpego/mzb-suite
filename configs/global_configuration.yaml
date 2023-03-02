@@ -32,4 +32,8 @@ infe_image_glob: "*_rgb.png"
 # unsupervised skeletonization
 skel_class_exclude: errors
 skel_conv_rate: 131.6625 #[133.1, 136.6, 133.2, 133.2, 133.2, 118.6, 133.4, 132.0])  # px / mm
-skel_save_masks: data/derived/project_portable_flume/skeletons/skeleton_labels/
+skel_save_masks: data/derived/project_portable_flume/skeleton_labels/
+
+# supervised skeletonization
+skel_save_attributes: data/derived/project_portable_flume/skeletons/manual_annotations/
+skel_skeleton_thickness: 3

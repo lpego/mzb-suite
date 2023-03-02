@@ -127,7 +127,7 @@ growing_df = []
 # Load the image
 # PLOTS = True
 
-for fo in tqdm(files_to_skel[:2]):
+for fo in tqdm(files_to_skel[:]):
 
     # read in mask and rgb, rgb only for plotting
     mask_ = (cv2.imread(str(fo))[:, :, 0] / 255).astype(float)
