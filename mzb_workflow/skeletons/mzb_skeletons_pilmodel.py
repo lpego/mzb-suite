@@ -1,7 +1,5 @@
 # %%
 # import os, sys, time, copy
-
-
 from pathlib import Path
 from PIL import Image
 
@@ -12,22 +10,42 @@ import pytorch_lightning as pl
 
 import numpy as np
 
-from torch import nn
-from torch.nn import functional as F
+# from torch import nn
+# from torch.nn import functional as F
 from torch.utils.data import DataLoader, random_split
-from torch.utils.data.sampler import WeightedRandomSampler
+
+# from torch.utils.data.sampler import WeightedRandomSampler
 from torchmetrics import F1Score
-from torchmetrics.functional import precision_recall
+
+# from torchmetrics.functional import precision_recall
 from torchvision import transforms
 
 import segmentation_models_pytorch as smp
 
-from mzb_workflow.skeletons.mzb_skeletons_dataloader import MZBLoader_skels, Denormalize
+from mzb_workflow.skeletons.mzb_skeletons_dataloader import MZBLoader_skels
 
 # %%
 class MZBModel_skels(pl.LightningModule):
-    """
-    pytorch lightning class def and model setup
+    """Pytorch Lightning Module for training a segmentation model.
+    __init__:
+        Parameters:
+        ----------
+            data_dir: str
+                Path to the directory where the data is stored.
+            pretrained_network: str
+                Name of the pretrained network to use.
+            learning_rate: float
+                Learning rate for the optimizer.
+            batch_size: int
+                Batch size for the dataloader.
+            weight_decay: float
+                Weight decay for the optimizer.
+            num_workers_loader: int
+                Number of workers for the dataloader.
+            step_size_decay: int
+                Number of epochs after which the learning rate is decayed.
+            num_classes: int
+                Number of classes to predict.
     """
 
     def __init__(
@@ -70,6 +88,7 @@ class MZBModel_skels(pl.LightningModule):
         self.dims = (3, self.size_im, self.size_im)
         # channels, width, height = self.dims
 
+        # This defines data augmentation used for training
         self.transform_tr = transforms.Compose(
             [
                 transforms.RandomRotation(degrees=[0, 360]),
@@ -89,6 +108,7 @@ class MZBModel_skels(pl.LightningModule):
             ]
         )
 
+        # This defines data augmentation used for validation / testing
         self.transform_ts = transforms.Compose(
             [
                 # transforms.CenterCrop((self.size_im, self.size_im)),
@@ -101,8 +121,7 @@ class MZBModel_skels(pl.LightningModule):
             ]
         )
 
-        # We can try a small DeepLabV3+, eg densnet121 backbone?
-
+        # define the model, we use a Unet with a pretrained encoder, and a decoder with 2 output channels
         self.model = smp.Unet(
             encoder_name=self.architecture,
             encoder_weights="imagenet",
@@ -111,19 +130,12 @@ class MZBModel_skels(pl.LightningModule):
             activation=None,
         )
 
-        # self.model = smp.DeepLabV3Plus(
-        #     encoder_name=self.architecture,
-        #     encoder_weights="imagenet",
-        #     in_channels=3,
-        #     classes=2,
-        #     activation=None,
-        # )
+        # Add maybe a torchmetrics F1 score?
+        # self.f1 = F1Score(num_classes=2, average="micro")
 
-        # self.accuracy = smb.blabla()
-        # if self.num_classes == 2:
-        #     self.loss_fn = smp.losses.DiceLoss(smp.losses.BINARY_MODE, from_logits=True)
-        # else:
         # self.loss_fn = smp.losses.DiceLoss(smp.losses.MULTILABEL_MODE, from_logits=True)
+        # set the loss function, here we use the dice loss / tversky extention,
+        # which is more robust to class imbalance. one needs to set the alpha and beta hyperparameters
         self.loss_fn = smp.losses.TverskyLoss(
             smp.losses.MULTILABEL_MODE, alpha=0.3, beta=0.7
         )
@@ -131,14 +143,14 @@ class MZBModel_skels(pl.LightningModule):
         self.save_hyperparameters()
 
     def forward(self, x):
-        "forward pass return unnormalised logits, normalise when needed"
+        "forward pass of the model, returning logits"
         return self.model(x)
 
     def training_step(self, batch, batch_idx):
         "training iteration per batch"
         x, y, _ = batch
 
-        logits = self(x)  # [:, 1, ...]
+        logits = self(x)
 
         loss = self.loss_fn(logits, y)
         self.log("trn_loss", loss, prog_bar=True)
@@ -160,21 +172,21 @@ class MZBModel_skels(pl.LightningModule):
         return self.validation_step(batch, batch_idx, print_log)
 
     def predict_step(self, batch, batch_idx, dataloader_idx: int = None):
+        "custom predict iteration per batch, returning probabilities and labels"
         x, y, _ = batch
         logits = self.model(x)
-        # print(shape)
         probs = torch.softmax(logits, dim=1)
-        # preds = torch.argmax(probs, dim=1)
         return probs, y
 
     def configure_optimizers(self):
+        "define the optimizer and the learning rate scheduler"
         opt = torch.optim.AdamW(
             self.model.parameters(),
             lr=self.learning_rate,
             weight_decay=self.weight_decay,
         )
-        # The ReduceLROnPlateau scheduler requires a monitor
 
+        # The scheduler needs a monitor over it. We use the validation loss.
         return {
             "optimizer": opt,
             "lr_scheduler": {
@@ -189,17 +201,13 @@ class MZBModel_skels(pl.LightningModule):
                 # multiple of "trainer.check_val_every_n_epoch".
             },
         }
-        # sch = torch.optim.lr_scheduler.CosineAnnealingLR(
-        #     opt, T_max=self.step_size_decay
-        # )
-        # return [opt], [sch]
 
     ######################
     # DATA RELATED HOOKS #
     ######################
 
     def train_dataloader(self, shuffle=True):
-
+        "def of train dataloader"
         trn_d = MZBLoader_skels(
             self.im_folder,
             self.bo_folder,
@@ -209,7 +217,6 @@ class MZBModel_skels(pl.LightningModule):
             transforms=self.transform_tr,
         )
 
-        # number of draws from the weighted random samples matches the 2 * (n_positive // batch_size)
         return DataLoader(
             trn_d,
             batch_size=self.batch_size,
@@ -220,7 +227,6 @@ class MZBModel_skels(pl.LightningModule):
 
     def val_dataloader(self):
         "def of custom val dataloader"
-
         val_d = MZBLoader_skels(
             self.im_folder,
             self.bo_folder,
@@ -230,7 +236,6 @@ class MZBModel_skels(pl.LightningModule):
             transforms=self.transform_ts,
         )
 
-        # number of draws from the weighted random samples matches the 2 * (n_positive // batch_size)
         return DataLoader(
             val_d,
             batch_size=self.batch_size,
@@ -240,7 +245,7 @@ class MZBModel_skels(pl.LightningModule):
         )
 
     def train_ts_augm_dataloader(self):
-
+        "def of a dataloader for trainin data using test data augmentation"
         trn_d = MZBLoader_skels(
             self.im_folder,
             self.bo_folder,
@@ -250,7 +255,6 @@ class MZBModel_skels(pl.LightningModule):
             transforms=self.transform_ts,
         )
 
-        # number of draws from the weighted random samples matches the 2 * (n_positive // batch_size)
         return DataLoader(
             trn_d,
             batch_size=self.batch_size,

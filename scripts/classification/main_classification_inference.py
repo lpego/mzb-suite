@@ -41,7 +41,7 @@ else:
 
 sys.path.append(f"{prefix}")
 
-from mzb_workflow.classification.mzb_pilmodel_classification import MZBModel
+from mzb_workflow.classification.mzb_classification_pilmodel import MZBModel
 from mzb_workflow.utils import cfg_to_arguments, find_checkpoints
 
 # Set the thread layer used by MKL
@@ -225,7 +225,7 @@ if 0:
     from matplotlib import pyplot as plt
     from PIL import Image
 
-    from mzb_workflow.classification.mzb_dataloader_classification import Denormalize
+    from mzb_workflow.classification.mzb_classification_dataloader import Denormalize
 
     mzb_class = 7
 

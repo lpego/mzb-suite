@@ -29,7 +29,7 @@ from torchvision import transforms
 
 from mzb_workflow.utils import read_pretrained_model
 
-from mzb_workflow.classification.mzb_dataloader_classification import (
+from mzb_workflow.classification.mzb_classification_dataloader import (
     MZBLoader,
     Denormalize,
 )

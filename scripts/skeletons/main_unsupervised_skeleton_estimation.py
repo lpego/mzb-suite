@@ -42,6 +42,7 @@ from mzb_workflow.skeletons.mzb_skeletons_helpers import (
 from mzb_workflow.utils import cfg_to_arguments, noneparse
 
 # %%
+
 parser = argparse.ArgumentParser()
 parser.add_argument("--config_file", type=str, required=True)
 parser.add_argument("--input_dir", type=str, required=True)
@@ -52,7 +53,7 @@ args = parser.parse_args()
 
 # args = {}
 # args["config_file"] = f"{prefix}configs/global_configuration.yaml"
-# args["input_dir"] = f"{prefix}data/results/project_portable_flume/blobs"
+# args["input_dir"] = f"{prefix}data/derived/project_portable_flume/blobs"
 # # TODO: add this possibility to use predictions of models to list files to be parsed
 # # * if none, just use all files in input_dir
 # # * if a csv list, use that list to exclude errors (add option to speficy a list of classes?)
@@ -70,9 +71,9 @@ cfg = cfg_to_arguments(cfg)
 args.input_dir = Path(args.input_dir)
 args.output_dir = Path(args.output_dir)
 
-if cfg.skel_save_masks is not None:
-    cfg.skel_save_masks = Path(f"{prefix}{cfg.skel_save_masks}")
-    cfg.skel_save_masks.mkdir(parents=True, exist_ok=True)
+if cfg.skel_save_usnup_masks is not None:
+    cfg.skel_save_usnup_masks = Path(f"{prefix}{cfg.skel_save_usnup_masks}")
+    cfg.skel_save_usnup_masks.mkdir(parents=True, exist_ok=True)
 
 # setup some area-specific parameters for filtering
 area_class = {
@@ -85,7 +86,7 @@ area_class = {
 }
 
 # %%
-# 1. Load in all masks in the input directory
+# Load in all masks in the input directory
 mask_list = sorted(list(Path(args.input_dir).glob(f"*_mask.{cfg.impa_image_format}")))
 
 if args.list_of_files is not None:
@@ -127,8 +128,10 @@ growing_df = []
 # Load the image
 # PLOTS = True
 
-for fo in tqdm(files_to_skel[:]):
-
+iterator = tqdm(files_to_skel)
+# iterator = tqdm([args.input_dir / "1_ob_mixed_difficutly_clip_32_mask.jpg"])
+for fo in iterator:
+    iterator.set_description(fo.name)
     # read in mask and rgb, rgb only for plotting
     mask_ = (cv2.imread(str(fo))[:, :, 0] / 255).astype(float)
 
@@ -153,20 +156,35 @@ for fo in tqdm(files_to_skel[:]):
     inter = get_intersections(skeleton=skeleton.astype(np.uint8))
     endpo = get_endpoints(skeleton=skeleton.astype(np.uint8))
 
-    if cfg.skel_save_masks:
+    if cfg.skel_save_usnup_masks:
         # save the skeletonized mask
         cv2.imwrite(
-            str(cfg.skel_save_masks / f"{''.join(fo.name.split('.')[:-1])}_skel.jpg"),
+            str(
+                cfg.skel_save_usnup_masks
+                / f"{''.join(fo.name.split('.')[:-1])}_skel.jpg"
+            ),
             (255 * skeleton / np.max(skeleton)).astype(np.uint8),
         )
 
     if PLOTS:
-        rgb_ = cv2.imread(str(fo)[:-8] + "rgb.png")[:, :, [2, 1, 0]].astype(np.uint8)
+        rgb_ = cv2.imread(str(fo)[:-8] + "rgb.jpg")[:, :, [2, 1, 0]].astype(np.uint8)
         rgb_fi = paint_image(rgb_, skeleton, color=[255, 0, 0])
         rgb_ma = paint_image(rgb_, mask, color=[255, 0, 255])
 
+    if inter:
+        # then, deduplicate the intersections
+        skel_labels, edge_attributes, skprop = segment_skel(skeleton, inter, conn=1)
+        ds = distance_matrix(inter, inter) + 100 * np.eye(len(inter))
+        duplicates = np.where(ds < 3)[0]
+        try:
+            inter = [a for a in inter if a != inter[duplicates[0]]]
+        except:
+            pass
+    else:
+        skel_labels = []
+
     # case for which there are no segments (ie, only one)
-    if len(inter) < 1:
+    if len(np.unique(skel_labels)) < 3:
         sub_df = pd.DataFrame(
             data={
                 "clip_filename": fo.name,
@@ -187,17 +205,14 @@ for fo in tqdm(files_to_skel[:]):
 
     else:
 
-        # filter out intersections that are closer than 1px and
-        # segment the now intependently connected components
-
         # remove nodes that are too close (less than 3px) and treat them as only one node
-        skel_labels, edge_attributes, skprop = segment_skel(skeleton, inter, conn=1)
-        ds = distance_matrix(inter, inter) + 100 * np.eye(len(inter))
-        duplicates = np.where(ds < 3)[0]
-        try:
-            inter = [a for a in inter if a != inter[duplicates[0]]]
-        except:
-            pass
+        # skel_labels, edge_attributes, skprop = segment_skel(skeleton, inter, conn=1)
+        # ds = distance_matrix(inter, inter) + 100 * np.eye(len(inter))
+        # duplicates = np.where(ds < 3)[0]
+        # try:
+        #     inter = [a for a in inter if a != inter[duplicates[0]]]
+        # except:
+        #     pass
 
         if cfg.skel_save_masks:
             skel_masks_path = Path(cfg.skel_save_masks)
@@ -227,7 +242,11 @@ for fo in tqdm(files_to_skel[:]):
         # get the segments that touch each endpoint
         dead_ends = []
         for coord in endpo:
-            dead_ends.append([skel_labels[coord[1], coord[0]]])
+            ends = skel_labels[
+                (coord[1] - 4) : (coord[1] + 5), (coord[0] - 4) : (coord[0] + 5)
+            ]
+            end_node = np.unique(ends[ends != 0])
+            dead_ends.append(list(end_node))
         dead_ends = sorted(dead_ends)
 
         # build the graph of segments of the skeleton

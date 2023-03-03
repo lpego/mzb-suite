@@ -67,6 +67,7 @@ measures = []
 cols = ["species", "clip_name", "head", "body"]
 files_to_merge = list(sorted(args.input_raw_dir.glob("**/*/*.json")))
 
+# loop over the files and extract the data, then append to the list, then merge, then save.
 for jfi in files_to_merge[:]:
 
     clip_name = jfi.parent.name.split("__")[-1]
@@ -101,16 +102,17 @@ annot_files = sorted(list(args.input_raw_dir.glob("**/*/line_V4.csv")))
 (args.output_dir / "sk_body").mkdir(exist_ok=True, parents=True)
 (args.output_dir / "sk_head").mkdir(exist_ok=True, parents=True)
 
-
 # %%
+# Loop over the annotations and copy the image and save the manual skeleton.
 for file in annot_files[:1]:
 
     gen_name = "_".join(file.parent.name.split("__")[1].split("_")[:-1])
     rgb_clip = gen_name + f"_rgb.{cfg.impa_image_format}"
 
-    # 1 copy actual existing clip.
+    # Copy the image to the output folder
     shutil.copy(args.input_clips_dir / rgb_clip, args.output_dir / "images")
 
+    # Read the image and the annotation, to get the size of the image
     test_f_im = Path(args.input_clips_dir / rgb_clip)
     test_im = cv2.cvtColor(cv2.imread(str(test_f_im)), cv2.COLOR_BGR2RGB)
 
@@ -118,11 +120,12 @@ for file in annot_files[:1]:
         plt.figure()
         plt.imshow(test_im)
 
+    # Read the annotation file and get the head and body line coordinates
     line = pd.read_csv(file)
     body = line[["x_coords", "y_coords"]].loc[line.annotation_id == "body"].values
     head = line[["x_coords", "y_coords"]].loc[line.annotation_id == "head"].values
 
-    # Draw the polyline on the image using cv2.polylines()
+    # Draw the lines corresponding to body size on the image and save
     bw_mask = np.zeros_like(test_im)
     body = cv2.polylines(
         bw_mask,
@@ -137,6 +140,7 @@ for file in annot_files[:1]:
         plt.figure()
         plt.imshow(body)
 
+    # Draw the lines corresponding to head size on the image and save
     bw_mask = np.zeros_like(test_im)
     head = cv2.polylines(
         bw_mask,
@@ -150,6 +154,3 @@ for file in annot_files[:1]:
     if PLOTS:
         plt.figure()
         plt.imshow(head)
-
-
-# %%
