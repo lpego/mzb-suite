@@ -1,10 +1,12 @@
 import torch
 import numpy as np
 
-from torchvision import utils
-from PIL import Image, ImageFilter, ImageDraw, ImageOps
+# from torchvision import utils
+from PIL import Image  # , ImageFilter, ImageDraw, ImageOps
 
 from torch.utils.data import Dataset
+
+from mzb_workflow.skeletons.mzb_skeletons_helpers import Denormalize
 
 
 class MZBLoader_skels(Dataset):
@@ -109,28 +111,3 @@ class MZBLoader_skels(Dataset):
             return images[ls_inds], mbody[ls_inds], mhead[ls_inds], ls_inds
         else:
             return images, mbody, mhead, ls_inds
-
-
-class Denormalize(object):
-    def __init__(self, mean, std):
-        self.mean = torch.Tensor(mean)
-        self.std = torch.Tensor(std)
-
-    def __call__(self, tensor):
-        """
-        Args:
-            tensor (Tensor): Tensor image of size (C, H, W) to be normalized.
-        Returns:
-            Tensor: Normalized image.
-        """
-        channel_dim = np.where([(a == 3) or (a == 1) for a in tensor.shape])[0]
-
-        if channel_dim == 2:
-            x_n = tensor.mul_(self.std).add_(self.mean)
-            return x_n
-
-        elif channel_dim == 0:
-            for t, m, s in zip(tensor, self.mean, self.std):
-                x_n = t.mul_(s).add_(m)
-                # The normalize code -> t.sub_(m).div_(s)
-            return x_n

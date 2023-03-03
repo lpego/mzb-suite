@@ -52,11 +52,11 @@ ROOT_DIR="/data/shared/mzb-workflow"
 #     --list_of_files=None \
 #     -v
 
-# python scripts/skeletons/main_skeleton_supervised_inference.py \
-#     --config_file=$ROOT_DIR/configs/global_configuration.yaml \
-#     --input_dir=$ROOT_DIR/data/derived/project_portable_flume/blobs/ \
-#     --input_model=$ROOT_DIR/models/mzb-pil/bm2ccwxc \
-#     --output_dir=$ROOT_DIR/results/skeletons/project_portable_flume \
-#     -v
+python scripts/skeletons/main_supervised_skeleton_inference.py \
+    --config_file=$ROOT_DIR/configs/global_configuration.yaml \
+    --input_dir=$ROOT_DIR/data/learning_sets/project_portable_flume/skeletonization/ \
+    --input_model=$ROOT_DIR/models/mzb-skels/i6vl2f2j/ \
+    --output_dir=$ROOT_DIR/results/skeletons/project_portable_flume/supervised_skeletons/ \
+    -v
 
 

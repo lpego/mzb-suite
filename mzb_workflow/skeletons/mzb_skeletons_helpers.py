@@ -2,6 +2,7 @@
 
 from pathlib import Path
 from typing import List, Tuple, Union
+import torch
 
 import numpy as np
 from matplotlib import pyplot as plt
@@ -43,6 +44,42 @@ def paint_image(image: np.ndarray, mask: np.array, color: List[float]) -> np.nda
 
     # Return the new image
     return rgb_fi
+
+
+# This probably needs to be merged with the above function!
+# make sure to use deal with torch vs numpy arrays
+def paint_image_tensor(
+    image: torch.Tensor, masks: torch.Tensor, color: List[float]
+) -> torch.Tensor:
+    """
+    Given an input image, a binary mask indicating where to paint, and a color to use,
+    returns a new image where the pixels within the mask are colored with the specified color.
+
+    Args:
+        image (torch.Tensor): Input image to paint.
+        mask (torch.Tensor): Binary mask indicating where to paint.
+        color (List[float]): List of 3 floats representing the RGB color to use.
+
+    Returns:
+        torch.Tensor: New image with painted pixels.
+    """
+
+    # Make a copy of the input image
+    rgb_body = image.clone()
+
+    c = 0
+    for mask in masks:
+        # Color the pixels within the mask with the specified color
+        rgb_body[mask > 0.75] = torch.Tensor(
+            [
+                color[c][0] * mask[mask > 0.75],
+                color[c][1] * mask[mask > 0.75],
+                color[c][2] * mask[mask > 0.75],
+            ]
+        ).permute((1, 0))
+        c += 1
+    # Return the new image
+    return rgb_body
 
 
 # %%
@@ -296,3 +333,26 @@ def segment_skel(skeleton, inter, conn=1):
 
 
 # %%
+class Denormalize(object):
+    def __init__(self, mean, std):
+        self.mean = torch.Tensor(mean)
+        self.std = torch.Tensor(std)
+
+    def __call__(self, tensor):
+        """
+        Args:
+            tensor (Tensor): Tensor image of size (C, H, W) to be normalized.
+        Returns:
+            Tensor: Normalized image.
+        """
+        channel_dim = np.where([(a == 3) or (a == 1) for a in tensor.shape])[0]
+
+        if channel_dim == 2:
+            x_n = tensor.mul_(self.std).add_(self.mean)
+            return x_n
+
+        elif channel_dim == 0:
+            for t, m, s in zip(tensor, self.mean, self.std):
+                x_n = t.mul_(s).add_(m)
+                # The normalize code -> t.sub_(m).div_(s)
+            return x_n

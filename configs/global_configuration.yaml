@@ -35,6 +35,7 @@ skel_conv_rate: 131.6625 #[133.1, 136.6, 133.2, 133.2, 133.2, 118.6, 133.4, 132.
 skel_save_usnup_masks: data/derived/project_portable_flume/skeletons/automatic_skeletons/
 
 # supervised skeletonization
-skel_save_attributes: data/derived/project_portable_flume/skeletons/manual_annotations/
-skel_save_sup_masks: data/derived/project_portable_flume/skeletons/automatic_skeletons/
+skel_save_attributes: data/derived/project_portable_flume/skeletons/
+skel_save_sup_masks: data/derived/project_portable_flume/skeletons/supervised_skeletons/
 skel_label_thickness: 3
+skel_label_buffer_on_preds: 25 

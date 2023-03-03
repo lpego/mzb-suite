@@ -78,15 +78,17 @@ class MZBModel_skels(pl.LightningModule):
         self.bo_folder = self.data_dir / "sk_body"
         self.he_folder = self.data_dir / "sk_head"
 
+        # self.get_learnin_splits(self)
+
         np.random.seed(12)
         N = len(list(self.im_folder.glob("*.png")))
         self.trn_inds = sorted(
             list(np.random.choice(np.arange(N), size=int(0.8 * N), replace=False))
         )
         self.val_inds = sorted(list(set(np.arange(N)).difference(set(self.trn_inds))))
+
         self.size_im = 224
         self.dims = (3, self.size_im, self.size_im)
-        # channels, width, height = self.dims
 
         # This defines data augmentation used for training
         self.transform_tr = transforms.Compose(
@@ -141,6 +143,19 @@ class MZBModel_skels(pl.LightningModule):
         )
 
         self.save_hyperparameters()
+
+    def set_learning_splits(self):
+        "set the learning splits for training and validation"
+
+        np.random.seed(12)
+        N = len(list(self.im_folder.glob("*.png")))
+        self.trn_inds = sorted(
+            list(np.random.choice(np.arange(N), size=int(0.8 * N), replace=False))
+        )
+        self.val_inds = sorted(list(set(np.arange(N)).difference(set(self.trn_inds))))
+
+        return self
+        # channels, width, height = self.dims
 
     def forward(self, x):
         "forward pass of the model, returning logits"
