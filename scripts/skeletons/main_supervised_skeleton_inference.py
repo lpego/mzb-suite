@@ -53,45 +53,45 @@ from mzb_workflow.utils import cfg_to_arguments, find_checkpoints
 os.environ["MKL_THREADING_LAYER"] = "GNU"
 
 # %%
-# parser = argparse.ArgumentParser()
-# parser.add_argument(
-#     "--config_file",
-#     type=str,
-#     required=True,
-#     help="path to config file",
-# )
-# parser.add_argument(
-#     "--input_dir",
-#     type=str,
-#     required=True,
-#     help="path with images for inference",
-# )
-# parser.add_argument(
-#     "--input_model",
-#     type=str,
-#     required=True,
-#     help="path to model checkpoint",
-# )
-# parser.add_argument(
-#     "--output_dir",
-#     type=str,
-#     required=True,
-#     help="where to save skeleton measure predictions as csv",
-# )
-# parser.add_argument("--verbose", "-v", action="store_true", help="print more info")
-# args = parser.parse_args()
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    "--config_file",
+    type=str,
+    required=True,
+    help="path to config file",
+)
+parser.add_argument(
+    "--input_dir",
+    type=str,
+    required=True,
+    help="path with images for inference",
+)
+parser.add_argument(
+    "--input_model",
+    type=str,
+    required=True,
+    help="path to model checkpoint",
+)
+parser.add_argument(
+    "--output_dir",
+    type=str,
+    required=True,
+    help="where to save skeleton measure predictions as csv",
+)
+parser.add_argument("--verbose", "-v", action="store_true", help="print more info")
+args = parser.parse_args()
 
-args = {}
-args["config_file"] = f"{prefix}configs/global_configuration.yaml"
-args[
-    "input_dir"
-] = f"{prefix}data/learning_sets/project_portable_flume/skeletonization/"
-args["input_model"] = f"{prefix}models/mzb-skels/mit-b2-v0/"
-args[
-    "output_dir"
-] = f"{prefix}results/skeletons/project_portable_flume/supervised_skeletons/"
-args["verbose"] = True
-args = cfg_to_arguments(args)
+# args = {}
+# args["config_file"] = f"{prefix}configs/global_configuration.yaml"
+# args[
+#     "input_dir"
+# ] = f"{prefix}data/learning_sets/project_portable_flume/skeletonization/"
+# args["input_model"] = f"{prefix}models/mzb-skels/mit-b2-v0/"
+# args[
+#     "output_dir"
+# ] = f"{prefix}results/skeletons/project_portable_flume/supervised_skeletons/"
+# args["verbose"] = True
+# args = cfg_to_arguments(args)
 
 with open(str(args.config_file), "r") as f:
     cfg = yaml.load(f, Loader=yaml.FullLoader)
@@ -99,7 +99,6 @@ with open(str(args.config_file), "r") as f:
 cfg = cfg_to_arguments(cfg)
 
 if cfg.skel_save_sup_masks is not None:
-    print("ayo")
     cfg.skel_save_sup_masks = Path(f"{prefix}{cfg.skel_save_sup_masks}")
     cfg.skel_save_sup_masks.mkdir(parents=True, exist_ok=True)
 
@@ -115,7 +114,6 @@ dirs = find_checkpoints(
     version=Path(args.input_model).name,
     log=cfg.infe_model_ckpt,
 )
-
 mod_path = dirs[0]
 
 model = MZBModel_skels()
@@ -144,11 +142,11 @@ if "flume" in str(args.input_dir):
     dataloader = model.val_dataloader()
     dataset_name = "flume"
 else:
-    data_dir = Path(
-        "/data/shared/mzb-classification/data/raw_learning_sets_duben/insects/"
-    )
-    dataloader = model.dubendorf_dataloader(data_dir)
-    dataset_name = "dubendorf"
+    # data_dir = Path(
+    #     "/data/shared/mzb-classification/data/raw_learning_sets_duben/insects/"
+    # )
+    dataloader = model.external_dataloader(args.input_dir)
+    dataset_name = "external"
 
     # dataloader = model.external_dataloader(
     #     model.data_dir, glob_pattern=cfg.infe_image_glob
@@ -182,6 +180,9 @@ cfg.skel_label_buffer_on_preds = 25
 MASK = True if cfg.skel_label_buffer_on_preds else False
 # nn body preds
 preds_size = []
+
+if args.verbose:
+    print("Neural network predictions done, refining and saving skeletons...")
 
 for i, ti in tqdm(enumerate(im_fi[:])):
 

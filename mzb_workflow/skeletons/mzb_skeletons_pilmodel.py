@@ -282,7 +282,7 @@ class MZBModel_skels(pl.LightningModule):
         "def of custom test dataloader"
         return None
 
-    def dubendorf_dataloader(self, data_dir):
+    def external_dataloader(self, data_dir):
         "def of custom test dataloader"
         dub_folder = Path(data_dir)
 
@@ -290,7 +290,7 @@ class MZBModel_skels(pl.LightningModule):
             dub_folder,
             Path(""),
             Path(""),
-            learning_set="dubendorf",
+            learning_set="external",
             ls_inds=[],
             transforms=self.transform_ts,
         )

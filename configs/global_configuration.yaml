@@ -40,7 +40,7 @@ trsk_learning_rate: 0.001
 trsk_batch_size: 16
 trsk_weight_decay: 0
 trsk_step_size_decay: 25
-trsk_number_epochs: 2
+trsk_number_epochs: 10
 trsk_gpu_ids: -1
 trsk_save_topk: 1
 trsk_num_classes: 2
