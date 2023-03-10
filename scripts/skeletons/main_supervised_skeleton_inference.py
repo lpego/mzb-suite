@@ -29,6 +29,7 @@ from matplotlib import pyplot as plt
 from PIL import Image
 from skimage.morphology import thin
 from torchvision import transforms
+from tqdm import tqdm
 
 import numpy as np
 import pandas as pd
@@ -52,45 +53,45 @@ from mzb_workflow.utils import cfg_to_arguments, find_checkpoints
 os.environ["MKL_THREADING_LAYER"] = "GNU"
 
 # %%
-parser = argparse.ArgumentParser()
-parser.add_argument(
-    "--config_file",
-    type=str,
-    required=True,
-    help="path to config file",
-)
-parser.add_argument(
-    "--input_dir",
-    type=str,
-    required=True,
-    help="path with images for inference",
-)
-parser.add_argument(
-    "--input_model",
-    type=str,
-    required=True,
-    help="path to model checkpoint",
-)
-parser.add_argument(
-    "--output_dir",
-    type=str,
-    required=True,
-    help="where to save skeleton measure predictions as csv",
-)
-parser.add_argument("--verbose", "-v", action="store_true", help="print more info")
-args = parser.parse_args()
+# parser = argparse.ArgumentParser()
+# parser.add_argument(
+#     "--config_file",
+#     type=str,
+#     required=True,
+#     help="path to config file",
+# )
+# parser.add_argument(
+#     "--input_dir",
+#     type=str,
+#     required=True,
+#     help="path with images for inference",
+# )
+# parser.add_argument(
+#     "--input_model",
+#     type=str,
+#     required=True,
+#     help="path to model checkpoint",
+# )
+# parser.add_argument(
+#     "--output_dir",
+#     type=str,
+#     required=True,
+#     help="where to save skeleton measure predictions as csv",
+# )
+# parser.add_argument("--verbose", "-v", action="store_true", help="print more info")
+# args = parser.parse_args()
 
-# args = {}
-# args["config_file"] = f"{prefix}configs/global_configuration.yaml"
-# args[
-#     "input_dir"
-# ] = f"{prefix}data/learning_sets/project_portable_flume/skeletonization/"
-# args["input_model"] = f"{prefix}models/mzb-skels/i6vl2f2j/"
-# args[
-#     "output_dir"
-# ] = f"{prefix}results/skeletons/project_portable_flume/supervised_skeletons/"
-# args["verbose"] = True
-# args = cfg_to_arguments(args)
+args = {}
+args["config_file"] = f"{prefix}configs/global_configuration.yaml"
+args[
+    "input_dir"
+] = f"{prefix}data/learning_sets/project_portable_flume/skeletonization/"
+args["input_model"] = f"{prefix}models/mzb-skels/mit-b2-v0/"
+args[
+    "output_dir"
+] = f"{prefix}results/skeletons/project_portable_flume/supervised_skeletons/"
+args["verbose"] = True
+args = cfg_to_arguments(args)
 
 with open(str(args.config_file), "r") as f:
     cfg = yaml.load(f, Loader=yaml.FullLoader)

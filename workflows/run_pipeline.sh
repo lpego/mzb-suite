@@ -11,24 +11,15 @@ ROOT_DIR="/data/shared/mzb-workflow"
 
 ## CHECK: _mask_properties.csv file in the output directory, does not get filled correctly  
 
-# This has to be run once, to create the curated learning sets
-# python scripts/classification/main_prepare_learning_sets.py \
-#     --input_dir=$ROOT_DIR/data/learning_sets/project_portable_flume/curated_learning_sets_flume/ \
-#     --taxonomy_file=$ROOT_DIR/data/MZB_taxonomy.csv \
-#     --output_dir=$ROOT_DIR/data/learning_sets/project_portable_flume/aggregated_learning_sets \
-#     --config_file=$ROOT_DIR/configs/global_configuration.yaml \
-#     -v
-
-
 # This is run to classify a custom folder structure and will regturn a csv with the results 
 # (filename, predicted class, probability of prediction)
 # eg. on a validaton / test set, or on a new set of images, or whatever. be assured to pass only clips generated similarty 
 # to the first step (main_raw_to_clips.py)
-# classification models are stored in $ROOT_DIR/models/mzb-pil/
+# classification models are stored in $ROOT_DIR/models/mzb-class/
 # python scripts/classification/main_classification_inference.py \
 #     --config_file=$ROOT_DIR/configs/global_configuration.yaml \
 #     --input_dir=$ROOT_DIR/data/learning_sets/project_portable_flume/aggregated_learning_sets/val_set \
-#     --input_model=$ROOT_DIR/models/mzb-pil/bm2ccwxc \
+#     --input_model=$ROOT_DIR/models/mzb-class/convnext-small \
 #     --output_dir=$ROOT_DIR/results/classification/project_portable_flume/ \
 #     -v
 
@@ -36,7 +27,7 @@ ROOT_DIR="/data/shared/mzb-workflow"
 ## python scripts/classification/main_classification_inference.py \
 ##     --config_file=$ROOT_DIR/configs/global_configuration.yaml \
 ##     --input_dir=$ROOT_DIR/data/derived/project_portable_flume/blobs/ \
-##     --input_model=$ROOT_DIR/models/mzb-pil/bm2ccwxc \
+##     --input_model=$ROOT_DIR/models/mzb-class/bm2ccwxc \
 ##     --output_dir=$ROOT_DIR/results/classification/project_portable_flume/ \
 ##     -v
 
@@ -52,11 +43,11 @@ ROOT_DIR="/data/shared/mzb-workflow"
 #     --list_of_files=None \
 #     -v
 
-python scripts/skeletons/main_supervised_skeleton_inference.py \
-    --config_file=$ROOT_DIR/configs/global_configuration.yaml \
-    --input_dir=$ROOT_DIR/data/learning_sets/project_portable_flume/skeletonization/ \
-    --input_model=$ROOT_DIR/models/mzb-skels/i6vl2f2j/ \
-    --output_dir=$ROOT_DIR/results/skeletons/project_portable_flume/supervised_skeletons/ \
-    -v
+# python scripts/skeletons/main_supervised_skeleton_inference.py \
+#     --config_file=$ROOT_DIR/configs/global_configuration.yaml \
+#     --input_dir=$ROOT_DIR/data/learning_sets/project_portable_flume/skeletonization/ \
+#     --input_model=$ROOT_DIR/models/mzb-skels/i6vl2f2j/ \
+#     --output_dir=$ROOT_DIR/results/skeletons/project_portable_flume/supervised_skeletons/ \
+#     -v
 
-
+## until here works fine somwhat

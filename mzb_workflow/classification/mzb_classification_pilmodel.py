@@ -15,7 +15,9 @@ from torch.nn import functional as F
 from torch.utils.data import DataLoader, random_split
 from torch.utils.data.sampler import WeightedRandomSampler
 from torchmetrics import F1Score
-from torchmetrics.functional import precision_recall
+
+# from torchmetrics.utilities import check_forward_no_full_state
+
 from torchvision import transforms
 
 # try:
@@ -33,6 +35,7 @@ from mzb_workflow.classification.mzb_classification_dataloader import (
     MZBLoader,
     Denormalize,
 )
+
 
 # %%
 class MZBModel(pl.LightningModule):
@@ -105,7 +108,15 @@ class MZBModel(pl.LightningModule):
 
         # Define PyTorch model
         self.model = read_pretrained_model(self.architecture, self.num_classes)
-        self.accuracy = F1Score()
+
+        # initialize F1Score metric
+        result_metric = F1Score()
+
+        # # check if full_state_update=False can be used safely
+        # safe_to_use = check_forward_no_full_state(result_metric)
+        # if safe_to_use:
+        #     result_metric = F1Score(full_state_update=False)
+        self.accuracy = result_metric
 
         self.save_hyperparameters()
 
@@ -121,15 +132,9 @@ class MZBModel(pl.LightningModule):
         # loss = F.nll_loss(logits, y, weight=torch.Tensor((1,2)).to("cuda"))
         preds = torch.argmax(logits, dim=1)
         self.accuracy(preds, y)
-        # only take them for positive class. Maybe torchmetrics for that is not good
-        (self.precision, self.recall) = precision_recall(
-            preds.int(), y.int(), num_classes=self.num_classes, average=None
-        )
 
         self.log("trn_loss", loss, prog_bar=True)
         self.log("trn_acc", self.accuracy, prog_bar=False)
-        self.log("trn_prec", self.precision[1], prog_bar=False)
-        self.log("trn_reca", self.recall[1], prog_bar=False)
 
         return loss
 
@@ -141,14 +146,9 @@ class MZBModel(pl.LightningModule):
         # loss = F.nll_loss(logits, y, weight=torch.Tensor((1,2)).to("cuda"))
         preds = torch.argmax(logits, dim=1)
         self.accuracy(preds, y)
-        (self.precision, self.recall) = precision_recall(
-            preds.int(), y.int(), num_classes=self.num_classes, average=None
-        )
 
         self.log(f"{print_log}_loss", loss, prog_bar=True)
         self.log(f"{print_log}_acc", self.accuracy, prog_bar=True)
-        self.log(f"{print_log}_prec", self.precision[1], prog_bar=False)
-        self.log(f"{print_log}_reca", self.recall[1], prog_bar=False)
         return loss
 
     def test_step(self, batch, batch_idx, print_log: str = "tst"):
@@ -163,23 +163,6 @@ class MZBModel(pl.LightningModule):
         preds = torch.argmax(probs, dim=1)
         return preds, probs, y
 
-    def configure_optimizers(self):
-        "optimiser config plus lr scheduler callback"
-        optimizer = torch.optim.AdamW(
-            self.model.parameters(),
-            lr=self.learning_rate,
-            weight_decay=self.weight_decay,
-        )
-        lr_scheduler = torch.optim.lr_scheduler.StepLR(
-            optimizer, step_size=self.step_size_decay, gamma=0.5
-        )
-        # lr_scheduler = torch.optim.lr_scheduler.MultiStepLR(
-        # optimizer, milestones=[10, 20, 50], gamma=0.5
-        # )
-
-        return [optimizer], [lr_scheduler]
-
-    # figure out how Plateau scheduler could work when val fits are too good.
     # def configure_optimizers(self):
     #     "optimiser config plus lr scheduler callback"
     #     optimizer = torch.optim.AdamW(
@@ -187,14 +170,37 @@ class MZBModel(pl.LightningModule):
     #         lr=self.learning_rate,
     #         weight_decay=self.weight_decay,
     #     )
-    #     return {
-    #         "optimizer": optimizer,
-    #         "lr_scheduler": {
-    #             "scheduler": torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode="max", patience=1, cooldown=1, factor=0.1),
-    #             "monitor": "val_acc",
-    #             "frequency": 1
-    #         },
-    #     }
+    #     lr_scheduler = torch.optim.lr_scheduler.StepLR(
+    #         optimizer, step_size=self.step_size_decay, gamma=0.5
+    #     )
+    #     # lr_scheduler = torch.optim.lr_scheduler.MultiStepLR(
+    #     # optimizer, milestones=[10, 20, 50], gamma=0.5
+    #     # )
+
+    #     return [optimizer], [lr_scheduler]
+
+    # figure out how Plateau scheduler could work when val fits are too good.
+    def configure_optimizers(self):
+        "optimiser config plus lr scheduler callback"
+        optimizer = torch.optim.Adam(
+            self.model.parameters(),
+            lr=self.learning_rate,
+            weight_decay=self.weight_decay,
+        )
+        return {
+            "optimizer": optimizer,
+            "lr_scheduler": {
+                "scheduler": torch.optim.lr_scheduler.ReduceLROnPlateau(
+                    optimizer,
+                    mode="min",
+                    patience=self.step_size_decay,
+                    cooldown=1,
+                    factor=0.1,
+                ),
+                "monitor": "val_loss",
+                "frequency": 1,
+            },
+        }
 
     ######################
     # DATA RELATED HOOKS #
@@ -258,11 +264,18 @@ class MZBModel(pl.LightningModule):
             )
 
     def val_dataloader(self):
-        files = [
-            folds
-            for folds in sorted(list((self.data_dir).glob("*")))
-            if "zz_" not in folds.name
-        ]
+        if "val_set" in self.data_dir.name:
+            files = [
+                folds
+                for folds in sorted(list((self.data_dir).glob("*")))
+                if "zz_" not in folds.name
+            ]
+        else:
+            files = [
+                folds
+                for folds in sorted(list((self.data_dir / "val_set").glob("*")))
+                if "zz_" not in folds.name
+            ]
 
         dir_dict_val = {}
         for a in files:

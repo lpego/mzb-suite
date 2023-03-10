@@ -31,6 +31,7 @@ import numpy as np
 import pandas as pd
 import pytorch_lightning as pl
 import yaml
+import torch
 
 try:
     __IPYTHON__
@@ -48,43 +49,44 @@ from mzb_workflow.utils import cfg_to_arguments, find_checkpoints
 os.environ["MKL_THREADING_LAYER"] = "GNU"
 
 # %%
-parser = argparse.ArgumentParser()
-parser.add_argument(
-    "--config_file",
-    type=str,
-    required=True,
-    help="path to config file with per-script args",
-)
-parser.add_argument(
-    "--input_dir",
-    type=str,
-    required=True,
-    help="path with images to perform inference on",
-)
-parser.add_argument(
-    "--input_model",
-    type=str,
-    required=True,
-    help="path to model checkpoint for inference",
-)
-parser.add_argument(
-    "--output_dir",
-    type=str,
-    required=True,
-    help="path to where to save classificaiton predictions as csv",
-)
-parser.add_argument("--verbose", "-v", action="store_true", help="print more info")
-args = parser.parse_args()
-
-# args = {}
-# args["config_file"] = f"{prefix}configs/global_configuration.yaml"
-# args[
-#     "input_dir"
-# ] = f"{prefix}data/learning_sets/project_portable_flume/aggregated_learning_sets/val_set/"
-# args["input_model"] = f"{prefix}models/mzb-pil/a9zbuzsu/"
-# args["output_dir"] = f"{prefix}results/classification/"
-# args["verbose"] = True
-# args = cfg_to_arguments(args)
+if not prefix:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--config_file",
+        type=str,
+        required=True,
+        help="path to config file with per-script args",
+    )
+    parser.add_argument(
+        "--input_dir",
+        type=str,
+        required=True,
+        help="path with images to perform inference on",
+    )
+    parser.add_argument(
+        "--input_model",
+        type=str,
+        required=True,
+        help="path to model checkpoint for inference",
+    )
+    parser.add_argument(
+        "--output_dir",
+        type=str,
+        required=True,
+        help="path to where to save classificaiton predictions as csv",
+    )
+    parser.add_argument("--verbose", "-v", action="store_true", help="print more info")
+    args = parser.parse_args()
+else:
+    args = {}
+    args["config_file"] = f"{prefix}configs/global_configuration.yaml"
+    args[
+        "input_dir"
+    ] = f"{prefix}data/learning_sets/project_portable_flume/aggregated_learning_sets/mixed_set/"
+    args["input_model"] = f"{prefix}models/mzb-class/convnext-small-v0"
+    args["output_dir"] = f"{prefix}results/classification/"
+    args["verbose"] = True
+    args = cfg_to_arguments(args)
 
 with open(str(args.config_file), "r") as f:
     cfg = yaml.load(f, Loader=yaml.FullLoader)
@@ -103,6 +105,19 @@ dirs = find_checkpoints(
 )
 
 mod_path = dirs[0]
+
+# ckpt = torch.load(mod_path, map_location=torch.device("cpu"))
+# hprs = ckpt["hyper_parameters"]
+
+# model = MZBModel(
+#     data_dir=hprs["data_dir"],
+#     pretrained_network=hprs["pretrained_network"],
+#     learning_rate=hprs["learning_rate"],
+#     batch_size=hprs["batch_size"],
+#     weight_decay=hprs["weight_decay"],
+#     num_workers_loader=hprs["num_workers_loader"],
+#     step_size_decay=hprs["step_size_decay"],
+# )
 
 model = MZBModel()
 model = model.load_from_checkpoint(
@@ -140,11 +155,9 @@ if cfg.lset_taxonomy:
     mzb_taxonomy = pd.read_csv(Path(f"{prefix}{cfg.lset_taxonomy}"))
     mzb_taxonomy = mzb_taxonomy.drop(columns=["Unnamed: 0"])
     mzb_taxonomy = mzb_taxonomy.ffill(axis=1)
-    class_names = list(mzb_taxonomy[cfg.lset_class_cut].str.lower().unique())
+    # watch out this sorted is important for the class names to be in the right order
+    class_names = sorted(list(mzb_taxonomy[cfg.lset_class_cut].str.lower().unique()))
 
-
-# for i, k in enumerate(dir_dict_trn):
-#     print(f"class {i}: {k} --  N = {len(list(dir_dict_trn[k].glob('*.png')))}")
 # %%
 y = []
 p = []
@@ -220,14 +233,18 @@ if "val_set" in model.data_dir.name:
 
 # %%
 if 0:
-
     import torch
     from matplotlib import pyplot as plt
     from PIL import Image
 
     from mzb_workflow.classification.mzb_classification_dataloader import Denormalize
 
-    mzb_class = 7
+    dd = "results/classification/project_portable_flume/mixed_set_convnext-small-v0_20230309_1737/predictions.csv"
+    df_pred = pd.read_csv(prefix + dd)
+    df_pred = df_pred.set_index("file")
+    df_pred = df_pred.sort_index()
+
+    mzb_class = 4
 
     denorm = Denormalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225))
     unc_score = -pc[:, mzb_class]
@@ -250,7 +267,6 @@ if 0:
         )
     plt.plot(pc)
     plt.legend()
-
     plt.figure(figsize=(15, 5))
     plt.plot(pc[yc == mzb_class, :])
     plt.legend()
@@ -294,31 +310,4 @@ if 0:
         if i > N:
             break
 
-    # from sklearn.metrics import (ConfusionMatrixDisplay, confusion_matrix,
-    #                              plot_confusion_matrix)
-
-    # names = list(dir_dict_trn.keys())
-
-    # cmat = confusion_matrix(gc, np.argmax(pc,axis=1), normalize="true")
-
-    # plt.figure(figsize=(7,7))
-    # plt.imshow(cmat)
-    # plt.xticks(range(len(names)), names, rotation=90)
-    # plt.yticks(range(len(names)), names, rotation=0)
-    # plt.colorbar()
-
-    # f = plt.figure(figsize=(10,10))
-    # aa = f.gca()
-    # IC = type('IdentityClassifier', (), {"predict": lambda i : i, "_estimator_type": "classifier"})
-    # plot_confusion_matrix(IC, yc, gc, values_format=".1f", ax=aa,
-    #      normalize=None, xticks_rotation="vertical", display_labels=names)
-
-    # cmplot = ConfusionMatrixDisplay(cmat, display_labels=list(dir_dict_trn.keys()))
-    # plt.figure(figsize=(10,10))
-    # cmplot.plot()
-
-    # print(classification_report(pc[:,1] > 0.5, gc))
-    # print(classification_report(sortsco > 0.5, gc))
-    # print(ConfusionMatrix(num_classes=2)(torch.tensor(pc[:,1]) > 0.5 , torch.tensor(gc)).numpy())
-    # print(ConfusionMatrix(num_classes=2)(torch.tensor(sortsco) > 0.5, torch.tensor(gc)).numpy())
-    # %%
+# %%

@@ -1,4 +1,4 @@
-# %% 
+# %%
 # This script takes the curated dataset (raw_leanrin_set) and prepares a refined learning set according to the taxonomy file.
 # Each class will be aggregated to a single class according to the taxonomy file and where the cut (eg order, family, genus) is specified in the config file.
 # The output structure is a directory tree with training and validation sets, each containing a folder for each class.
@@ -28,13 +28,13 @@ sys.path.append(prefix)
 
 from mzb_workflow.utils import cfg_to_arguments
 
-# %% 
+# %%
 parser = argparse.ArgumentParser()
 parser.add_argument("--config_file", type=str, required=True)
 parser.add_argument("--input_dir", type=str, required=True)
 parser.add_argument("--taxonomy_file", type=str, required=False, default=None)
 parser.add_argument("--output_dir", type=str, required=True)
-parser.add_argument("--verbose", "-v", action='store_true')
+parser.add_argument("--verbose", "-v", action="store_true")
 args = parser.parse_args()
 
 # args = {}
@@ -59,61 +59,70 @@ np.random.seed(cfg.glob_random_seed)
 
 # rood of raw clip data
 root_data = Path(args.input_dir)
-outdir = Path(args.output_dir) 
+outdir = Path(args.output_dir)
 outdir.mkdir(parents=True, exist_ok=True)
 
 target_trn = outdir / "trn_set/"
 target_val = outdir / "val_set/"
 
-# make dictionary to recode: key is current classification, value is target reclassif. 
+# check if trn_set and val_set subfolders exist. If so, then interrupt the script.
+# This is to make sure that no overwriting happens; prompt the user that they need to specify a different output directory.
+if target_trn.exists() or target_val.exists():
+    raise ValueError(
+        # print in red and back to normal
+        f"\033[91m Output directory {outdir} already exists. Please specify a different output directory.\033[0m"
+    )
+
+# make dictionary to recode: key is current classification, value is target reclassif.
 # forward fill to get last valid entry and subset to desired column
 mzb_taxonomy = pd.read_csv(Path(args.taxonomy_file))
 mzb_taxonomy = mzb_taxonomy.drop(columns=["Unnamed: 0"])
 mzb_taxonomy = mzb_taxonomy.ffill(axis=1)
-recode_order = dict(zip(mzb_taxonomy["query"], mzb_taxonomy[cfg.lset_class_cut].str.lower()))
+recode_order = dict(
+    zip(mzb_taxonomy["query"], mzb_taxonomy[cfg.lset_class_cut].str.lower())
+)
 
 if args.verbose:
     print(f"Cutting phyl tree at {cfg.lset_class_cut}")
 
 
-for s_fo in recode_order: 
-    
-    target_folder = target_trn / recode_order[s_fo] 
-    target_folder.mkdir(exist_ok = True, parents=True)
+for s_fo in recode_order:
 
-    for file in list((root_data / s_fo).glob("*")): 
+    target_folder = target_trn / recode_order[s_fo]
+    target_folder.mkdir(exist_ok=True, parents=True)
+
+    for file in list((root_data / s_fo).glob("*")):
         shutil.copy(file, target_folder)
 
-# make a small val set, 10% or 1 file, what is possible... 
+# make a small val set, 10% or 1 file, what is possible...
 size = cfg.lset_val_size
 trn_folds = [a.name for a in sorted(list(target_trn.glob("*")))]
 
-for s_fo in trn_folds: 
-    
-    target_folder = target_val / s_fo 
-    target_folder.mkdir(exist_ok = True, parents=True)
-    
+for s_fo in trn_folds:
+
+    target_folder = target_val / s_fo
+    target_folder.mkdir(exist_ok=True, parents=True)
+
     list_class = list((target_trn / s_fo).glob("*"))
-    n_val_sam = np.max((1, np.ceil(0.1*len(list_class))))
+    n_val_sam = np.max((1, np.ceil(0.1 * len(list_class))))
 
     val_files = np.random.choice(list_class, int(n_val_sam))
 
     if args.verbose:
         print(len(val_files), n_val_sam, len(list_class))
 
-    for file in val_files: 
+    for file in val_files:
         try:
             shutil.move(str(file), target_folder)
         except:
             print(f"{str(file)} into {target_folder}")
 
 
-
 if (root_data / "mixed").is_dir():
     target_tst = outdir / "mixed_set/"
-    target_tst.mkdir(exist_ok = True, parents=True)
-    
-    for file in list((root_data / "mixed").glob("*")): 
+    target_tst.mkdir(exist_ok=True, parents=True)
+
+    for file in list((root_data / "mixed").glob("*")):
         shutil.copy(file, target_tst)
 
 

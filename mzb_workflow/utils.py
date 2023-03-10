@@ -151,7 +151,7 @@ def read_pretrained_model(architecture, n_class):
         for param in model.classifier[1].parameters():
             param.requires_grad = True
 
-    elif architecture == "efficientnet_b2":
+    elif architecture == "efficientnet-b2":
         model = models.efficientnet_b2(pretrained=True)
         model.classifier[1] = nn.Linear(
             in_features=model.classifier[1].in_features,
@@ -165,7 +165,7 @@ def read_pretrained_model(architecture, n_class):
         for param in model.classifier[1].parameters():
             param.requires_grad = True
 
-    elif architecture == "efficientnet_b1":
+    elif architecture == "efficientnet-b1":
         model = models.efficientnet_b1(pretrained=True, progress=False)
         model.classifier[1] = nn.Linear(
             in_features=model.classifier[1].in_features,
@@ -193,9 +193,17 @@ def read_pretrained_model(architecture, n_class):
 
         for param in model.heads.head.parameters():
             param.requires_grad = True
-    elif architecture == "convnext_small":
-        model = models.vit_b_16(pretrained=True)
 
+    elif architecture == "convnext-small":
+        model = models.convnext_small(pretrained=True)
+        model.classifier[2] = nn.Linear(
+            in_features=model.classifier[2].in_features, out_features=n_class, bias=True
+        )
+        for param in model.parameters():
+            param.requires_grad = False
+
+        for param in model.classifier[2].parameters():
+            param.requires_grad = True
     else:
 
         raise OSError("Model not found")
@@ -231,3 +239,61 @@ def find_checkpoints(dirs=Path("lightning_logs"), version=None, log="val"):
     chkp = [a for a in ch_sf if log in str(a.name)]
 
     return chkp
+
+
+from pytorch_lightning.callbacks import Callback
+from datetime import datetime
+import yaml
+
+
+class SaveLogCallback(Callback):
+    def __init__(self, model_folder):
+        # super().__init__()
+        self.model_folder = model_folder
+
+    # def on_train_start(self, trainer, pl_module):
+    #     self.model_folder = self.model_folder / "checkpoints"
+    #     # store locally some meta info, if file exists, append to it
+    #     # this in each model folder
+    #     flog = self.model_folder.parents[0] / "trn_date.yaml"
+    #     flag = "a" if flog.is_file() else "w"
+    #     with open(self.model_folder.parents[0] / "trn_date.yaml", flag) as f:
+    #         yaml.safe_dump(
+    #             {"train-date-start": datetime.now().strftime("%Y-%m-%d %H:%M:%S")}, f
+    #         )
+
+    #     # this is a global file containing all the training dates for all models
+    #     flog = self.model_folder.parents[1] / "all_trn_date.yaml"
+    #     flag = "a" if flog.is_file() else "w"
+    #     with open(self.model_folder.parents[1] / "all_trn_date.yaml", flag) as f:
+    #         yaml.safe_dump(
+    #             {
+    #                 f"{self.model_folder.parents[1].name}": {
+    #                     "start": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    #                 }
+    #             },
+    #             f,
+    #         )
+
+    def on_train_end(self, trainer, pl_module):
+        # store locally some meta info, if file exists, append to it
+        # this in each model folder
+        flog = self.model_folder.parents[0] / "trn_date.yaml"
+        flag = "a" if flog.is_file() else "w"
+        with open(self.model_folder.parents[0] / "trn_date.yaml", flag) as f:
+            yaml.safe_dump(
+                {"train-date-end": datetime.now().strftime("%Y-%m-%d %H:%M:%S")}, f
+            )
+
+        # this is a global file containing all the training dates for all models
+        flog = self.model_folder.parents[1] / "all_trn_date.yaml"
+        flag = "a" if flog.is_file() else "w"
+        with open(self.model_folder.parents[1] / "all_trn_date.yaml", flag) as f:
+            yaml.safe_dump(
+                {
+                    f"{self.model_folder.parents[0].name}": datetime.now().strftime(
+                        "%Y-%m-%d %H:%M:%S"
+                    )
+                },
+                f,
+            )

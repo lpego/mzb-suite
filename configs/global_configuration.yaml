@@ -22,8 +22,34 @@ lset_class_cut: order
 lset_val_size: 0.1
 lset_taxonomy: data/MZB_taxonomy.csv
 
-## Inference config
-infe_model_folder: models/mzb-pil/ # likely not used to allow renku parse as input
+## Finetuning / training config for classifier
+trcl_learning_rate: 0.001
+trcl_batch_size: 16
+trcl_weight_decay: 0
+trcl_step_size_decay: 5
+trcl_number_epochs: 75
+trcl_gpu_ids: -1
+trcl_save_topk: 1
+trcl_num_classes: 8
+trcl_model_pretrarch: efficientnet-b2 #convnext-small
+trcl_num_workers: 16
+# trai_model_save_append: "-v1"
+
+## Finetuning / training config for skeleton prediction
+trsk_learning_rate: 0.001
+trsk_batch_size: 16
+trsk_weight_decay: 0
+trsk_step_size_decay: 25
+trsk_number_epochs: 2
+trsk_gpu_ids: -1
+trsk_save_topk: 1
+trsk_num_classes: 2
+trsk_model_pretrarch: mit-b2
+trsk_num_workers: 16
+# trai_model_save_append: "-v1"
+
+## Inference config 
+infe_model_folder: models/mzb-class/ # likely not used to allow renku parse as input
 infe_model_ckpt: last
 infe_num_classes: 8
 infe_image_glob: "*_rgb.png"

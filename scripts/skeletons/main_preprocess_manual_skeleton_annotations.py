@@ -2,7 +2,7 @@
 # This script is not working as the filename have been changing in the new pipeline derived files.
 # The actual skeleton learning sets are stable, as those were copied over, but we might think about redoing this script in the future.
 
-import os
+import sys
 import shutil
 import argparse
 import yaml
@@ -11,8 +11,6 @@ import json
 import cv2
 import numpy as np
 import pandas as pd
-
-print(os.getcwd())
 
 from pathlib import Path
 
@@ -27,28 +25,30 @@ else:
     prefix = "../../"  # or "../"
     PLOTS = True
 
+sys.path.append(f"{prefix}")
+
 from mzb_workflow.utils import cfg_to_arguments  # , noneparse
 
 # %%
-# parser = argparse.ArgumentParser()
-# parser.add_argument("--config_file", type=str, required=True)
-# parser.add_argument("--input_raw_dir", type=str, required=True)
-# parser.add_argument("--input_clips_dir", type=str, required=True)
-# parser.add_argument("--output_dir", type=str, required=True)
-# parser.add_argument("--verbose", "-v", action="store_true")
-# args = parser.parse_args()
+parser = argparse.ArgumentParser()
+parser.add_argument("--config_file", type=str, required=True)
+parser.add_argument("--input_raw_dir", type=str, required=True)
+parser.add_argument("--input_clips_dir", type=str, required=True)
+parser.add_argument("--output_dir", type=str, required=True)
+parser.add_argument("--verbose", "-v", action="store_true")
+args = parser.parse_args()
 
-args = {}
-args["config_file"] = f"{prefix}configs/global_configuration.yaml"
-args[
-    "input_raw_dir"
-] = f"{prefix}data/raw/2021_swiss_invertebrates/manual_measurements/"
-args["input_clips_dir"] = f"{prefix}/data/derived/project_portable_flume/blobs/"
-args[
-    "output_dir"
-] = f"{prefix}data/learning_sets/project_portable_flume/skeletonization/"
-args["verbose"] = True
-args = cfg_to_arguments(args)
+# args = {}
+# args["config_file"] = f"{prefix}configs/global_configuration.yaml"
+# args[
+#     "input_raw_dir"
+# ] = f"{prefix}data/raw/2021_swiss_invertebrates/manual_measurements/"
+# args["input_clips_dir"] = f"{prefix}/data/derived/project_portable_flume/blobs/"
+# args[
+#     "output_dir"
+# ] = f"{prefix}data/learning_sets/project_portable_flume/skeletonization/"
+# args["verbose"] = True
+# args = cfg_to_arguments(args)
 
 with open(args.config_file, "r") as f:
     cfg = yaml.load(f, Loader=yaml.FullLoader)
@@ -57,7 +57,19 @@ cfg = cfg_to_arguments(cfg)
 args.input_raw_dir = Path(args.input_raw_dir)
 args.input_clips_dir = Path(args.input_clips_dir)
 args.output_dir = Path(args.output_dir)
-args.output_dir.mkdir(exist_ok=True, parents=True)
+
+# if any of the folders exist, interrupt the script and raise en error.
+if (args.output_dir).exists() and (
+    (args.output_dir / "images")
+    or (args.output_dir / "sk_body")
+    or (args.output_dir / "sk_head")
+):
+    # print in red and then back to normal color
+    raise ValueError(
+        f"\033[91m{args.output_dir} already exists and contains data. Please delete or sprecify another folder.\033[0m"
+    )
+else:
+    args.output_dir.mkdir(exist_ok=True, parents=True)
 
 cfg.skel_save_attributes = Path(cfg.skel_save_attributes)
 cfg.skel_save_attributes.mkdir(exist_ok=True, parents=True)
