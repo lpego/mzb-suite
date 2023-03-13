@@ -46,7 +46,7 @@ The full conda env is given in `environment.yml`. We need to check if the docker
 **v0.1.0** First release. Attempt to structure project and scripts in a way that is easy to understand and maintain.
 
 
-## TODOS
+## TODOs
 
 - [ ] Renku workflows for the different modules
 - [ ] Add module for evaluations, and for generating plots
