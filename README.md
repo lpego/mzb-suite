@@ -44,3 +44,14 @@ The full conda env is given in `environment.yml`. We need to check if the docker
 ## Changelog 
 
 **v0.1.0** First release. Attempt to structure project and scripts in a way that is easy to understand and maintain.
+
+
+## TODOS
+
+- [ ] Renku workflows for the different modules
+- [ ] Add module for evaluations, and for generating plots
+- [ ] Add notebooks for plotting of results, images, etc. 
+- [ ] Check all docstrings and potenitally build documentation into html
+- [ ] Add tests? 
+- [ ] Add the dubendorf data use case to check consistency for multiple projects 
+- [ ] LICENSE and AUTHORS 
