@@ -1,7 +1,7 @@
 # set up pipeline to fine tune the supervised skeletonization model
 
 ROOT_DIR="/data/shared/mzb-workflow"
-MODEL=mit-b2-v0
+MODEL=mit-b2-v1
 
 ## This has to be run once, to create the curated learning sets
 ## ------------------------------------------------------------

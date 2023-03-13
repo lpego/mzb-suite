@@ -48,6 +48,8 @@ The full conda env is given in `environment.yml`. We need to check if the docker
 
 ## TODOs
 
+_Not in any priority_ 
+
 - [ ] Renku workflows for the different modules
 - [ ] Add module for evaluations, and for generating plots
 - [ ] Add notebooks for plotting of results, images, etc. 
@@ -55,3 +57,5 @@ The full conda env is given in `environment.yml`. We need to check if the docker
 - [ ] Add tests? 
 - [ ] Add the dubendorf data use case to check consistency for multiple projects 
 - [ ] LICENSE and AUTHORS 
+- [ ] Add a README.md to the data folder
+- [ ] Spend some time in thinking whether it is better to have one big config file, or one config file per module, or one config file per script.

@@ -139,7 +139,7 @@ class MZBModel_skels(pl.LightningModule):
         # set the loss function, here we use the dice loss / tversky extention,
         # which is more robust to class imbalance. one needs to set the alpha and beta hyperparameters
         self.loss_fn = smp.losses.TverskyLoss(
-            smp.losses.MULTILABEL_MODE, alpha=0.3, beta=0.7
+            smp.losses.MULTILABEL_MODE, alpha=0.2, beta=0.8
         )
         # usually, tversky loss is used with a focal loss, which is implemented in the following line
         # tversky loss hyperparameters are usually set to alpha=0.3, beta=0.7, or alpha=0.5, beta=0.5 for the focal loss
