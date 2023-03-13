@@ -141,7 +141,8 @@ class MZBModel_skels(pl.LightningModule):
         self.loss_fn = smp.losses.TverskyLoss(
             smp.losses.MULTILABEL_MODE, alpha=0.3, beta=0.7
         )
-
+        # usually, tversky loss is used with a focal loss, which is implemented in the following line
+        # tversky loss hyperparameters are usually set to alpha=0.3, beta=0.7, or alpha=0.5, beta=0.5 for the focal loss
         self.save_hyperparameters()
 
     def set_learning_splits(self):

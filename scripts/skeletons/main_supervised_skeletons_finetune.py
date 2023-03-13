@@ -114,7 +114,7 @@ if __name__ == "__main__":
 
     model = MZBModel_skels(
         data_dir=args.input_dir,
-        pretrained_network=cfg.trsk_model_pretrarch.replace("-", "_"),
+        pretrained_network=cfg.trsk_model_pretrarch,  # .replace("-", "_"),
         learning_rate=cfg.trsk_learning_rate,
         batch_size=cfg.trsk_batch_size,
         weight_decay=cfg.trsk_weight_decay,
@@ -140,7 +140,9 @@ if __name__ == "__main__":
 
     name_run = f"skel-{model.architecture}"
     cbacks = [pbar_cb, best_val_cb, last_mod_cb, trdatelog]
-    wb_logger = WandbLogger(project="mzb-skels", name=name_run if name_run else None)
+    wb_logger = WandbLogger(
+        project=cfg.trsk_wandb_project_name, name=name_run if name_run else None
+    )
     wb_logger.watch(model, log="all")
     # TensorBoardLogger("tb_logs", name="")
 

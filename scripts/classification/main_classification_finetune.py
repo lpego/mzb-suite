@@ -141,7 +141,9 @@ if __name__ == "__main__":
     # Define logger and name of run
     name_run = f"classifier-{cfg.trcl_model_pretrarch}"  # f"{model.pretrained_network}"
     cbacks = [pbar_cb, best_val_cb, last_mod_cb, trdatelog]
-    wb_logger = WandbLogger(project="mzb-class", name=name_run if name_run else None)
+    wb_logger = WandbLogger(
+        project=cfg.trcl_wandb_project_name, name=name_run if name_run else None
+    )
     wb_logger.watch(model, log="all")
 
     # instantiate trainer and train

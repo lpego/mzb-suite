@@ -50,9 +50,9 @@ with open(str(args.config_file), "r") as f:
 
 cfg = cfg_to_arguments(cfg)
 
-if args.verbose:
-    print(f"main args: {args}")
-    print(f"scripts config: {cfg}")
+# if args.verbose:
+#     print(f"main args: {args}")
+#     print(f"scripts config: {cfg}")
 # %%
 
 np.random.seed(cfg.glob_random_seed)

@@ -17,7 +17,7 @@ python scripts/skeletons/main_preprocess_manual_skeleton_annotations.py \
 python scripts/skeletons/main_supervised_skeletons_finetune.py \
     --config_file=$ROOT_DIR/configs/global_configuration.yaml \
     --input_dir=$ROOT_DIR/data/learning_sets/project_portable_flume/skeletonization/ \
-    --save_model=$ROOT_DIR/models/mzb-skels/$MODEL \
+    --save_model=$ROOT_DIR/models/mzb-skeleton-models/$MODEL \
     -v
 
 ## This is run on a custom folder structure and will regturn a csv with the results
@@ -26,10 +26,9 @@ python scripts/skeletons/main_supervised_skeletons_finetune.py \
 python scripts/skeletons/main_supervised_skeleton_inference.py \
     --config_file=$ROOT_DIR/configs/global_configuration.yaml \
     --input_dir=$ROOT_DIR/data/learning_sets/project_portable_flume/skeletonization/ \
-    --input_model=$ROOT_DIR/models/mzb-skels/$MODEL \
-    --output_dir=$ROOT_DIR/results/skeletons/project_portable_flume/supervised_skeletons/ \
+    --input_model=$ROOT_DIR/models/mzb-skeleton-models/$MODEL \
+    --output_dir=$ROOT_DIR/results/skeletons/project_portable_flume/supervised_skeletons/skseg_$MODEL \
     -v
-
 
 # ## And this is to parse the mixed set, a custom folder structure with images from different sources
 # ## ---------------------------------------------------------------------------------------------------
@@ -39,3 +38,5 @@ python scripts/skeletons/main_supervised_skeleton_inference.py \
 #     --input_model=$ROOT_DIR/models/mzb-skels/$MODEL \
 #     --output_dir=$ROOT_DIR/results/skeletons/project_portable_flume/supervised_skeletons/ \
 #     -v
+
+

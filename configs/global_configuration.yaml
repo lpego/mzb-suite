@@ -31,25 +31,28 @@ trcl_number_epochs: 75
 trcl_gpu_ids: -1
 trcl_save_topk: 1
 trcl_num_classes: 8
-trcl_model_pretrarch: efficientnet-b2 #convnext-small
+trcl_model_pretrarch: resnet50 #efficientnet-b2 #convnext-small #densenet161 #mobilenet
 trcl_num_workers: 16
+trcl_wandb_project_name: mzb-classifiers
 # trai_model_save_append: "-v1"
 
 ## Finetuning / training config for skeleton prediction
 trsk_learning_rate: 0.001
 trsk_batch_size: 16
 trsk_weight_decay: 0
-trsk_step_size_decay: 25
-trsk_number_epochs: 10
+trsk_step_size_decay: 10
+trsk_number_epochs: 400
 trsk_gpu_ids: -1
 trsk_save_topk: 1
 trsk_num_classes: 2
-trsk_model_pretrarch: mit-b2
+trsk_model_pretrarch: mit_b2 #mit-b2 #efficientnet-b2
 trsk_num_workers: 16
+trsk_wandb_project_name: mzb-skeletons
+# trsk_tversky_loss_w1: 
 # trai_model_save_append: "-v1"
 
 ## Inference config 
-infe_model_folder: models/mzb-class/ # likely not used to allow renku parse as input
+# infe_model_folder: models/mzb-classifiers/ # likely not used to allow renku parse as input
 infe_model_ckpt: last
 infe_num_classes: 8
 infe_image_glob: "*_rgb.png"
@@ -62,6 +65,6 @@ skel_save_usnup_masks: data/derived/project_portable_flume/skeletons/automatic_s
 
 # supervised skeletonization
 skel_save_attributes: data/derived/project_portable_flume/skeletons/
-skel_save_sup_masks: data/derived/project_portable_flume/skeletons/supervised_skeletons/
+skel_save_sup_masks: data/results/skeletons/project_portable_flume/supervised_skeletons/skseg_efficientnet-b2-v0/masks/
 skel_label_thickness: 3
 skel_label_buffer_on_preds: 25 
