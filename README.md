@@ -59,3 +59,5 @@ _Not in any priority_
 - [ ] LICENSE and AUTHORS 
 - [ ] Add a README.md to the data folder
 - [ ] Spend some time in thinking whether it is better to have one big config file, or one config file per module, or one config file per script.
+- [ ] Check measures of supervised skeletonizations (length and width) and compare to manual annotations, something is off
+- [ ] LICENCE and AUTHORS

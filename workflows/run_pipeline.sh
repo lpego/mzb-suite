@@ -2,12 +2,12 @@
 
 ROOT_DIR="/data/shared/mzb-workflow"
 
-# python scripts/image_parsing/main_raw_to_clips.py \
-#     --input_dir=$ROOT_DIR/data/raw/project_portable_flume \
-#     --output_dir=$ROOT_DIR/data/results/project_portable_flume/blobs/ \
-#     --save_full_mask_dir=$ROOT_DIR/data/results/project_portable_flume/full_image_masks \
-#     --config_file=$ROOT_DIR/configs/global_configuration.yaml \
-#     -v
+python scripts/image_parsing/main_raw_to_clips.py \
+    --input_dir=$ROOT_DIR/data/raw/project_portable_flume \
+    --output_dir=$ROOT_DIR/data/results/project_portable_flume/blobs/ \
+    --save_full_mask_dir=$ROOT_DIR/data/results/project_portable_flume/full_image_masks \
+    --config_file=$ROOT_DIR/configs/global_configuration.yaml \
+    -v
 
 ## CHECK: _mask_properties.csv file in the output directory, does not get filled correctly  
 
