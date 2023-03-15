@@ -9,13 +9,13 @@ python $ROOT_DIR/scripts/classification/main_prepare_learning_sets.py \
     --input_dir=$ROOT_DIR/data/learning_sets/project_portable_flume/curated_learning_sets_flume/ \
     --taxonomy_file=$ROOT_DIR/data/MZB_taxonomy.csv \
     --output_dir=$ROOT_DIR/data/learning_sets/project_portable_flume/aggregated_learning_sets \
-    --config_file=$ROOT_DIR/configs/global_configuration.yaml \
+    --config_file=$ROOT_DIR/configs/configuration_flume_datasets.yaml \
     -v
 
 ## This is run to fine tune the classification model. It will read the curated learning sets and will return a new model
 ## ---------------------------------------------------------------------------------------------------------------
 python $ROOT_DIR/scripts/classification/main_classification_finetune.py \
-    --config_file=$ROOT_DIR/configs/global_configuration.yaml \
+    --config_file=$ROOT_DIR/configs/configuration_flume_datasets.yaml \
     --input_dir=$ROOT_DIR/data/learning_sets/project_portable_flume/aggregated_learning_sets/ \
     --save_model=$ROOT_DIR/models/mzb-classification-models/$MODEL \
     -v
@@ -24,7 +24,7 @@ python $ROOT_DIR/scripts/classification/main_classification_finetune.py \
 ## Specifically, this is run on the validation set to get the accuracy of the model
 ## ------------------------------------------------------------------------------------------
  python $ROOT_DIR/scripts/classification/main_classification_inference.py \
-    --config_file=$ROOT_DIR/configs/global_configuration.yaml \
+    --config_file=$ROOT_DIR/configs/configuration_flume_datasets.yaml \
     --input_dir=$ROOT_DIR/data/learning_sets/project_portable_flume/aggregated_learning_sets/val_set \
     --input_model=$ROOT_DIR/models/mzb-classification-models/$MODEL \
     --output_dir=$ROOT_DIR/results/classification/project_portable_flume/ \
@@ -33,7 +33,7 @@ python $ROOT_DIR/scripts/classification/main_classification_finetune.py \
 ## And this is to classify the mixed set, a custom folder structure with images from different sources
 ## ---------------------------------------------------------------------------------------------------
 python $ROOT_DIR/scripts/classification/main_classification_inference.py \
-    --config_file=$ROOT_DIR/configs/global_configuration.yaml \
+    --config_file=$ROOT_DIR/configs/configuration_flume_datasets.yaml \
     --input_dir=$ROOT_DIR/data/learning_sets/project_portable_flume/aggregated_learning_sets/mixed_set \
     --input_model=$ROOT_DIR/models/mzb-classification-models/$MODEL \
     --output_dir=$ROOT_DIR/results/classification/project_portable_flume/ \

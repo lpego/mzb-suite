@@ -9,13 +9,13 @@ python scripts/skeletons/main_preprocess_manual_skeleton_annotations.py \
     --input_raw_dir=$ROOT_DIR/data/raw/2021_swiss_invertebrates/manual_measurements/ \
     --input_clips_dir=$ROOT_DIR/data/derived/project_portable_flume/blobs/ \
     --output_dir=$ROOT_DIR/data/learning_sets/project_portable_flume/skeletonization/ \
-    --config_file=$ROOT_DIR/configs/global_configuration.yaml \
+    --config_file=$ROOT_DIR/configs/configuration_flume_datasets.yaml \
     -v
 
 ## This is run to fine tune the classification model. It will read the curated learning sets and will return a new model
 ## ---------------------------------------------------------------------------------------------------------------
 python scripts/skeletons/main_supervised_skeletons_finetune.py \
-    --config_file=$ROOT_DIR/configs/global_configuration.yaml \
+    --config_file=$ROOT_DIR/configs/configuration_flume_datasets.yaml \
     --input_dir=$ROOT_DIR/data/learning_sets/project_portable_flume/skeletonization/ \
     --save_model=$ROOT_DIR/models/mzb-skeleton-models/$MODEL \
     -v
@@ -24,7 +24,7 @@ python scripts/skeletons/main_supervised_skeletons_finetune.py \
 ## Specifically, this is run on the validation set to get the accuracy of the model
 ## ------------------------------------------------------------------------------------------
 python scripts/skeletons/main_supervised_skeleton_inference.py \
-    --config_file=$ROOT_DIR/configs/global_configuration.yaml \
+    --config_file=$ROOT_DIR/configs/configuration_flume_datasets.yaml \
     --input_dir=$ROOT_DIR/data/learning_sets/project_portable_flume/skeletonization/ \
     --input_model=$ROOT_DIR/models/mzb-skeleton-models/$MODEL \
     --output_dir=$ROOT_DIR/results/skeletons/project_portable_flume/supervised_skeletons/skseg_$MODEL \
@@ -33,7 +33,7 @@ python scripts/skeletons/main_supervised_skeleton_inference.py \
 # ## And this is to parse the mixed set, a custom folder structure with images from different sources
 # ## ---------------------------------------------------------------------------------------------------
 # python scripts/skeletons/main_supervised_skeleton_inference.py \
-#     --config_file=$ROOT_DIR/configs/global_configuration.yaml \
+#     --config_file=$ROOT_DIR/configs/configuration_flume_datasets.yaml \
 #     --input_dir=$ROOT_DIR/data/learning_sets/project_portable_flume/skeletonization/ \
 #     --input_model=$ROOT_DIR/models/mzb-skels/$MODEL \
 #     --output_dir=$ROOT_DIR/results/skeletons/project_portable_flume/supervised_skeletons/ \

@@ -84,11 +84,11 @@ if not prefix:
 
 else:
     args = {}
-    args["config_file"] = f"{prefix}configs/global_configuration.yaml"
+    args["config_file"] = f"{prefix}configs/configuration_flume_datasets.yaml"
     args[
         "input_dir"
     ] = f"{prefix}data/learning_sets/project_portable_flume/skeletonization/"
-    args["input_model"] = f"{prefix}models/mzb-skeleton-models/efficientnet-b2-v0/"
+    args["input_model"] = f"{prefix}models/mzb-skeleton-models/mit-b2-v1/"
     args[
         "output_dir"
     ] = f"{prefix}results/skeletons/project_portable_flume/supervised_skeletons/"
@@ -253,12 +253,13 @@ for i, ti in tqdm(enumerate(im_fi[:])):
         pd.DataFrame(
             {
                 "clip_name": "_".join(ti.name.split(".")[0].split("_")[:-1]),
-                "nn_pred_body": [np.sum(refined_skel[0])],
-                "nn_pred_head": [np.sum(refined_skel[1])],
+                "nn_pred_body": [np.sum(refined_skel[0] > 0)],
+                "nn_pred_head": [np.sum(refined_skel[1] > 0)],
             }
         )
     )
 
+# %%
 preds_size = pd.concat(preds_size)
 out_dir = Path(
     f"{args.output_dir}_{dataset_name}_{datetime.now().strftime('%Y%m%d_%H%M')}"

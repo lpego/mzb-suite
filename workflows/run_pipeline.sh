@@ -2,12 +2,12 @@
 
 ROOT_DIR="/data/shared/mzb-workflow"
 
-python scripts/image_parsing/main_raw_to_clips.py \
-    --input_dir=$ROOT_DIR/data/raw/project_portable_flume \
-    --output_dir=$ROOT_DIR/data/results/project_portable_flume/blobs/ \
-    --save_full_mask_dir=$ROOT_DIR/data/results/project_portable_flume/full_image_masks \
-    --config_file=$ROOT_DIR/configs/global_configuration.yaml \
-    -v
+# python scripts/image_parsing/main_raw_to_clips.py \
+#     --input_dir=$ROOT_DIR/data/raw/project_portable_flume \
+#     --output_dir=$ROOT_DIR/data/results/project_portable_flume/blobs/ \
+#     --save_full_mask_dir=$ROOT_DIR/data/results/project_portable_flume/full_image_masks \
+#     --config_file=$ROOT_DIR/configs/configuration_flume_datasets.yaml \
+#     -v
 
 ## CHECK: _mask_properties.csv file in the output directory, does not get filled correctly  
 
@@ -17,7 +17,7 @@ python scripts/image_parsing/main_raw_to_clips.py \
 # to the first step (main_raw_to_clips.py)
 # classification models are stored in $ROOT_DIR/models/mzb-class/
 # python scripts/classification/main_classification_inference.py \
-#     --config_file=$ROOT_DIR/configs/global_configuration.yaml \
+#     --config_file=$ROOT_DIR/configs/configuration_flume_datasets.yaml \
 #     --input_dir=$ROOT_DIR/data/learning_sets/project_portable_flume/aggregated_learning_sets/val_set \
 #     --input_model=$ROOT_DIR/models/mzb-class/convnext-small \
 #     --output_dir=$ROOT_DIR/results/classification/project_portable_flume/ \
@@ -25,7 +25,7 @@ python scripts/image_parsing/main_raw_to_clips.py \
 
 ### Ex. run on all the clips avaiable to get full predictions
 ## python scripts/classification/main_classification_inference.py \
-##     --config_file=$ROOT_DIR/configs/global_configuration.yaml \
+##     --config_file=$ROOT_DIR/configs/configuration_flume_datasets.yaml \
 ##     --input_dir=$ROOT_DIR/data/derived/project_portable_flume/blobs/ \
 ##     --input_model=$ROOT_DIR/models/mzb-class/bm2ccwxc \
 ##     --output_dir=$ROOT_DIR/results/classification/project_portable_flume/ \
@@ -37,17 +37,17 @@ python scripts/image_parsing/main_raw_to_clips.py \
 # For this, the next step that uses a supervised neural network is required.
 
 # python scripts/skeletons/main_unsupervised_skeleton_estimation.py \
-#     --config_file=$ROOT_DIR/configs/global_configuration.yaml \
+#     --config_file=$ROOT_DIR/configs/configuration_flume_datasets.yaml \
 #     --input_dir=$ROOT_DIR/data/derived/project_portable_flume/blobs/ \
 #     --output_dir=$ROOT_DIR/results/skeletons/project_portable_flume \
 #     --list_of_files=None \
 #     -v
 
-# python scripts/skeletons/main_supervised_skeleton_inference.py \
-#     --config_file=$ROOT_DIR/configs/global_configuration.yaml \
-#     --input_dir=$ROOT_DIR/data/learning_sets/project_portable_flume/skeletonization/ \
-#     --input_model=$ROOT_DIR/models/mzb-skels/i6vl2f2j/ \
-#     --output_dir=$ROOT_DIR/results/skeletons/project_portable_flume/supervised_skeletons/ \
-#     -v
+python scripts/skeletons/main_supervised_skeleton_inference.py \
+    --config_file=$ROOT_DIR/configs/configuration_flume_datasets.yaml \
+    --input_dir=$ROOT_DIR/data/learning_sets/project_portable_flume/skeletonization/ \
+    --input_model=$ROOT_DIR/models/mzb-skeleton-models/mit-b2-v1/ \
+    --output_dir=$ROOT_DIR/results/skeletons/project_portable_flume/supervised_skeletons/ \
+    -v
 
-## until here works fine somwhat
+## until here works fine somehow
