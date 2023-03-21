@@ -61,3 +61,5 @@ _Not in any priority_
 - [ ] Spend some time in thinking whether it is better to have one big config file, or one config file per module, or one config file per script.
 - [x] Check measures of supervised skeletonizations (length and width) and compare to manual annotations, something is off
 - [ ] LICENCE and AUTHORS
+- [ ] check env and pandas in it
+- [ ] check WANDBD accounts and api for loggers
