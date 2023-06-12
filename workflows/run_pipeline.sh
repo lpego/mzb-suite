@@ -43,11 +43,16 @@ ROOT_DIR="/data/shared/mzb-workflow"
 #     --list_of_files=None \
 #     -v
 
+# python scripts/skeletons/main_supervised_skeleton_inference.py \
+#     --config_file=$ROOT_DIR/configs/configuration_flume_datasets.yaml \
+#     --input_dir=$ROOT_DIR/data/learning_sets/project_portable_flume/skeletonization/ \
+#     --input_model=$ROOT_DIR/models/mzb-skeleton-models/mit-b2-v1/ \
+#     --output_dir=$ROOT_DIR/results/skeletons/project_portable_flume/supervised_skeletons/ \
+#     -v
+
 python scripts/skeletons/main_supervised_skeleton_inference.py \
     --config_file=$ROOT_DIR/configs/configuration_flume_datasets.yaml \
     --input_dir=$ROOT_DIR/data/learning_sets/project_portable_flume/skeletonization/ \
     --input_model=$ROOT_DIR/models/mzb-skeleton-models/mit-b2-v1/ \
     --output_dir=$ROOT_DIR/results/skeletons/project_portable_flume/supervised_skeletons/ \
     -v
-
-## until here works fine somehow
