@@ -48,6 +48,7 @@ parser.add_argument("--config_file", type=str, required=True)
 parser.add_argument("--input_dir", type=str, required=True)
 parser.add_argument("--list_of_files", type=noneparse, required=False, default=None)
 parser.add_argument("--output_dir", type=str, required=True)
+parser.add_argument("--save_masks", type=str, required=True)
 parser.add_argument("--verbose", "-v", action="store_true")
 args = parser.parse_args()
 
@@ -71,9 +72,9 @@ cfg = cfg_to_arguments(cfg)
 args.input_dir = Path(args.input_dir)
 args.output_dir = Path(args.output_dir)
 
-if cfg.skel_save_usnup_masks is not None:
-    cfg.skel_save_usnup_masks = Path(f"{prefix}{cfg.skel_save_usnup_masks}")
-    cfg.skel_save_usnup_masks.mkdir(parents=True, exist_ok=True)
+if args.save_masks is not None:
+    args.save_masks = Path(f"{prefix}{args.save_masks}")
+    args.save_masks.mkdir(parents=True, exist_ok=True)
 
 # setup some area-specific parameters for filtering
 area_class = {
@@ -116,6 +117,7 @@ exclude += [
 ]
 
 files_to_skel = [a for a in mask_list if a.name.lower() not in exclude]
+
 # %%
 out_dir = (
     args.output_dir
@@ -156,13 +158,10 @@ for fo in iterator:
     inter = get_intersections(skeleton=skeleton.astype(np.uint8))
     endpo = get_endpoints(skeleton=skeleton.astype(np.uint8))
 
-    if cfg.skel_save_usnup_masks:
+    if args.save_masks:
         # save the skeletonized mask
         cv2.imwrite(
-            str(
-                cfg.skel_save_usnup_masks
-                / f"{''.join(fo.name.split('.')[:-1])}_skel.jpg"
-            ),
+            str(args.save_masks / f"{''.join(fo.name.split('.')[:-1])}_skel.jpg"),
             (255 * skeleton / np.max(skeleton)).astype(np.uint8),
         )
 
@@ -204,7 +203,6 @@ for fo in iterator:
             plt.title(f"Area: {np.sum(mask_)}")
 
     else:
-
         # remove nodes that are too close (less than 3px) and treat them as only one node
         # skel_labels, edge_attributes, skprop = segment_skel(skeleton, inter, conn=1)
         # ds = distance_matrix(inter, inter) + 100 * np.eye(len(inter))
@@ -214,14 +212,12 @@ for fo in iterator:
         # except:
         #     pass
 
-        if cfg.skel_save_masks:
-            skel_masks_path = Path(cfg.skel_save_masks)
+        if args.save_masks:
+            skel_masks_path = Path(args.save_masks)
             skel_masks_path.mkdir(parents=True, exist_ok=True)
             # save the skeletonized mask
             cv2.imwrite(
-                str(
-                    cfg.skel_save_masks / f"{''.join(fo.name.split('.')[:-1])}_skel.jpg"
-                ),
+                str(args.save_masks / f"{''.join(fo.name.split('.')[:-1])}_skel.jpg"),
                 (255 * skel_labels / np.max(skel_labels)).astype(np.uint8),
             )
 

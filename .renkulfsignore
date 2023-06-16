@@ -20,3 +20,5 @@
 *.r
 *.md
 *.rst
+*.tar*
+data/raw/

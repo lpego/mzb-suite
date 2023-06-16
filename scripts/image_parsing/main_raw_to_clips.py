@@ -23,7 +23,7 @@ else:
 sys.path.append(prefix)
 import argparse
 
-from mzb_workflow.image_parsing.utils import cfg_to_arguments
+from mzb_workflow.utils import cfg_to_arguments
 
 # %%
 parser = argparse.ArgumentParser()
@@ -242,12 +242,17 @@ for i, fo in enumerate(files_proc[:]):
         ]
 
         # save actual image and mask crops
+        # Avoid "invalid value encountered in true_divide" warning
+        np.seterr(divide="ignore", invalid="ignore")
         cv2.imwrite(
             str(outdir / (f"{fo.stem}_{c}_mask.{cfg.impa_image_format}").lower()),
             (255 * crop_mask / crop_mask).astype(np.uint8),
             [cv2.IMWRITE_JPEG_QUALITY, 100],
         )
 
+        # reactivate warnings
+        np.seterr(divide="warn", invalid="warn")
+        
         cv2.imwrite(
             str(outdir / (f"{fo.stem}_{c}_rgb.{cfg.impa_image_format}").lower()),
             crop,

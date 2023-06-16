@@ -55,7 +55,7 @@ trsk_wandb_project_name: mzb-skeletons
 # infe_model_folder: models/mzb-classifiers/ # likely not used to allow renku parse as input
 infe_model_ckpt: last
 infe_num_classes: 8
-infe_image_glob: "*_rgb.png"
+infe_image_glob: "*_rgb.jpg"
 
 ## Skeletonization
 # unsupervised skeletonization
@@ -64,7 +64,5 @@ skel_conv_rate: 131.6625 #[133.1, 136.6, 133.2, 133.2, 133.2, 118.6, 133.4, 132.
 skel_save_usnup_masks: data/derived/project_portable_flume/skeletons/automatic_skeletons/
 
 # supervised skeletonization
-skel_save_attributes: data/derived/project_portable_flume/skeletons/
-skel_save_sup_masks: data/results/skeletons/project_portable_flume/supervised_skeletons/skseg_efficientnet-b2-v0/masks/
 skel_label_thickness: 3
 skel_label_buffer_on_preds: 25 

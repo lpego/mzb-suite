@@ -81,7 +81,7 @@ class MZBModel_skels(pl.LightningModule):
         # self.get_learnin_splits(self)
 
         np.random.seed(12)
-        N = len(list(self.im_folder.glob("*.png")))
+        N = len(list(self.im_folder.glob("*.jpg")))
         self.trn_inds = sorted(
             list(np.random.choice(np.arange(N), size=int(0.8 * N), replace=False))
         )
@@ -149,7 +149,7 @@ class MZBModel_skels(pl.LightningModule):
         "set the learning splits for training and validation"
 
         np.random.seed(12)
-        N = len(list(self.im_folder.glob("*.png")))
+        N = len(list(self.im_folder.glob("*.jpg")))
         self.trn_inds = sorted(
             list(np.random.choice(np.arange(N), size=int(0.8 * N), replace=False))
         )

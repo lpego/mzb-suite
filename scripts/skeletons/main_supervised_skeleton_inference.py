@@ -68,6 +68,12 @@ if not prefix:
         help="path with images for inference",
     )
     parser.add_argument(
+        "--input_type",
+        type=str,
+        required=True,
+        help="either 'val' or 'external'",
+    )
+    parser.add_argument(
         "--input_model",
         type=str,
         required=True,
@@ -79,6 +85,13 @@ if not prefix:
         required=True,
         help="where to save skeleton measure predictions as csv",
     )
+    parser.add_argument(
+        "--save_masks",
+        type=str,
+        required=True,
+        help="where to save skeleton masks predictions as jpg",
+    )
+
     parser.add_argument("--verbose", "-v", action="store_true", help="print more info")
     args = parser.parse_args()
 
@@ -100,9 +113,9 @@ with open(str(args.config_file), "r") as f:
 
 cfg = cfg_to_arguments(cfg)
 
-if cfg.skel_save_sup_masks is not None:
-    cfg.skel_save_sup_masks = Path(f"{prefix}{cfg.skel_save_sup_masks}")
-    cfg.skel_save_sup_masks.mkdir(parents=True, exist_ok=True)
+if args.save_masks is not None:
+    args.save_masks = Path(f"{prefix}{args.save_masks}")
+    args.save_masks.mkdir(parents=True, exist_ok=True)
 
 args.output_dir = Path(args.output_dir)
 
@@ -116,6 +129,9 @@ dirs = find_checkpoints(
     version=Path(args.input_model).name,
     log=cfg.infe_model_ckpt,
 )
+
+print(Path(args.input_model))
+
 mod_path = dirs[0]
 
 model = MZBModel_skels()
@@ -130,7 +146,7 @@ model.he_folder = model.data_dir / "sk_head"
 
 # this is unfortunately necessary to get the model to work, reindex trn/val split
 np.random.seed(12)
-N = len(list(model.im_folder.glob("*.png")))
+N = len(list(model.im_folder.glob("*.jpg")))
 model.trn_inds = sorted(
     list(np.random.choice(np.arange(N), size=int(0.8 * N), replace=False))
 )
@@ -140,10 +156,10 @@ model.freeze()
 # %%
 # dataloader = model.train_dataloader(shuffle=False)
 # dataloader = model.dubendorf_dataloader()
-if "flume" in str(args.input_dir):
+if ("flume" in str(args.input_dir)) and (args.input_type == "val"):
     dataloader = model.val_dataloader()
     dataset_name = "flume"
-else:
+elif args.input_type == "external":
     # data_dir = Path(
     #     "/data/shared/mzb-classification/data/raw_learning_sets_duben/insects/"
     # )
@@ -187,7 +203,6 @@ if args.verbose:
     print("Neural network predictions done, refining and saving skeletons...")
 
 for i, ti in tqdm(enumerate(im_fi[:])):
-
     im = Image.open(ti).convert("RGB")
 
     # get original size of image for resizing predictions
@@ -236,15 +251,15 @@ for i, ti in tqdm(enumerate(im_fi[:])):
 
     refined_skel = [(255 * s).astype(np.uint8) for s in refined_skel]
 
-    if cfg.skel_save_sup_masks:
+    if args.save_masks:
         name = "_".join(ti.name.split("_")[:-1])
         cv2.imwrite(
-            str(cfg.skel_save_sup_masks / f"{name}_body.jpg"),
+            str(args.save_masks / f"{name}_body.jpg"),
             refined_skel[0],
             [cv2.IMWRITE_JPEG_QUALITY, 100],
         )
         cv2.imwrite(
-            str(cfg.skel_save_sup_masks / f"{name}_head.jpg"),
+            str(args.save_masks / f"{name}_head.jpg"),
             refined_skel[1],
             [cv2.IMWRITE_JPEG_QUALITY, 100],
         )
@@ -269,7 +284,6 @@ preds_size.to_csv(out_dir / f"size_skel_supervised_model.csv", index=False)
 
 # %%
 if 0:
-
     denorm = Denormalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225))
     DETECT = 0
     FR = 0
@@ -279,7 +293,6 @@ if 0:
     sortind = np.random.randint(0, len(im_fi), N)
     # np.random.shuffle(im_fi)
     for i, ind in enumerate(sortind[:10]):
-
         ti = im_fi[ind]
 
         if i < FR:
@@ -293,7 +306,7 @@ if 0:
         x = x[np.newaxis, ...]
 
         if MASK:
-            ma_ = "_".join(ti.name.split("_")[:-1]) + "_mask.png"
+            ma_ = "_".join(ti.name.split("_")[:-1]) + "_mask.jpg"
             mask = Image.open(Path(f"../data/clips_{dataset_name}/") / ma_).convert(
                 "RGB"
             )

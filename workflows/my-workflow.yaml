@@ -11,22 +11,26 @@
 # To learn much more about what you can do with the Renku Workflow File, see our docs:
 # https://renku.readthedocs.io/en/stable/topic-guides/workflows/workflow-file.html
 
-name: my-workflow
+name: mzb-wflow
+root: /data/shared/mzb-workflow
 steps:
-  step-one:
-    command: python $n $my-script $input-data $output-data
+  raw-image-to-clips:
+    command: python $my-script $input-data $output-data $save_mask
     inputs:
       - my-script:
-          path: src/script.py
+          path: scripts/image_parsing/main_raw_to_clips.py 
       - input-data:
-          path: data/input/sample_data.csv
+          path: $root /data/raw/project_portable_flume
     outputs:
       - output-data:
-          path: data/output/results.csv
+          path: $root /data/results/project_portable_flume/blobs/
     parameters:
-      - n:
-          prefix: -n
-          value: 10
+      - save_mask: 
+          prefix: --save_full_mask_dir
+          value: =$root /data/results/project_portable_flume/full_image_masks
+      - config_file:
+          prefix: --config_file
+          value: $root /configs/configuration_flume_datasets.yaml
 
   # === Adding more steps ===
   # You can add as many steps as you want to your workflow by copy and pasting the step template above

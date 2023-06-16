@@ -41,6 +41,11 @@ TODO: transfer those bash scripts to renku workflows, so that the renku can trac
 
 The full conda env is given in `environment.yml`. We need to check if the docker image builds...
 
+### Weight and biases
+
+When training models, logging is made throught weight and biases automatically. Refer to the documentation of wandb for more details, at [https://docs.wandb.ai/](https://docs.wandb.ai/). You will need to create an account and to login to wandb to be able to log the training. 
+
+
 ## Changelog 
 
 **v0.1.0** First release. Attempt to structure project and scripts in a way that is easy to understand and maintain.
@@ -49,17 +54,21 @@ The full conda env is given in `environment.yml`. We need to check if the docker
 ## TODOs
 
 _Not in any priority_ 
+- [x] ALIGN ALL LEARNING SET IMAGES TO NEW PIPELINE, from pngs to jpgs
+- [x] Check measures of supervised skeletonizations (length and width) and compare to manual annotations, something is off
+- [x] LICENSE and AUTHORS and CITATION placeholders
+- [x] update the skeleton files: image blobs are now named differently! 
 
-- [ ] Renku workflows for the different modules
+- [ ] Maube fix how save folders are passed for the supervised skeletonization
+- [ ] check env and pandas in it
 - [ ] Add module for evaluations, and for generating plots
 - [ ] Add notebooks for plotting of results, images, etc. 
 - [ ] Check all docstrings and potenitally build documentation into html
 - [ ] Add tests? 
 - [ ] Add the dubendorf data use case to check consistency for multiple projects 
-- [ ] LICENSE and AUTHORS 
 - [ ] Add a README.md to the data folder
 - [ ] Spend some time in thinking whether it is better to have one big config file, or one config file per module, or one config file per script.
-- [x] Check measures of supervised skeletonizations (length and width) and compare to manual annotations, something is off
-- [ ] LICENCE and AUTHORS
-- [ ] check env and pandas in it
+
 - [ ] check WANDBD accounts and api for loggers
+
+- [ ] Renku workflows for the different modules

@@ -62,6 +62,7 @@ root_data = Path(args.input_dir)
 outdir = Path(args.output_dir)
 outdir.mkdir(parents=True, exist_ok=True)
 
+# target folders definition
 target_trn = outdir / "trn_set/"
 target_val = outdir / "val_set/"
 
@@ -76,7 +77,8 @@ if target_trn.exists() or target_val.exists():
 # make dictionary to recode: key is current classification, value is target reclassif.
 # forward fill to get last valid entry and subset to desired column
 mzb_taxonomy = pd.read_csv(Path(args.taxonomy_file))
-mzb_taxonomy = mzb_taxonomy.drop(columns=["Unnamed: 0"])
+if "Unnamed: 0" in mzb_taxonomy.columns:
+    mzb_taxonomy = mzb_taxonomy.drop(columns=["Unnamed: 0"])
 mzb_taxonomy = mzb_taxonomy.ffill(axis=1)
 recode_order = dict(
     zip(mzb_taxonomy["query"], mzb_taxonomy[cfg.lset_class_cut].str.lower())
@@ -85,7 +87,7 @@ recode_order = dict(
 if args.verbose:
     print(f"Cutting phyl tree at {cfg.lset_class_cut}")
 
-
+# Move files to target folders for all files in the curated learning set
 for s_fo in recode_order:
 
     target_folder = target_trn / recode_order[s_fo]
@@ -94,6 +96,7 @@ for s_fo in recode_order:
     for file in list((root_data / s_fo).glob("*")):
         shutil.copy(file, target_folder)
 
+# move out the validation set
 # make a small val set, 10% or 1 file, what is possible...
 size = cfg.lset_val_size
 trn_folds = [a.name for a in sorted(list(target_trn.glob("*")))]
@@ -117,7 +120,7 @@ for s_fo in trn_folds:
         except:
             print(f"{str(file)} into {target_folder}")
 
-
+# make a separate folder for the mixed set (actual test set)
 if (root_data / "mixed").is_dir():
     target_tst = outdir / "mixed_set/"
     target_tst.mkdir(exist_ok=True, parents=True)

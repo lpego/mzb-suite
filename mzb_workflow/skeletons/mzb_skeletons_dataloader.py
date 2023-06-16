@@ -95,15 +95,15 @@ class MZBLoader_skels(Dataset):
         # assert bo_folder.is_dir() or he_folder.is_dir()
 
         # this makes a one folder - one class connection, and prepares data arrays consequently
-        images = np.asarray(sorted(list(im_folder.glob("*.png"))))
+        images = np.asarray(sorted(list(im_folder.glob("*.jpg"))))
 
         if bo_folder.is_dir():
-            mbody = np.asarray(sorted(list(bo_folder.glob("*.png"))))
+            mbody = np.asarray(sorted(list(bo_folder.glob("*.jpg"))))
         else:
             mbody = []
 
         if he_folder.is_dir():
-            mhead = np.asarray(sorted(list(he_folder.glob("*.png"))))
+            mhead = np.asarray(sorted(list(he_folder.glob("*.jpg"))))
         else:
             mhead = []
 
