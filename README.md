@@ -55,11 +55,11 @@ When training models, logging is made throught weight and biases automatically. 
 
 _Not in any priority_ 
 - [x] ALIGN ALL LEARNING SET IMAGES TO NEW PIPELINE, from pngs to jpgs
-- [x] Check measures of supervised skeletonizations (length and width) and compare to manual annotations, something is off
+- [x] Check measures of supervised skeletonizations (length and width) and compare to manual annotations
 - [x] LICENSE and AUTHORS and CITATION placeholders
 - [x] update the skeleton files: image blobs are now named differently! 
+- [x] Maybe fix how save folders are passed for the supervised skeletonization
 
-- [ ] Maube fix how save folders are passed for the supervised skeletonization
 - [ ] check env and pandas in it
 - [ ] Add module for evaluations, and for generating plots
 - [ ] Add notebooks for plotting of results, images, etc. 
