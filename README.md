@@ -58,7 +58,7 @@ _Not in any priority_
 - [x] Check measures of supervised skeletonizations (length and width) and compare to manual annotations
 - [x] LICENSE and AUTHORS and CITATION placeholders
 - [x] update the skeleton files: image blobs are now named differently! 
-- [x] Maybe fix how save folders are passed for the supervised skeletonization
+- [x] Fix how save folders are passed for the supervised skeletonization
 
 - [ ] check env and pandas in it
 - [ ] Add module for evaluations, and for generating plots
