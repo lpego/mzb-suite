@@ -325,7 +325,7 @@ for fo in iterator:
 full_df = pd.concat(growing_df)
 full_df.to_csv(out_dir / "skeleton_attributes.csv", index=False)
 
-# %%
+# %% some visualizations for debugging
 if 0:
     rgb_ = cv2.imread(str(fo)[:-8] + "rgb.png")[:, :, [2, 1, 0]].astype(np.uint8)
     rgb_fi = paint_image(rgb_, skeleton, color=[255, 0, 0])
