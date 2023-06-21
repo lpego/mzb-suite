@@ -60,15 +60,14 @@ _Not in any priority_
 - [x] update the skeleton files: image blobs are now named differently! 
 - [x] Fix how save folders are passed for the supervised skeletonization
 
-- [ ] check env and pandas in it
+
+- [ ] check env and pandas in it use, build `setupy.py` 
 - [ ] Add module for evaluations, and for generating plots
 - [ ] Add notebooks for plotting of results, images, etc. 
 - [ ] Check all docstrings and potenitally build documentation into html
-- [ ] Add tests? 
 - [ ] Add the dubendorf data use case to check consistency for multiple projects 
 - [ ] Add a README.md to the data folder
 - [ ] Spend some time in thinking whether it is better to have one big config file, or one config file per module, or one config file per script.
 
 - [ ] check WANDBD accounts and api for loggers
-
 - [ ] Renku workflows for the different modules

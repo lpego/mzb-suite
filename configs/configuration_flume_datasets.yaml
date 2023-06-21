@@ -10,7 +10,7 @@ impa_gaussian_blur_passes: 3
 impa_adaptive_threshold: 351
 impa_mask_postprocess_kernel: [11, 11]
 impa_mask_postprocess_passes: 5
-impa_save_full_mask_dir: data/derived/project_portable_flume/full_image_masks
+# impa_save_full_mask_dir: data/derived/project_portable_flume/full_image_masks
 impa_bounding_box_buffer: 200
 impa_save_clips_plus_features: True
 
@@ -61,7 +61,7 @@ infe_image_glob: "*_rgb.jpg"
 # unsupervised skeletonization
 skel_class_exclude: errors
 skel_conv_rate: 131.6625 #[133.1, 136.6, 133.2, 133.2, 133.2, 118.6, 133.4, 132.0])  # px / mm
-skel_save_usnup_masks: data/derived/project_portable_flume/skeletons/automatic_skeletons/
+# skel_save_usnup_masks: data/derived/project_portable_flume/skeletons/automatic_skeletons/
 
 # supervised skeletonization
 skel_label_thickness: 3

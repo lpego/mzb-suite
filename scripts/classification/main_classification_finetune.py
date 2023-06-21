@@ -87,7 +87,6 @@ torch.manual_seed(cfg.glob_random_seed)  # needed for torchvision 0.7
 torch.cuda.manual_seed(cfg.glob_random_seed)  # needed for torchvision 0.7
 # %%
 if __name__ == "__main__":
-
     # Define checkpoints callbacks
     # best model on validation
     best_val_cb = pl.callbacks.ModelCheckpoint(
@@ -141,6 +140,8 @@ if __name__ == "__main__":
     # Define logger and name of run
     name_run = f"classifier-{cfg.trcl_model_pretrarch}"  # f"{model.pretrained_network}"
     cbacks = [pbar_cb, best_val_cb, last_mod_cb, trdatelog]
+
+    # TODOs: add possibility to use tensorboard
     wb_logger = WandbLogger(
         project=cfg.trcl_wandb_project_name, name=name_run if name_run else None
     )

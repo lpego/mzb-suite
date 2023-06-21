@@ -25,6 +25,8 @@ python scripts/classification/main_classification_inference.py \
     --output_dir=$ROOT_DIR/results/classification/project_portable_flume/ \
     -v
 
+
+#### ADD FUNCTION TO EXTRACT ALL CLIPS WITHOUTH ERRORS 
 ### Ex. run on all the clips available to get full predictions
 ## python scripts/classification/main_classification_inference.py \
 ##     --config_file=$ROOT_DIR/configs/configuration_flume_datasets.yaml \

@@ -2,10 +2,10 @@
 
 ## Set up pipeline to fine tune the supervised skeletonization model
 ROOT_DIR="/data/shared/mzb-workflow"
-MODEL=mit-b2-v2
-LSET_FOLD=$ROOT_DIR/data/learning_sets/project_portable_flume/skeletonization
+MODEL=mit-b2-v3
+LSET_FOLD=$ROOT_DIR/data/learning_sets/project_portable_flume/skeletonization_v2
 
-## This has to be run once, to create the curated learning sets
+## This has to be run once, to create the curated learning sets, 
 ## ------------------------------------------------------------
 if [ -d $LSET_FOLD ];
 then
@@ -20,36 +20,35 @@ else
         # -v
 fi
 
-## This is run to fine tune the classification model. It will read the curated learning sets and will return a new model
+## This is run to fine tune the skeleton prediction model. It will read the curated learning sets and will return a new model
 ## ---------------------------------------------------------------------------------------------------------------
-# python scripts/skeletons/main_supervised_skeletons_finetune.py \
-#     --config_file=$ROOT_DIR/configs/configuration_flume_datasets.yaml \
-#     --input_dir=$LSET_FOLD \
-#     --save_model=$ROOT_DIR/models/mzb-skeleton-models/$MODEL \
-#     -v
+python scripts/skeletons/main_supervised_skeletons_finetune.py \
+    --config_file=$ROOT_DIR/configs/configuration_flume_datasets.yaml \
+    --input_dir=$LSET_FOLD \
+    --save_model=$ROOT_DIR/models/mzb-skeleton-models/$MODEL \
+    # -v
 
 ## This is run on a custom folder structure and will regturn a csv with the results
 ## Specifically, this is run on the validation set to get the accuracy of the model
 ## ------------------------------------------------------------------------------------------
-# python scripts/skeletons/main_supervised_skeleton_inference.py \
-#     --config_file=$ROOT_DIR/configs/configuration_flume_datasets.yaml \
-#     --input_dir=$LSET_FOLD \
-#     --input_type="val" \
-#     --input_model=$ROOT_DIR/models/mzb-skeleton-models/$MODEL \
-#     --output_dir=$ROOT_DIR/data/derived/skeletons/project_portable_flume/supervised_skeletons/test_skseg_$MODEL \
-#     --save_masks=$ROOT_DIR/data/derived_v2/project_portable_flume/skeletons/supervised_skeletons/skseg_efficientnet-b2-v2/mixed_set_masks/ \
-
-# #     -v
+python scripts/skeletons/main_supervised_skeleton_inference.py \
+    --config_file=$ROOT_DIR/configs/configuration_flume_datasets.yaml \
+    --input_dir=$LSET_FOLD \
+    --input_type="val" \
+    --input_model=$ROOT_DIR/models/mzb-skeleton-models/$MODEL \
+    --output_dir=$ROOT_DIR/data/derived/skeletons/project_portable_flume/supervised_skeletons/test_skseg_$MODEL \
+    --save_masks=$ROOT_DIR/data/derived_v2/project_portable_flume/skeletons/supervised_skeletons/skseg_$MODEL/mixed_set_masks/ \
+#     -v
 
 # ## And this is to parse a custom folder structure with images from different sources
 # ## ---------------------------------------------------------------------------------------------------
-# python scripts/skeletons/main_supervised_skeleton_inference.py \
-#     --config_file=$ROOT_DIR/configs/configuration_flume_datasets.yaml \
-#     --input_dir=$ROOT_DIR/data/learning_sets/project_portable_flume/aggregated_learning_sets/mixed_set/ \
-#     --input_type="external" \
-#     --input_model=$ROOT_DIR/models/mzb-skeleton-models/$MODEL \
-#     --output_dir=$ROOT_DIR/results/project_portable_flume/skeletons/supervised_skeletons/skseg_efficientnet-b2-v2/ \
-#     --save_masks=$ROOT_DIR/data/derived_v2/project_portable_flume/skeletons/supervised_skeletons/skseg_efficientnet-b2-v2/mixed_set_masks/ \
-#     # -v
+python scripts/skeletons/main_supervised_skeleton_inference.py \
+    --config_file=$ROOT_DIR/configs/configuration_flume_datasets.yaml \
+    --input_dir=$ROOT_DIR/data/learning_sets/project_portable_flume/aggregated_learning_sets/mixed_set/ \
+    --input_type="external" \
+    --input_model=$ROOT_DIR/models/mzb-skeleton-models/$MODEL \
+    --output_dir=$ROOT_DIR/results/project_portable_flume/skeletons/supervised_skeletons/skseg_$MODEL/ \
+    --save_masks=$ROOT_DIR/data/derived_v2/project_portable_flume/skeletons/supervised_skeletons/skseg_$MODEL/mixed_set_masks/ \
+    # -v
 
 
