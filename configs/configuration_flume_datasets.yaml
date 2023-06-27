@@ -4,7 +4,8 @@ glob_random_seed: 222
 
 # Image parsing specific 
 impa_image_format: jpg
-impa_clip_areas: [2750, 4900]
+impa_clip_areas: [2750, 4900] # ignore areas outside of this (bottom right corner)
+impa_area_threshold: 5000 # ignore areas smaller than this
 impa_gaussian_blur: [21, 21]
 impa_gaussian_blur_passes: 3
 impa_adaptive_threshold: 351

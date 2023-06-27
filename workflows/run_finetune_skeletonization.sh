@@ -36,7 +36,7 @@ python scripts/skeletons/main_supervised_skeleton_inference.py \
     --input_dir=$LSET_FOLD \
     --input_type="val" \
     --input_model=$ROOT_DIR/models/mzb-skeleton-models/$MODEL \
-    --output_dir=$ROOT_DIR/data/derived/skeletons/project_portable_flume/supervised_skeletons/test_skseg_$MODEL \
+    --output_dir=$ROOT_DIR/results/project_portable_flume/skeletons/supervised_skeletons/skseg_$MODEL/ \
     --save_masks=$ROOT_DIR/data/derived_v2/project_portable_flume/skeletons/supervised_skeletons/skseg_$MODEL/mixed_set_masks/ \
 #     -v
 
@@ -47,7 +47,7 @@ python scripts/skeletons/main_supervised_skeleton_inference.py \
     --input_dir=$ROOT_DIR/data/learning_sets/project_portable_flume/aggregated_learning_sets/mixed_set/ \
     --input_type="external" \
     --input_model=$ROOT_DIR/models/mzb-skeleton-models/$MODEL \
-    --output_dir=$ROOT_DIR/results/project_portable_flume/skeletons/supervised_skeletons/skseg_$MODEL/ \
+    --output_dir=$ROOT_DIR/results/project_portable_flume/skeletons/supervised_skeletons/eskseg_$MODEL/ \
     --save_masks=$ROOT_DIR/data/derived_v2/project_portable_flume/skeletons/supervised_skeletons/skseg_$MODEL/mixed_set_masks/ \
     # -v
 

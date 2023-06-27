@@ -5,8 +5,8 @@ authors:
   - family-names: BioDetect - SDSC collaborative grant c19-10
 url: https://renkulab.io/projects/biodetect/mzb-workflow
 preferred-citation:
-  type: conference-paper
-  title: "PyTorch: An Imperative Style, High-Performance Deep Learning Library"
+  type: software
+  title: "mzb-phenotyping"
   authors:
     - family-names: Volpi
       given-names: Michele

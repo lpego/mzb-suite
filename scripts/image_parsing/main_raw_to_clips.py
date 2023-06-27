@@ -88,7 +88,6 @@ if "project_portable_flume" in str(main_root):
     location_cutout = [int(a) for a in cfg.impa_clip_areas]
 
 for i, fo in enumerate(files_proc[:]):
-
     print(f"{i+1}/{len(files_proc)}: {fo.name}")
     mask_props = []
 
@@ -180,7 +179,6 @@ for i, fo in enumerate(files_proc[:]):
     c = 1
     # loop through identified regions and get some properties
     for label in range(len(rprop)):  # np.unique(labels):
-
         reg_pro = rprop[label]
 
         # skip background
@@ -188,7 +186,7 @@ for i, fo in enumerate(files_proc[:]):
             continue
 
         # skip small objects
-        if reg_pro.area < 5000:
+        if reg_pro.area < cfg.impa_area_threshold:  # 5000 defauilt
             continue
 
         current_mask = np.zeros(thresh.shape)
@@ -252,7 +250,7 @@ for i, fo in enumerate(files_proc[:]):
 
         # reactivate warnings
         np.seterr(divide="warn", invalid="warn")
-        
+
         cv2.imwrite(
             str(outdir / (f"{fo.stem}_{c}_rgb.{cfg.impa_image_format}").lower()),
             crop,
