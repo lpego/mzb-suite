@@ -31,19 +31,8 @@ from mzbsuite.utils import cfg_to_arguments, SaveLogCallback
 # Set the thread layer used by MKL
 os.environ["MKL_THREADING_LAYER"] = "GNU"
 
-# %%
-
-
-# Old version, where name of folder given by composition of config args. Harder to track
-# args.save_model = (
-# args.save_model
-# / (cfg.trcl_model_pretrarch + cfg.trcl_model_save_append)
-# / "checkpoints"
-# )
 
 # %%
-
-
 def main(args, cfg):
     """
     Function to train a model for classification of macrozoobenthos images.
@@ -60,8 +49,7 @@ def main(args, cfg):
 
     Returns
     -------
-    None.
-
+    None. Saves the model in the specified folder.
     """
 
     # Define checkpoints callbacks
@@ -128,7 +116,9 @@ def main(args, cfg):
     trainer = Trainer(
         gpus=cfg.trcl_gpu_ids,  # [0,1],
         max_epochs=cfg.trcl_number_epochs,
-        DDPStrategy(find_unused_parameters=False), # TODO: check how to use in notebook
+        strategy=DDPStrategy(
+            find_unused_parameters=False
+        ),  # TODO: check how to use in notebook
         precision=16,
         callbacks=cbacks,
         auto_lr_find=False,  #

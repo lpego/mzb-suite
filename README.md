@@ -1,7 +1,5 @@
 # Macrozoobenthos processing suite: mzb-workflow
 
-This project is in very early development. It is a work in progress and is not yet ready for use. 
-
 Full workflow for the Macrozoobenthos pipeline: 
 - Parse raw data from the Macrozoobenthos database
 - Clean and process data, both raw and manually annotated ones
