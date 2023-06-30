@@ -10,6 +10,8 @@ Full workflow for the Macrozoobenthos pipeline:
 
 ## Introduction
 
+![Overview of the mzb-suite](docs/assets/MZB_pipeline_v2.1.png)
+
 This project contains several modules, but it mainly implements 3 modules: 
 1 - _classification_: this repo contains the code to train and test a model to classify the macrozoobenthos samples, according to a a set of predefined classes. In our experiments, image classes were specified in the filename, but this can be changed to a more flexible approach. We reclassify class names thanks to the `data/MZB_taxonomy.csv` file, which groups classes according to a taxonomic hierarchy. The data used to fine tune pretrained deep learning classifiers is then duplicated according to our structure (each class in its own folder) in `data/learning_sets/project_portable_flume/aggregated_learning_sets/`.
 

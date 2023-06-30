@@ -27,7 +27,7 @@ else:
 
 sys.path.append(f"{prefix}")
 
-from mzb_workflow.utils import cfg_to_arguments  # , noneparse
+from mzbsuite.utils import cfg_to_arguments  # , noneparse
 
 # %%
 parser = argparse.ArgumentParser()
@@ -81,7 +81,6 @@ files_to_merge = list(sorted(args.input_raw_dir.glob("**/*/*.json")))
 
 # loop over the files and extract the data, then append to the list, then merge, then save.
 for jfi in files_to_merge[:]:
-
     clip_name = jfi.parent.name.split("__")[-1]
     species = clip_name.split("_")[2]
 
@@ -117,7 +116,6 @@ annot_files = sorted(list(args.input_raw_dir.glob("**/*/line_V4.csv")))
 # %%
 # Loop over the annotations and copy the image and save the manual skeleton.
 for file in annot_files[:1]:
-
     gen_name = "_".join(file.parent.name.split("__")[1].split("_")[:-1])
     rgb_clip = gen_name + f"_rgb.{cfg.impa_image_format}"
 

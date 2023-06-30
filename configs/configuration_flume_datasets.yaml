@@ -21,7 +21,7 @@ impa_save_clips_plus_features: True
 ## and such into specific subfolers
 lset_class_cut: order
 lset_val_size: 0.1
-lset_taxonomy: data/MZB_taxonomy.csv
+lset_taxonomy: /data/shared/mzb-workflow/data/MZB_taxonomy.csv
 
 ## Finetuning / training config for classifier
 trcl_learning_rate: 0.001

@@ -33,23 +33,170 @@ import pytorch_lightning as pl
 import yaml
 import torch
 
-try:
-    __IPYTHON__
-except:
-    prefix = ""  # or "../"
-else:
-    prefix = "../../"  # or "../"
+# try:
+#     __IPYTHON__
+# except:
+#     prefix = ""  # or "../"
+# else:
+#     prefix = "../../"  # or "../"
 
-sys.path.append(f"{prefix}")
+# sys.path.append(f"{prefix}")
 
-from mzb_workflow.classification.mzb_classification_pilmodel import MZBModel
-from mzb_workflow.utils import cfg_to_arguments, find_checkpoints
+from mzbsuite.classification.mzb_classification_pilmodel import MZBModel
+from mzbsuite.utils import cfg_to_arguments, find_checkpoints
 
 # Set the thread layer used by MKL
 os.environ["MKL_THREADING_LAYER"] = "GNU"
 
 # %%
-if not prefix:
+
+
+# %%
+def main(args, cfg):
+    """
+    TODO: add docstring
+    """
+    dirs = find_checkpoints(
+        Path(args.input_model).parents[0],
+        version=Path(args.input_model).name,
+        log=cfg.infe_model_ckpt,
+    )
+
+    mod_path = dirs[0]
+
+    # ckpt = torch.load(mod_path, map_location=torch.device("cpu"))
+    # hprs = ckpt["hyper_parameters"]
+
+    # model = MZBModel(
+    #     data_dir=hprs["data_dir"],
+    #     pretrained_network=hprs["pretrained_network"],
+    #     learning_rate=hprs["learning_rate"],
+    #     batch_size=hprs["batch_size"],
+    #     weight_decay=hprs["weight_decay"],
+    #     num_workers_loader=hprs["num_workers_loader"],
+    #     step_size_decay=hprs["step_size_decay"],
+    # )
+
+    model = MZBModel()
+    model = model.load_from_checkpoint(
+        checkpoint_path=mod_path,
+    )
+
+    model.data_dir = Path(args.input_dir)
+    model.num_classes = cfg.infe_num_classes
+
+    model.eval()
+    # %%
+    # dataloader = model.train_dataloader(shuffle=False)
+    # dataloader = model.dubendorf_dataloader()
+    if "val_set" in model.data_dir.name:
+        dataloader = model.val_dataloader()
+    else:
+        dataloader = model.external_dataloader(
+            model.data_dir, glob_pattern=cfg.infe_image_glob
+        )
+
+    pbar_cb = pl.callbacks.progress.TQDMProgressBar(refresh_rate=5)
+
+    trainer = pl.Trainer(
+        max_epochs=1,
+        gpus=1,  # [0,1],
+        callbacks=[pbar_cb],
+        enable_checkpointing=False,
+        logger=False,
+    )
+
+    outs = trainer.predict(
+        model=model, dataloaders=[dataloader], return_predictions=True
+    )
+
+    # %%
+    if cfg.lset_taxonomy:
+        mzb_taxonomy = pd.read_csv(Path(cfg.lset_taxonomy))
+        mzb_taxonomy = mzb_taxonomy.drop(columns=["Unnamed: 0"])
+        mzb_taxonomy = mzb_taxonomy.ffill(axis=1)
+        # watch out this sorted is important for the class names to be in the right order
+        class_names = sorted(
+            list(mzb_taxonomy[cfg.lset_class_cut].str.lower().unique())
+        )
+
+    # %%
+    y = []
+    p = []
+    gt = []
+    for out in outs:
+        y.append(out[0].numpy().squeeze())
+        p.append(out[1].numpy().squeeze())
+        gt.append(out[2].numpy().squeeze())
+
+    try:
+        yc = np.concatenate(y)
+        pc = np.concatenate(p)
+        gc = np.concatenate(gt)
+
+    except:
+        yc = np.array(y)
+        pc = np.asarray(p)
+        gc = np.asarray(gt)
+
+    # make now output csv containing the file name, the class and the probabilities of prediction.
+    # if available, also add the ground truth class
+    data = {
+        "file": [f.name for f in dataloader.dataset.img_paths],
+        "pred": np.argmax(pc, axis=1),
+    }
+
+    for clanam in class_names:
+        data[clanam] = pc[:, class_names.index(clanam)]
+
+    if "val_set" in model.data_dir.name:
+        data["gt"] = gc
+    else:
+        data["gt"] = 0
+
+    out_dir = (
+        Path(args.output_dir)
+        / f"{model.data_dir.name}_{Path(args.input_model).name}_{datetime.now().strftime('%Y%m%d_%H%M')}"
+    )
+    if not out_dir.exists():
+        out_dir.mkdir(parents=True)
+
+    csv_name = f"predictions.csv"
+    df_ = pd.DataFrame(data)
+    df_.to_csv(out_dir / csv_name, index=False)
+
+    # %%
+    if "val_set" in model.data_dir.name:
+        from matplotlib import pyplot as plt
+        from sklearn.metrics import (
+            confusion_matrix,
+            ConfusionMatrixDisplay,
+            classification_report,
+        )
+
+        cmat = confusion_matrix(gc, np.argmax(pc, axis=1), normalize="true")
+        f = plt.figure(figsize=(10, 10))
+        aa = f.gca()
+        cm_disp = ConfusionMatrixDisplay.from_predictions(
+            gc,
+            yc,
+            ax=aa,
+            values_format=".1f",
+            normalize=None,
+            xticks_rotation="vertical",
+            cmap="Greys",
+            display_labels=class_names,
+        )
+        plt.savefig(out_dir / "confusion_matrix.png", dpi=300)
+
+        rep_txt = classification_report(
+            gc, np.argmax(pc, axis=1), target_names=class_names
+        )
+        with open(out_dir / "classification_report.txt", "w") as f:
+            f.write(rep_txt)
+
+
+if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--config_file",
@@ -77,159 +224,13 @@ if not prefix:
     )
     parser.add_argument("--verbose", "-v", action="store_true", help="print more info")
     args = parser.parse_args()
-else:
-    args = {}
-    args["config_file"] = f"{prefix}configs/global_configuration.yaml"
-    args[
-        "input_dir"
-    ] = f"{prefix}data/learning_sets/project_portable_flume/aggregated_learning_sets/mixed_set/"
-    args["input_model"] = f"{prefix}models/mzb-class/convnext-small-v0"
-    args["output_dir"] = f"{prefix}results/classification/"
-    args["verbose"] = True
-    args = cfg_to_arguments(args)
 
-with open(str(args.config_file), "r") as f:
-    cfg = yaml.load(f, Loader=yaml.FullLoader)
+    with open(str(args.config_file), "r") as f:
+        cfg = yaml.load(f, Loader=yaml.FullLoader)
 
-cfg = cfg_to_arguments(cfg)
+    cfg = cfg_to_arguments(cfg)
 
-# if args.verbose:
-#     print(f"main args: {args}")
-#     print(f"scripts config: {cfg}")
-
-# %%
-dirs = find_checkpoints(
-    Path(args.input_model).parents[0],
-    version=Path(args.input_model).name,
-    log=cfg.infe_model_ckpt,
-)
-
-mod_path = dirs[0]
-
-# ckpt = torch.load(mod_path, map_location=torch.device("cpu"))
-# hprs = ckpt["hyper_parameters"]
-
-# model = MZBModel(
-#     data_dir=hprs["data_dir"],
-#     pretrained_network=hprs["pretrained_network"],
-#     learning_rate=hprs["learning_rate"],
-#     batch_size=hprs["batch_size"],
-#     weight_decay=hprs["weight_decay"],
-#     num_workers_loader=hprs["num_workers_loader"],
-#     step_size_decay=hprs["step_size_decay"],
-# )
-
-model = MZBModel()
-model = model.load_from_checkpoint(
-    checkpoint_path=mod_path,
-)
-
-model.data_dir = Path(args.input_dir)
-model.num_classes = cfg.infe_num_classes
-
-model.eval()
-# %%
-# dataloader = model.train_dataloader(shuffle=False)
-# dataloader = model.dubendorf_dataloader()
-if "val_set" in model.data_dir.name:
-    dataloader = model.val_dataloader()
-else:
-    dataloader = model.external_dataloader(
-        model.data_dir, glob_pattern=cfg.infe_image_glob
-    )
-
-pbar_cb = pl.callbacks.progress.TQDMProgressBar(refresh_rate=5)
-
-trainer = pl.Trainer(
-    max_epochs=1,
-    gpus=1,  # [0,1],
-    callbacks=[pbar_cb],
-    enable_checkpointing=False,
-    logger=False,
-)
-
-outs = trainer.predict(model=model, dataloaders=[dataloader], return_predictions=True)
-
-# %%
-if cfg.lset_taxonomy:
-    mzb_taxonomy = pd.read_csv(Path(f"{prefix}{cfg.lset_taxonomy}"))
-    mzb_taxonomy = mzb_taxonomy.drop(columns=["Unnamed: 0"])
-    mzb_taxonomy = mzb_taxonomy.ffill(axis=1)
-    # watch out this sorted is important for the class names to be in the right order
-    class_names = sorted(list(mzb_taxonomy[cfg.lset_class_cut].str.lower().unique()))
-
-# %%
-y = []
-p = []
-gt = []
-for out in outs:
-    y.append(out[0].numpy().squeeze())
-    p.append(out[1].numpy().squeeze())
-    gt.append(out[2].numpy().squeeze())
-
-try:
-    yc = np.concatenate(y)
-    pc = np.concatenate(p)
-    gc = np.concatenate(gt)
-
-except:
-    yc = np.array(y)
-    pc = np.asarray(p)
-    gc = np.asarray(gt)
-
-# make now output csv containing the file name, the class and the probabilities of prediction.
-# if available, also add the ground truth class
-data = {
-    "file": [f.name for f in dataloader.dataset.img_paths],
-    "pred": np.argmax(pc, axis=1),
-}
-
-for clanam in class_names:
-    data[clanam] = pc[:, class_names.index(clanam)]
-
-if "val_set" in model.data_dir.name:
-    data["gt"] = gc
-else:
-    data["gt"] = 0
-
-out_dir = (
-    Path(args.output_dir)
-    / f"{model.data_dir.name}_{Path(args.input_model).name}_{datetime.now().strftime('%Y%m%d_%H%M')}"
-)
-if not out_dir.exists():
-    out_dir.mkdir(parents=True)
-
-csv_name = f"predictions.csv"
-df_ = pd.DataFrame(data)
-df_.to_csv(out_dir / csv_name, index=False)
-
-# %%
-if "val_set" in model.data_dir.name:
-    from matplotlib import pyplot as plt
-    from sklearn.metrics import (
-        confusion_matrix,
-        ConfusionMatrixDisplay,
-        classification_report,
-    )
-
-    cmat = confusion_matrix(gc, np.argmax(pc, axis=1), normalize="true")
-    f = plt.figure(figsize=(10, 10))
-    aa = f.gca()
-    cm_disp = ConfusionMatrixDisplay.from_predictions(
-        gc,
-        yc,
-        ax=aa,
-        values_format=".1f",
-        normalize=None,
-        xticks_rotation="vertical",
-        cmap="Greys",
-        display_labels=class_names,
-    )
-    plt.savefig(out_dir / "confusion_matrix.png", dpi=300)
-
-    rep_txt = classification_report(gc, np.argmax(pc, axis=1), target_names=class_names)
-    with open(out_dir / "classification_report.txt", "w") as f:
-        f.write(rep_txt)
+    main(args, cfg)
 
 # %%
 if 0:

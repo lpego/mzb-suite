@@ -23,7 +23,7 @@ else:
 sys.path.append(prefix)
 import argparse
 
-from mzb_workflow.utils import cfg_to_arguments
+from mzbsuite.utils import cfg_to_arguments
 
 # %%
 parser = argparse.ArgumentParser()
@@ -63,6 +63,7 @@ if args.verbose:
     print(f"main args: {args}")
     print(f"scripts config: {cfg}")
 # %%
+# define paths
 main_root = Path(args.input_dir)
 outdir = Path(args.output_dir)
 outdir.mkdir(parents=True, exist_ok=True)
@@ -171,6 +172,7 @@ for i, fo in enumerate(files_proc[:]):
                 print("skipping clip generation")
             continue
 
+    # get region properties
     rprop = measure.regionprops(labels)
     mask = np.ones(thresh.shape, dtype="uint8")
 
@@ -189,10 +191,11 @@ for i, fo in enumerate(files_proc[:]):
         if reg_pro.area < cfg.impa_area_threshold:  # 5000 defauilt
             continue
 
+        # get mask for current region of interest
         current_mask = np.zeros(thresh.shape)
         current_mask[labels == reg_pro.label] = 1
 
-        # coordinates of bounding box
+        # coordinates of bounding box corners for current region of interest
         (
             min_row,
             min_col,

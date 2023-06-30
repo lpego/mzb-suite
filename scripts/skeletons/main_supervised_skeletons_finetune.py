@@ -25,8 +25,8 @@ else:
 
 sys.path.append(f"{prefix}")
 
-from mzb_workflow.skeletons.mzb_skeletons_pilmodel import MZBModel_skels
-from mzb_workflow.utils import cfg_to_arguments, SaveLogCallback
+from mzbsuite.skeletons.mzb_skeletons_pilmodel import MZBModel_skels
+from mzbsuite.utils import cfg_to_arguments, SaveLogCallback
 
 # Set the thread layer used by MKL
 os.environ["MKL_THREADING_LAYER"] = "GNU"
@@ -87,7 +87,6 @@ torch.manual_seed(cfg.glob_random_seed)  # needed for torchvision 0.7
 torch.cuda.manual_seed(cfg.glob_random_seed)  # needed for torchvision 0.7
 # %%
 if __name__ == "__main__":
-
     # Define checkpoints callbacks
     # best model on validation
     best_val_cb = pl.callbacks.ModelCheckpoint(

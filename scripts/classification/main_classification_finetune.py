@@ -25,56 +25,14 @@ else:
 
 sys.path.append(f"{prefix}")
 
-from mzb_workflow.classification.mzb_classification_pilmodel import MZBModel
-from mzb_workflow.utils import cfg_to_arguments, SaveLogCallback
+from mzbsuite.classification.mzb_classification_pilmodel import MZBModel
+from mzbsuite.utils import cfg_to_arguments, SaveLogCallback
 
 # Set the thread layer used by MKL
 os.environ["MKL_THREADING_LAYER"] = "GNU"
 
 # %%
-parser = argparse.ArgumentParser()
-parser.add_argument(
-    "--config_file",
-    type=str,
-    required=True,
-    help="path to config file with per-script args",
-)
-parser.add_argument(
-    "--input_dir",
-    type=str,
-    required=True,
-    help="path with images for training",
-)
-parser.add_argument(
-    "--save_model",
-    type=str,
-    required=True,
-    help="path to where to save model checkpoints",
-)
-parser.add_argument("--verbose", "-v", action="store_true", help="print more info")
-args = parser.parse_args()
 
-# args = {}
-# args["config_file"] = f"{prefix}configs/global_configuration.yaml"
-# args[
-#     "input_dir"
-# ] = f"{prefix}data/learning_sets/project_portable_flume/aggregated_learning_sets/"
-# args["save_model"] = f"{prefix}models/mzb-class/"
-# args["verbose"] = True
-# args = cfg_to_arguments(args)
-
-with open(str(args.config_file), "r") as f:
-    cfg = yaml.load(f, Loader=yaml.FullLoader)
-
-cfg = cfg_to_arguments(cfg)
-
-if args.verbose:
-    print(f"main args: {args}")
-    print(f"scripts config: {cfg}")
-
-args.input_dir = Path(args.input_dir)
-args.save_model = Path(args.save_model)
-args.save_model = args.save_model / "checkpoints"
 
 # Old version, where name of folder given by composition of config args. Harder to track
 # args.save_model = (
@@ -82,11 +40,30 @@ args.save_model = args.save_model / "checkpoints"
 # / (cfg.trcl_model_pretrarch + cfg.trcl_model_save_append)
 # / "checkpoints"
 # )
-np.random.seed(cfg.glob_random_seed)  # apply this seed to img tranfsorms
-torch.manual_seed(cfg.glob_random_seed)  # needed for torchvision 0.7
-torch.cuda.manual_seed(cfg.glob_random_seed)  # needed for torchvision 0.7
+
 # %%
-if __name__ == "__main__":
+
+
+def main(args, cfg):
+    """
+    Function to train a model for classification of macrozoobenthos images.
+    The model is trained on the dataset specified in the config file.
+    The model is saved in the folder specified in the config file.
+    The model is saved every 50 steps and at the end of the training.
+
+    Parameters
+    ----------
+    args : argparse.Namespace
+        Namespace containing the arguments passed to the script.
+    cfg : dict
+        Dictionary containing the configuration parameters.
+
+    Returns
+    -------
+    None.
+
+    """
+
     # Define checkpoints callbacks
     # best model on validation
     best_val_cb = pl.callbacks.ModelCheckpoint(
@@ -151,7 +128,7 @@ if __name__ == "__main__":
     trainer = Trainer(
         gpus=cfg.trcl_gpu_ids,  # [0,1],
         max_epochs=cfg.trcl_number_epochs,
-        strategy=DDPStrategy(find_unused_parameters=False),
+        DDPStrategy(find_unused_parameters=False), # TODO: check how to use in notebook
         precision=16,
         callbacks=cbacks,
         auto_lr_find=False,  #
@@ -163,3 +140,55 @@ if __name__ == "__main__":
     )
 
     trainer.fit(model)
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--config_file",
+        type=str,
+        required=True,
+        help="path to config file with per-script args",
+    )
+    parser.add_argument(
+        "--input_dir",
+        type=str,
+        required=True,
+        help="path with images for training",
+    )
+    parser.add_argument(
+        "--save_model",
+        type=str,
+        required=True,
+        help="path to where to save model checkpoints",
+    )
+    parser.add_argument("--verbose", "-v", action="store_true", help="print more info")
+    args = parser.parse_args()
+
+    # args = {}
+    # args["config_file"] = f"{prefix}configs/global_configuration.yaml"
+    # args[
+    #     "input_dir"
+    # ] = f"{prefix}data/learning_sets/project_portable_flume/aggregated_learning_sets/"
+    # args["save_model"] = f"{prefix}models/mzb-class/"
+    # args["verbose"] = True
+    # args = cfg_to_arguments(args)
+
+    with open(str(args.config_file), "r") as f:
+        cfg = yaml.load(f, Loader=yaml.FullLoader)
+
+    cfg = cfg_to_arguments(cfg)
+
+    if args.verbose:
+        print(f"main args: {args}")
+        print(f"scripts config: {cfg}")
+
+    args.input_dir = Path(args.input_dir)
+    args.save_model = Path(args.save_model)
+    args.save_model = args.save_model / "checkpoints"
+
+    np.random.seed(cfg.glob_random_seed)  # apply this seed to img tranfsorms
+    torch.manual_seed(cfg.glob_random_seed)  # needed for torchvision 0.7
+    torch.cuda.manual_seed(cfg.glob_random_seed)  # needed for torchvision 0.7
+
+    main(args, cfg)
