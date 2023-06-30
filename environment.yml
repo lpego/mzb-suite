@@ -206,6 +206,7 @@ dependencies:
   - zlib=1.2.12=h7f8727e_2
   - zstd=1.5.2=ha4553b6_0
   - pip:
+    - -e .
     - absl-py==1.1.0
     - appdirs==1.4.4
     - argcomplete==2.0.0

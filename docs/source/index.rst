@@ -7,9 +7,9 @@ Welcome to mzb-suite's documentation!
 =====================================
 
 .. automodule:: mzbsuite.classification.mzb_classification_dataloader
-      :members:
-      :undoc-members:
-      :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 .. automodule:: mzbsuite.image_parsing
       :members:
@@ -29,6 +29,10 @@ Welcome to mzb-suite's documentation!
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
+
+files/intro
+
+
 
 
 Indices and tables
