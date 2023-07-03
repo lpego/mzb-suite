@@ -193,7 +193,7 @@ if __name__ == "__main__":
 
     cfg = cfg_to_arguments(cfg)
 
-    main(args, cfg)
+    sys.exit(main(args, cfg))
 
 # %%
 if 0:

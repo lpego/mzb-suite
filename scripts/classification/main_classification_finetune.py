@@ -182,4 +182,4 @@ if __name__ == "__main__":
     torch.manual_seed(cfg.glob_random_seed)  # needed for torchvision 0.7
     torch.cuda.manual_seed(cfg.glob_random_seed)  # needed for torchvision 0.7
 
-    main(args, cfg)
+    sys.exit(main(args, cfg))

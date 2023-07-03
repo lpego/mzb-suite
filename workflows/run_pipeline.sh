@@ -62,11 +62,11 @@ python scripts/skeletons/main_supervised_skeleton_inference.py \
 
 # ## And this is to parse a custom folder structure with images from different sources
 # ## ---------------------------------------------------------------------------------------------------
-python scripts/skeletons/main_supervised_skeleton_inference.py \
-    --config_file=$ROOT_DIR/configs/configuration_flume_datasets.yaml \
-    --input_dir=$ROOT_DIR/data/learning_sets/project_portable_flume/aggregated_learning_sets/mixed_set/ \
-    --input_type="external" \
-    --input_model=$ROOT_DIR/models/mzb-skeleton-models/$MODEL \
-    --output_dir=$ROOT_DIR/results/project_portable_flume/skeletons/supervised_skeletons/skseg_efficientnet-b2-v2/ \
-    --save_masks=$ROOT_DIR/data/derived/project_portable_flume/skeletons/supervised_skeletons/skseg_efficientnet-b2-v2/mixed_set_masks/ \
+# python scripts/skeletons/main_supervised_skeleton_inference.py \
+#     --config_file=$ROOT_DIR/configs/configuration_flume_datasets.yaml \
+#     --input_dir=$ROOT_DIR/data/learning_sets/project_portable_flume/aggregated_learning_sets/mixed_set/ \
+#     --input_type="external" \
+#     --input_model=$ROOT_DIR/models/mzb-skeleton-models/$MODEL \
+#     --output_dir=$ROOT_DIR/results/project_portable_flume/skeletons/supervised_skeletons/skseg_efficientnet-b2-v2/ \
+#     --save_masks=$ROOT_DIR/data/derived/project_portable_flume/skeletons/supervised_skeletons/skseg_efficientnet-b2-v2/mixed_set_masks/ \
     # -v

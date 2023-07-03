@@ -118,7 +118,7 @@ def main(args, cfg):
     if args.verbose:
         print("Neural network predictions done, refining and saving skeletons...")
 
-    for i, ti in tqdm(enumerate(im_fi[:])):
+    for i, ti in tqdm(enumerate(im_fi), total=len(im_fi)):
         im = Image.open(ti).convert("RGB")
 
         # get original size of image for resizing predictions
@@ -255,7 +255,7 @@ if __name__ == "__main__":
         print(f"main args: {args}")
         print(f"scripts config: {cfg}")
 
-    main(args, cfg)
+    sys.exit(main(args, cfg))
 
     # %%
     # ['resnet18', 'resnet34', 'resnet50', 'resnet101', 'resnet152',

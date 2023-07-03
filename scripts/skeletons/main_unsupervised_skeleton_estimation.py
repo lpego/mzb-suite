@@ -20,18 +20,8 @@ from skimage.measure import label, regionprops
 from skimage.morphology import dilation, disk, medial_axis, thin
 from tqdm import tqdm
 
-try:
-    __IPYTHON__
-except:
-    prefix = ""  # or "../"
-    PLOTS = False
-else:
-    prefix = "../../"  # or "../"
-    PLOTS = False
 
-sys.path.append(f"{prefix}")
-
-from mzb_workflow.skeletons.mzb_skeletons_helpers import (
+from mzbsuite.skeletons.mzb_skeletons_helpers import (
     get_endpoints,
     get_intersections,
     paint_image,
@@ -39,52 +29,45 @@ from mzb_workflow.skeletons.mzb_skeletons_helpers import (
     traverse_graph,
 )
 
-from mzb_workflow.utils import cfg_to_arguments, noneparse
+from mzbsuite.utils import cfg_to_arguments, noneparse
 
-# %%
 
-parser = argparse.ArgumentParser()
-parser.add_argument("--config_file", type=str, required=True)
-parser.add_argument("--input_dir", type=str, required=True)
-parser.add_argument("--list_of_files", type=noneparse, required=False, default=None)
-parser.add_argument("--output_dir", type=str, required=True)
-parser.add_argument("--save_masks", type=str, required=True)
-parser.add_argument("--verbose", "-v", action="store_true")
-args = parser.parse_args()
+def main(args, cfg):
+    """
+    Main function for skeleton estimation (body size) in the unsupervised setting.
 
-# args = {}
-# args["config_file"] = f"{prefix}configs/global_configuration.yaml"
-# args["input_dir"] = f"{prefix}data/derived/project_portable_flume/blobs"
-# # TODO: add this possibility to use predictions of models to list files to be parsed
-# # * if none, just use all files in input_dir
-# # * if a csv list, use that list to exclude errors (add option to speficy a list of classes?)
-# args[
-#     "list_of_files"
-# ] = None  # f"{prefix}results/classification/project_portable_flume/project_portable_flume_bm2ccwxc_20230302_0835/predictions.csv"
-# args["output_dir"] = f"{prefix}results/skeletons/project_portable_flume/"
-# args["verbose"] = True
-# args = cfg_to_arguments(args)
+    Parameters
+    ----------
+    args : argparse.Namespace
+        Arguments parsed from command line. Namely:
+            - config_file: path to the configuration file
+            - input_dir: path to the directory containing the masks
+            - output_dir: path to the directory where to save the results
+            - save_masks: path to the directory where to save the masks as jpg
+            - list_of_files: path to the csv file containing the classification predictions
+            - v (verbose): whether to print more info
+    cfg : argparse.Namespace
+        Arguments parsed from the configuration file.
 
-with open(args.config_file, "r") as f:
-    cfg = yaml.load(f, Loader=yaml.FullLoader)
-cfg = cfg_to_arguments(cfg)
+    Returns
+    -------
+    None. All is saved to disk at specified locations.
+    """
 
-args.input_dir = Path(args.input_dir)
-args.output_dir = Path(args.output_dir)
+    if args.save_masks is not None:
+        args.save_masks = Path(f"{args.save_masks}")
+        args.save_masks.mkdir(parents=True, exist_ok=True)
 
-if args.save_masks is not None:
-    args.save_masks = Path(f"{prefix}{args.save_masks}")
-    args.save_masks.mkdir(parents=True, exist_ok=True)
+    # setup some area-specific parameters for filtering
+    area_class = {
+        0: {"area": [0, 10000], "thinning": 1, "lmode": "skeleton"},
+        2: {"area": [10000, 15000], "thinning": 9, "lmode": "skeleton"},
+        3: {"area": [15000, 20000], "thinning": 11, "lmode": "skeleton"},
+        4: {"area": [20000, 50000], "thinning": 11, "lmode": "skeleton"},
+        5: {"area": [50000, 100000], "thinning": 15, "lmode": "skeleton"},
+        6: {"area": [100000, np.inf], "thinning": 20, "lmode": "skeleton"},
+    }
 
-# setup some area-specific parameters for filtering
-area_class = {
-    0: {"area": [0, 10000], "thinning": 1, "lmode": "skeleton"},
-    2: {"area": [10000, 15000], "thinning": 9, "lmode": "skeleton"},
-    3: {"area": [15000, 20000], "thinning": 11, "lmode": "skeleton"},
-    4: {"area": [20000, 50000], "thinning": 11, "lmode": "skeleton"},
-    5: {"area": [50000, 100000], "thinning": 15, "lmode": "skeleton"},
-    6: {"area": [100000, np.inf], "thinning": 20, "lmode": "skeleton"},
-}
 
 # %%
 # Load in all masks in the input directory
@@ -325,6 +308,26 @@ for fo in iterator:
 full_df = pd.concat(growing_df)
 full_df.to_csv(out_dir / "skeleton_attributes.csv", index=False)
 
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--config_file", type=str, required=True)
+    parser.add_argument("--input_dir", type=str, required=True)
+    parser.add_argument("--list_of_files", type=noneparse, required=False, default=None)
+    parser.add_argument("--output_dir", type=str, required=True)
+    parser.add_argument("--save_masks", type=str, required=True)
+    parser.add_argument("--verbose", "-v", action="store_true")
+    args = parser.parse_args()
+
+    with open(args.config_file, "r") as f:
+        cfg = yaml.load(f, Loader=yaml.FullLoader)
+    cfg = cfg_to_arguments(cfg)
+
+    args.input_dir = Path(args.input_dir)
+    args.output_dir = Path(args.output_dir)
+
+    sys.exit(main(args, cfg))
+
 # %% some visualizations for debugging
 if 0:
     rgb_ = cv2.imread(str(fo)[:-8] + "rgb.png")[:, :, [2, 1, 0]].astype(np.uint8)
@@ -383,4 +386,3 @@ if 0:
     a[0].title.set_text(f"Area: {np.sum(mask_)}")
     a[1].title.set_text(f"Sel Segm: {skel_cand[np.argmax(sk_l)]}")
     a[2].title.set_text(f"Skel_lenght_px {sk_l[np.argmax(sk_l)]}")
-    # %%

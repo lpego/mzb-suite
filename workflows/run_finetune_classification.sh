@@ -50,5 +50,4 @@ python $ROOT_DIR/scripts/classification/main_classification_inference.py \
     --output_dir=$ROOT_DIR/results/classification/project_portable_flume/ \
     -v
 
-
 # --> the classifier using a ConvNext or EfficientNet-b2 model is best, so we will use that one probably. 
