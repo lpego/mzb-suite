@@ -64,19 +64,6 @@ def main(args, cfg):
 
     mod_path = dirs[0]
 
-    # ckpt = torch.load(mod_path, map_location=torch.device("cpu"))
-    # hprs = ckpt["hyper_parameters"]
-
-    # model = MZBModel(
-    #     data_dir=hprs["data_dir"],
-    #     pretrained_network=hprs["pretrained_network"],
-    #     learning_rate=hprs["learning_rate"],
-    #     batch_size=hprs["batch_size"],
-    #     weight_decay=hprs["weight_decay"],
-    #     num_workers_loader=hprs["num_workers_loader"],
-    #     step_size_decay=hprs["step_size_decay"],
-    # )
-
     model = MZBModel()
     model = model.load_from_checkpoint(
         checkpoint_path=mod_path,
@@ -86,9 +73,7 @@ def main(args, cfg):
     model.num_classes = cfg.infe_num_classes
 
     model.eval()
-    # %%
-    # dataloader = model.train_dataloader(shuffle=False)
-    # dataloader = model.dubendorf_dataloader()
+
     if "val_set" in model.data_dir.name:
         dataloader = model.val_dataloader()
     else:
@@ -100,7 +85,8 @@ def main(args, cfg):
 
     trainer = pl.Trainer(
         max_epochs=1,
-        accelerator="auto",
+        accelerator="gpu" if torch.cuda.is_available() else "cpu",
+        devices=1 if torch.cuda.is_available() else None,
         callbacks=[pbar_cb],
         enable_checkpointing=False,
         logger=False,
@@ -110,7 +96,6 @@ def main(args, cfg):
         model=model, dataloaders=[dataloader], return_predictions=True
     )
 
-    # %%
     if cfg.lset_taxonomy:
         mzb_taxonomy = pd.read_csv(Path(cfg.lset_taxonomy))
         mzb_taxonomy = mzb_taxonomy.drop(columns=["Unnamed: 0"])
@@ -120,7 +105,6 @@ def main(args, cfg):
             list(mzb_taxonomy[cfg.lset_class_cut].str.lower().unique())
         )
 
-    # %%
     y = []
     p = []
     gt = []
@@ -128,12 +112,10 @@ def main(args, cfg):
         y.append(out[0].numpy().squeeze())
         p.append(out[1].numpy().squeeze())
         gt.append(out[2].numpy().squeeze())
-
     try:
         yc = np.concatenate(y)
         pc = np.concatenate(p)
         gc = np.concatenate(gt)
-
     except:
         yc = np.array(y)
         pc = np.asarray(p)
@@ -154,6 +136,9 @@ def main(args, cfg):
     else:
         data["gt"] = 0
 
+    for c in data:
+        print(c, len(data[c]))
+
     out_dir = (
         Path(args.output_dir)
         / f"{model.data_dir.name}_{Path(args.input_model).name}_{datetime.now().strftime('%Y%m%d_%H%M')}"
@@ -162,7 +147,7 @@ def main(args, cfg):
         out_dir.mkdir(parents=True)
 
     csv_name = f"predictions.csv"
-    df_ = pd.DataFrame(data)
+    df_ = pd.DataFrame(data=data)
     df_.to_csv(out_dir / csv_name, index=False)
 
     # %%
