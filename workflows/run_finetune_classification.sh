@@ -2,10 +2,8 @@
 # set up pipeline to fine tune the classification model
 
 ROOT_DIR="/data/shared/mzb-workflow"
-MODEL="efficientnet-b2-v0"
+MODEL="convnext-small-v0"
 LSET_FOLD=$ROOT_DIR/data/learning_sets/project_portable_flume/aggregated_learning_sets
-
-
 
 ## This has to be run once, to create the curated learning sets
 ## ------------------------------------------------------------

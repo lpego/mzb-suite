@@ -68,7 +68,7 @@ html_theme = "sphinx_rtd_theme"
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
 
-html_logo = "../assets/mzb-logo-2.svg"
+html_logo = "../assets/mzb-logo.svg"
 
 html_theme_options = {
     # 'analytics_id': 'G-XXXXXXXXXX',  #  Provided by Google in your dashboard
