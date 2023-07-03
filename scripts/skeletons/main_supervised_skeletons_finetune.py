@@ -16,79 +16,36 @@ from pytorch_lightning import Trainer
 from pytorch_lightning.loggers import WandbLogger
 from pytorch_lightning.strategies.ddp import DDPStrategy
 
-try:
-    __IPYTHON__
-except:
-    prefix = ""  # or "../"
-else:
-    prefix = "../../"  # or "../"
-
-sys.path.append(f"{prefix}")
-
 from mzbsuite.skeletons.mzb_skeletons_pilmodel import MZBModel_skels
 from mzbsuite.utils import cfg_to_arguments, SaveLogCallback
 
 # Set the thread layer used by MKL
 os.environ["MKL_THREADING_LAYER"] = "GNU"
 
-# %%
-parser = argparse.ArgumentParser()
-parser.add_argument(
-    "--config_file",
-    type=str,
-    required=True,
-    help="path to config file with per-script args",
-)
-parser.add_argument(
-    "--input_dir",
-    type=str,
-    required=True,
-    help="path with images for training",
-)
-parser.add_argument(
-    "--save_model",
-    type=str,
-    required=True,
-    help="path to where to save model checkpoints",
-)
-parser.add_argument("--verbose", "-v", action="store_true", help="print more info")
-args = parser.parse_args()
 
-# args = {}
-# args["config_file"] = f"{prefix}configs/global_configuration.yaml"
-# args[
-#     "input_dir"
-# ] = f"{prefix}data/learning_sets/project_portable_flume/skeletonization/"
-# args["save_model"] = f"{prefix}models/mzb-skels/model-test"
-# args["verbose"] = True
-# args = cfg_to_arguments(args)
+def main(args, cfg):
+    """
+    Function to train a model for skeletons (body, head) on macrozoobenthos images.
+    The model is trained on the dataset specified in the config file.
+    The model is saved in the folder specified in the config file.
+    The model is saved every 50 steps and at the end of the training.
 
-with open(str(args.config_file), "r") as f:
-    cfg = yaml.load(f, Loader=yaml.FullLoader)
+    Parameters
+    ----------
+    args : argparse.Namespace
+        Namespace containing the arguments passed to the script. Notably:
+            - input_dir: path to the directory containing the images to be classified
+            - save_model: path to the directory where the model will be saved
+            - config_file: path to the config file with train / inference parameters
 
-cfg = cfg_to_arguments(cfg)
+    cfg : dict
+        Dictionary containing the configuration parameters.
 
-if args.verbose:
-    print(f"main args: {args}")
-    print(f"scripts config: {cfg}")
+    Returns
+    -------
+    None. Saves the model in the specified folder.
+    """
 
-args.input_dir = Path(args.input_dir)
-args.save_model = Path(args.save_model)
-args.save_model = args.save_model / "checkpoints"
-
-# Old version, where name of folder given by composition of config args. Harder to track
-# args.save_model = (
-# args.save_model
-# / (cfg.trcl_model_pretrarch + cfg.trcl_model_save_append)
-# / "checkpoints"
-# )
-np.random.seed(cfg.glob_random_seed)  # apply this seed to img tranfsorms
-torch.manual_seed(cfg.glob_random_seed)  # needed for torchvision 0.7
-torch.cuda.manual_seed(cfg.glob_random_seed)  # needed for torchvision 0.7
-# %%
-if __name__ == "__main__":
-    # Define checkpoints callbacks
-    # best model on validation
     best_val_cb = pl.callbacks.ModelCheckpoint(
         dirpath=args.save_model,
         filename="best-val-{epoch}-{step}-{val_loss:.1f}",
@@ -146,17 +103,56 @@ if __name__ == "__main__":
     # TensorBoardLogger("tb_logs", name="")
 
     trainer = Trainer(
-        gpus=cfg.trcl_gpu_ids,  # [0,1],
-        max_epochs=cfg.trsk_number_epochs,
-        strategy=DDPStrategy(find_unused_parameters=True),
+        accelerator="auto",  # cfg.trcl_num_gpus outdated
+        max_epochs=5,  # cfg.trsk_number_epochs,
+        strategy=DDPStrategy(find_unused_parameters=False),
         precision=16,
         callbacks=cbacks,
-        auto_lr_find=False,  #
-        auto_scale_batch_size=False,
         logger=wb_logger,
-        replace_sampler_ddp=False,
-        log_every_n_steps=1
-        # profiler="simple",
+        log_every_n_steps=1,
     )
 
     trainer.fit(model)
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--config_file",
+        type=str,
+        required=True,
+        help="path to config file with per-script args",
+    )
+    parser.add_argument(
+        "--input_dir",
+        type=str,
+        required=True,
+        help="path with images for training",
+    )
+    parser.add_argument(
+        "--save_model",
+        type=str,
+        required=True,
+        help="path to where to save model checkpoints",
+    )
+    parser.add_argument("--verbose", "-v", action="store_true", help="print more info")
+    args = parser.parse_args()
+
+    with open(str(args.config_file), "r") as f:
+        cfg = yaml.load(f, Loader=yaml.FullLoader)
+
+    cfg = cfg_to_arguments(cfg)
+
+    if args.verbose:
+        print(f"main args: {args}")
+        print(f"scripts config: {cfg}")
+
+    args.input_dir = Path(args.input_dir)
+    args.save_model = Path(args.save_model)
+    args.save_model = args.save_model / "checkpoints"
+
+    np.random.seed(cfg.glob_random_seed)  # apply this seed to img tranfsorms
+    torch.manual_seed(cfg.glob_random_seed)  # needed for torchvision 0.7
+    torch.cuda.manual_seed(cfg.glob_random_seed)  # needed for torchvision 0.7
+
+    main(args, cfg)

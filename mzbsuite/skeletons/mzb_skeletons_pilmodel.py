@@ -176,7 +176,7 @@ class MZBModel_skels(pl.LightningModule):
         logits = self(x)
 
         loss = self.loss_fn(logits, y)
-        self.log("trn_loss", loss, prog_bar=True)
+        self.log("trn_loss", loss, prog_bar=True, sync_dist=True)
         return loss
 
     def validation_step(self, batch, batch_idx):
@@ -188,7 +188,7 @@ class MZBModel_skels(pl.LightningModule):
 
         loss = self.loss_fn(logits, y)
 
-        self.log(f"val_loss", loss, prog_bar=True)
+        self.log(f"val_loss", loss, prog_bar=True, sync_dist=True)
         return loss
 
     def test_step(self, batch, batch_idx, print_log: str = "tst"):

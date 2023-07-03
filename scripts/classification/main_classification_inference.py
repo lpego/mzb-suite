@@ -1,26 +1,3 @@
-# %%
-# this script is used to perform inference on a trained model, on a folder containing images.
-# The structure of the folder is expected to be:
-# - input_dir
-#   - class1
-#     - image1
-#     - image2
-#     - ...
-#   - class2
-#     - image1
-#     - image2
-#     - ...
-#   - ...
-#
-# Alternatively, if no class structure is present, all images can be in a single folder, and the model will predict the class for each image.
-#
-# The output is a csv file with the following columns:
-# - image_path
-# - predicted class
-# - probability for each class
-# - true class (if available, eg when the input folder is structured as above)
-#
-
 import argparse
 import os
 import sys
@@ -33,29 +10,34 @@ import pytorch_lightning as pl
 import yaml
 import torch
 
-# try:
-#     __IPYTHON__
-# except:
-#     prefix = ""  # or "../"
-# else:
-#     prefix = "../../"  # or "../"
-
-# sys.path.append(f"{prefix}")
-
 from mzbsuite.classification.mzb_classification_pilmodel import MZBModel
 from mzbsuite.utils import cfg_to_arguments, find_checkpoints
 
 # Set the thread layer used by MKL
 os.environ["MKL_THREADING_LAYER"] = "GNU"
 
-# %%
 
-
-# %%
 def main(args, cfg):
     """
-    TODO: add docstring
+    Function to run inference on macrozoobenthos images clips, using a trained model.
+
+    Parameters
+    ----------
+    args : argparse.Namespace
+        Namespace containing the arguments passed to the script. Notably:
+            - input_dir: path to the directory containing the images to be classified
+            - input_model: path to the directory containing the model to be used for inference
+            - output_dir: path to the directory where the results will be saved
+            - config_file: path to the config file with train / inference parameters
+
+    cfg : dict
+        Dictionary containing the configuration parameters.
+
+    Returns
+    -------
+    None. Saves the results in the specified folder.
     """
+
     dirs = find_checkpoints(
         Path(args.input_model).parents[0],
         version=Path(args.input_model).name,
@@ -136,9 +118,6 @@ def main(args, cfg):
     else:
         data["gt"] = 0
 
-    for c in data:
-        print(c, len(data[c]))
-
     out_dir = (
         Path(args.output_dir)
         / f"{model.data_dir.name}_{Path(args.input_model).name}_{datetime.now().strftime('%Y%m%d_%H%M')}"
@@ -154,18 +133,17 @@ def main(args, cfg):
     if "val_set" in model.data_dir.name:
         from matplotlib import pyplot as plt
         from sklearn.metrics import (
-            confusion_matrix,
             ConfusionMatrixDisplay,
             classification_report,
         )
 
-        cmat = confusion_matrix(gc, np.argmax(pc, axis=1), normalize="true")
+        # cmat = confusion_matrix(gc, np.argmax(pc, axis=1), normalize="true")
         f = plt.figure(figsize=(10, 10))
-        aa = f.gca()
+        axis = f.gca()
         cm_disp = ConfusionMatrixDisplay.from_predictions(
             gc,
             yc,
-            ax=aa,
+            ax=axis,
             values_format=".1f",
             normalize=None,
             xticks_rotation="vertical",
@@ -175,7 +153,7 @@ def main(args, cfg):
         plt.savefig(out_dir / "confusion_matrix.png", dpi=300)
 
         rep_txt = classification_report(
-            gc, np.argmax(pc, axis=1), target_names=class_names
+            gc, np.argmax(pc, axis=1), target_names=class_names, zero_division=0
         )
         with open(out_dir / "classification_report.txt", "w") as f:
             f.write(rep_txt)
@@ -223,7 +201,7 @@ if 0:
     from matplotlib import pyplot as plt
     from PIL import Image
 
-    from mzb_workflow.classification.mzb_classification_dataloader import Denormalize
+    from mzbsuite.classification.mzb_classification_dataloader import Denormalize
 
     dd = "results/classification/project_portable_flume/mixed_set_convnext-small-v0_20230309_1737/predictions.csv"
     df_pred = pd.read_csv(prefix + dd)

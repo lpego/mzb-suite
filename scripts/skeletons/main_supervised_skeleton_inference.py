@@ -1,21 +1,3 @@
-# %%
-# Models available in this current version:
-# FOR BODY
-# dirs = find_checkpoints(Path(f"{prefix}mzb-skels"), version="ra43x1rn", log="best")#.glob("**/*.ckpt"))
-# FOR HEAAD
-# dirs = find_checkpoints(Path(f"{prefix}mzb-skels"), version="w1i7bxpf", log="best")#.glob("**/*.ckpt"))
-# BOTH
-# dirs = find_checkpoints(Path(f"{prefix}mzb-skels"), version="rns3epkx", log="last") # effnetb2
-# dirs = find_checkpoints(Path(f"{prefix}mzb-skels"), version="t88exedf", log="last") # resnet 18
-# dirs = find_checkpoints(Path(f"{prefix}mzb-skels"), version="p4fjth2e", log="last") # resnet 34
-# dirs = find_checkpoints(Path(f"{prefix}mzb-skels"), version="7vowykvv", log="best") # resnet 50
-# dirs = find_checkpoints(Path(f"{prefix}mzb-skels"), version="z5jx9gtb", log="best") # resnet 34 deeplabV3+
-# dirs = find_checkpoints(Path(f"{prefix}mzb-skels"), version="y4f351yv", log="last") # mit_b2
-# dirs = find_checkpoints(Path(f"{prefix}mzb-skels"), version="hhse6alx", log="best") # mit_b4
-# dirs = find_checkpoints(Path(f"{prefix}mzb-skels"), version="33azu4vn", log="best") # mit_b2 tversky loss v1
-# dirs = find_checkpoints(Path(f"{prefix}mzb-skels"), version="pt72ofvi", log="best") # mit_b2 tversky loss v2
-# dirs = find_checkpoints(Path(f"{prefix}mzb-skels"), version="i6vl2f2j", log="last") # mit_b1 tversky loss
-
 import argparse
 import os
 import sys
@@ -36,24 +18,187 @@ import pandas as pd
 import pytorch_lightning as pl
 import yaml
 
-try:
-    __IPYTHON__
-except:
-    prefix = ""  # or "../"
-else:
-    prefix = "../../"  # or "../"
-
-sys.path.append(f"{prefix}")
-
-from mzb_workflow.skeletons.mzb_skeletons_pilmodel import MZBModel_skels
-from mzb_workflow.skeletons.mzb_skeletons_helpers import paint_image_tensor, Denormalize
-from mzb_workflow.utils import cfg_to_arguments, find_checkpoints
+from mzbsuite.skeletons.mzb_skeletons_pilmodel import MZBModel_skels
+from mzbsuite.skeletons.mzb_skeletons_helpers import paint_image_tensor, Denormalize
+from mzbsuite.utils import cfg_to_arguments, find_checkpoints
 
 # Set the thread layer used by MKL
 os.environ["MKL_THREADING_LAYER"] = "GNU"
 
-# %%
-if not prefix:
+
+def main(args, cfg):
+    """
+    Function to run inference of skeletons (body, head) on macrozoobenthos images clips, using a trained model.
+
+    Parameters
+    ----------
+    args : argparse.Namespace
+        Namespace containing the arguments passed to the script. Notably:
+            - input_dir: path to the directory containing the images to be classified
+            - input_type: type of input data, either "val" or "external"
+            - input_model: path to the directory containing the model to be used for inference
+            - output_dir: path to the directory where the results will be saved
+            - save_masks: path to the directory where the masks will be saved
+            - config_file: path to the config file with train / inference parameters
+
+    cfg : dict
+        Dictionary containing the configuration parameters.
+
+    Returns
+    -------
+    None. Saves the results in the specified folder.
+    """
+    dirs = find_checkpoints(
+        Path(args.input_model).parents[0],
+        version=Path(args.input_model).name,
+        log=cfg.infe_model_ckpt,
+    )
+
+    mod_path = dirs[0]
+
+    model = MZBModel_skels()
+    model.model = model.load_from_checkpoint(
+        checkpoint_path=mod_path,
+    )
+
+    model.data_dir = Path(args.input_dir)
+    model.im_folder = model.data_dir / "images"
+    model.bo_folder = model.data_dir / "sk_body"
+    model.he_folder = model.data_dir / "sk_head"
+
+    # this is unfortunately necessary to get the model to work, reindex trn/val split
+    np.random.seed(12)
+    N = len(list(model.im_folder.glob("*.jpg")))
+    model.trn_inds = sorted(
+        list(np.random.choice(np.arange(N), size=int(0.8 * N), replace=False))
+    )
+    model.val_inds = sorted(list(set(np.arange(N)).difference(set(model.trn_inds))))
+    model.eval()
+    model.freeze()
+
+    if ("flume" in str(args.input_dir)) and (args.input_type == "val"):
+        dataloader = model.val_dataloader()
+        dataset_name = "flume"
+    elif args.input_type == "external":
+        dataloader = model.external_dataloader(args.input_dir)
+        dataset_name = "external"
+
+    im_fi = dataloader.dataset.img_paths
+
+    pbar_cb = pl.callbacks.progress.TQDMProgressBar(refresh_rate=5)
+
+    trainer = pl.Trainer(
+        max_epochs=1,
+        accelerator="gpu" if torch.cuda.is_available() else "cpu",
+        devices=1 if torch.cuda.is_available() else None,
+        callbacks=[pbar_cb],
+        enable_checkpointing=False,
+        logger=False,
+    )
+
+    outs = trainer.predict(
+        model=model, dataloaders=[dataloader], return_predictions=True
+    )
+
+    # aggregate predictions
+    p = []
+    gt = []
+    for out in outs:
+        p.append(out[0].numpy())
+        gt.append(out[1].numpy())
+    pc = np.concatenate(p)
+    gc = np.concatenate(gt)
+
+    # %%
+    cfg.skel_label_buffer_on_preds = 25
+    MASK = True if cfg.skel_label_buffer_on_preds else False
+    # nn body preds
+    preds_size = []
+
+    if args.verbose:
+        print("Neural network predictions done, refining and saving skeletons...")
+
+    for i, ti in tqdm(enumerate(im_fi[:])):
+        im = Image.open(ti).convert("RGB")
+
+        # get original size of image for resizing predictions
+        o_size = im.size
+
+        # get predictions
+        x = model.transform_ts(im)
+        x = x[np.newaxis, ...]
+        with torch.set_grad_enabled(False):
+            p = torch.sigmoid(model(x)).cpu().numpy().squeeze()
+
+        refined_skel = np.concatenate((p, np.zeros_like(p[0:1, ...])), axis=0)
+        refined_skel = Image.fromarray(
+            (255 * np.transpose(refined_skel, (1, 2, 0))).astype(np.uint8)
+        )
+
+        refined_skel = transforms.Resize(
+            (o_size[1], o_size[0]),
+            interpolation=transforms.InterpolationMode.BILINEAR,
+        )(refined_skel)
+        refined_skel = np.transpose(np.asarray(refined_skel), (2, 0, 1))
+
+        # mask out the edges of the image
+        if MASK:
+            mask = np.ones_like(x[0, 0, ...])
+            mask[-cfg.skel_label_buffer_on_preds :, :] = 0
+            mask[: cfg.skel_label_buffer_on_preds, :] = 0
+            mask[:, : cfg.skel_label_buffer_on_preds] = 0
+            mask[:, -cfg.skel_label_buffer_on_preds :] = 0
+
+            mask = Image.fromarray(mask)
+            mask = np.array(
+                transforms.Resize(
+                    (o_size[1], o_size[0]),
+                    interpolation=transforms.InterpolationMode.BILINEAR,
+                )(mask)
+            )
+            refined_skel = [
+                (thin(a) > 0).astype(float) * mask for a in refined_skel[0:2, ...] > 50
+            ]
+        else:
+            # Refine the predicted skeleton image
+            refined_skel = [
+                (thin(a) > 0).astype(float) for a in refined_skel[0:2, ...] > 50
+            ]
+
+        refined_skel = [(255 * s).astype(np.uint8) for s in refined_skel]
+
+        if args.save_masks:
+            name = "_".join(ti.name.split("_")[:-1])
+            cv2.imwrite(
+                str(args.save_masks / f"{name}_body.jpg"),
+                refined_skel[0],
+                [cv2.IMWRITE_JPEG_QUALITY, 100],
+            )
+            cv2.imwrite(
+                str(args.save_masks / f"{name}_head.jpg"),
+                refined_skel[1],
+                [cv2.IMWRITE_JPEG_QUALITY, 100],
+            )
+
+        preds_size.append(
+            pd.DataFrame(
+                {
+                    "clip_name": "_".join(ti.name.split(".")[0].split("_")[:-1]),
+                    "nn_pred_body": [np.sum(refined_skel[0] > 0)],
+                    "nn_pred_head": [np.sum(refined_skel[1] > 0)],
+                }
+            )
+        )
+
+    preds_size = pd.concat(preds_size)
+    out_dir = Path(
+        f"{args.output_dir}_{dataset_name}_{datetime.now().strftime('%Y%m%d_%H%M')}"
+    )
+    out_dir.mkdir(exist_ok=True, parents=True)
+    preds_size.to_csv(out_dir / f"size_skel_supervised_model.csv", index=False)
+
+
+if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--config_file",
@@ -95,291 +240,22 @@ if not prefix:
     parser.add_argument("--verbose", "-v", action="store_true", help="print more info")
     args = parser.parse_args()
 
-else:
-    args = {}
-    args["config_file"] = f"{prefix}configs/configuration_flume_datasets.yaml"
-    args[
-        "input_dir"
-    ] = f"{prefix}data/learning_sets/project_portable_flume/skeletonization/"
-    args["input_model"] = f"{prefix}models/mzb-skeleton-models/mit-b2-v1/"
-    args[
-        "output_dir"
-    ] = f"{prefix}results/skeletons/project_portable_flume/supervised_skeletons/"
-    args["verbose"] = True
-    args = cfg_to_arguments(args)
+    with open(str(args.config_file), "r") as f:
+        cfg = yaml.load(f, Loader=yaml.FullLoader)
 
-with open(str(args.config_file), "r") as f:
-    cfg = yaml.load(f, Loader=yaml.FullLoader)
+    cfg = cfg_to_arguments(cfg)
 
-cfg = cfg_to_arguments(cfg)
+    if args.save_masks is not None:
+        args.save_masks = Path(f"{args.save_masks}")
+        args.save_masks.mkdir(parents=True, exist_ok=True)
 
-if args.save_masks is not None:
-    args.save_masks = Path(f"{prefix}{args.save_masks}")
-    args.save_masks.mkdir(parents=True, exist_ok=True)
+    args.output_dir = Path(args.output_dir)
 
-args.output_dir = Path(args.output_dir)
+    if args.verbose:
+        print(f"main args: {args}")
+        print(f"scripts config: {cfg}")
 
-if args.verbose:
-    print(f"main args: {args}")
-    print(f"scripts config: {cfg}")
-
-# %%
-dirs = find_checkpoints(
-    Path(args.input_model).parents[0],
-    version=Path(args.input_model).name,
-    log=cfg.infe_model_ckpt,
-)
-
-print(Path(args.input_model))
-
-mod_path = dirs[0]
-
-model = MZBModel_skels()
-model.model = model.load_from_checkpoint(
-    checkpoint_path=mod_path,
-)
-
-model.data_dir = Path(args.input_dir)
-model.im_folder = model.data_dir / "images"
-model.bo_folder = model.data_dir / "sk_body"
-model.he_folder = model.data_dir / "sk_head"
-
-# this is unfortunately necessary to get the model to work, reindex trn/val split
-np.random.seed(12)
-N = len(list(model.im_folder.glob("*.jpg")))
-model.trn_inds = sorted(
-    list(np.random.choice(np.arange(N), size=int(0.8 * N), replace=False))
-)
-model.val_inds = sorted(list(set(np.arange(N)).difference(set(model.trn_inds))))
-model.eval()
-model.freeze()
-# %%
-# dataloader = model.train_dataloader(shuffle=False)
-# dataloader = model.dubendorf_dataloader()
-if ("flume" in str(args.input_dir)) and (args.input_type == "val"):
-    dataloader = model.val_dataloader()
-    dataset_name = "flume"
-elif args.input_type == "external":
-    # data_dir = Path(
-    #     "/data/shared/mzb-classification/data/raw_learning_sets_duben/insects/"
-    # )
-    dataloader = model.external_dataloader(args.input_dir)
-    dataset_name = "external"
-
-    # dataloader = model.external_dataloader(
-    #     model.data_dir, glob_pattern=cfg.infe_image_glob
-    # )
-
-im_fi = dataloader.dataset.img_paths
-
-pbar_cb = pl.callbacks.progress.TQDMProgressBar(refresh_rate=5)
-
-trainer = pl.Trainer(
-    max_epochs=1,
-    gpus=1,  # [0,1],
-    callbacks=[pbar_cb],
-    enable_checkpointing=False,
-    logger=False,
-)
-
-outs = trainer.predict(model=model, dataloaders=[dataloader], return_predictions=True)
-# %%
-# aggregate predictions
-p = []
-gt = []
-for out in outs:
-    p.append(out[0].numpy())
-    gt.append(out[1].numpy())
-pc = np.concatenate(p)
-gc = np.concatenate(gt)
-
-# %%
-cfg.skel_label_buffer_on_preds = 25
-MASK = True if cfg.skel_label_buffer_on_preds else False
-# nn body preds
-preds_size = []
-
-if args.verbose:
-    print("Neural network predictions done, refining and saving skeletons...")
-
-for i, ti in tqdm(enumerate(im_fi[:])):
-    im = Image.open(ti).convert("RGB")
-
-    # get original size of image for resizing predictions
-    o_size = im.size
-
-    # get predictions
-    x = model.transform_ts(im)
-    x = x[np.newaxis, ...]
-    with torch.set_grad_enabled(False):
-        p = torch.sigmoid(model(x)).cpu().numpy().squeeze()
-
-    refined_skel = np.concatenate((p, np.zeros_like(p[0:1, ...])), axis=0)
-    refined_skel = Image.fromarray(
-        (255 * np.transpose(refined_skel, (1, 2, 0))).astype(np.uint8)
-    )
-
-    refined_skel = transforms.Resize(
-        (o_size[1], o_size[0]),
-        interpolation=transforms.InterpolationMode.BILINEAR,
-    )(refined_skel)
-    refined_skel = np.transpose(np.asarray(refined_skel), (2, 0, 1))
-
-    # mask out the edges of the image
-    if MASK:
-        mask = np.ones_like(x[0, 0, ...])
-        mask[-cfg.skel_label_buffer_on_preds :, :] = 0
-        mask[: cfg.skel_label_buffer_on_preds, :] = 0
-        mask[:, : cfg.skel_label_buffer_on_preds] = 0
-        mask[:, -cfg.skel_label_buffer_on_preds :] = 0
-
-        mask = Image.fromarray(mask)
-        mask = np.array(
-            transforms.Resize(
-                (o_size[1], o_size[0]),
-                interpolation=transforms.InterpolationMode.BILINEAR,
-            )(mask)
-        )
-        refined_skel = [
-            (thin(a) > 0).astype(float) * mask for a in refined_skel[0:2, ...] > 50
-        ]
-    else:
-        # Refine the predicted skeleton image
-        refined_skel = [
-            (thin(a) > 0).astype(float) for a in refined_skel[0:2, ...] > 50
-        ]
-
-    refined_skel = [(255 * s).astype(np.uint8) for s in refined_skel]
-
-    if args.save_masks:
-        name = "_".join(ti.name.split("_")[:-1])
-        cv2.imwrite(
-            str(args.save_masks / f"{name}_body.jpg"),
-            refined_skel[0],
-            [cv2.IMWRITE_JPEG_QUALITY, 100],
-        )
-        cv2.imwrite(
-            str(args.save_masks / f"{name}_head.jpg"),
-            refined_skel[1],
-            [cv2.IMWRITE_JPEG_QUALITY, 100],
-        )
-
-    preds_size.append(
-        pd.DataFrame(
-            {
-                "clip_name": "_".join(ti.name.split(".")[0].split("_")[:-1]),
-                "nn_pred_body": [np.sum(refined_skel[0] > 0)],
-                "nn_pred_head": [np.sum(refined_skel[1] > 0)],
-            }
-        )
-    )
-
-# %%
-preds_size = pd.concat(preds_size)
-out_dir = Path(
-    f"{args.output_dir}_{dataset_name}_{datetime.now().strftime('%Y%m%d_%H%M')}"
-)
-out_dir.mkdir(exist_ok=True, parents=True)
-preds_size.to_csv(out_dir / f"size_skel_supervised_model.csv", index=False)
-
-# %%
-if 0:
-    denorm = Denormalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225))
-    DETECT = 0
-    FR = 0
-    N = 10
-    BUFF = 20
-    MASK = False
-    sortind = np.random.randint(0, len(im_fi), N)
-    # np.random.shuffle(im_fi)
-    for i, ind in enumerate(sortind[:10]):
-        ti = im_fi[ind]
-
-        if i < FR:
-            continue
-        elif i > N:
-            break
-
-        # fi = files[ti]
-        im = Image.open(ti).convert("RGB")
-        x = model.transform_ts(im)
-        x = x[np.newaxis, ...]
-
-        if MASK:
-            ma_ = "_".join(ti.name.split("_")[:-1]) + "_mask.jpg"
-            mask = Image.open(Path(f"../data/clips_{dataset_name}/") / ma_).convert(
-                "RGB"
-            )
-            mask = (denorm(model.transform_ts(mask)).numpy() > 0).astype(float)
-        else:
-            mask = np.ones_like(x[0, 0, ...])
-            mask[-BUFF:, :] = 0
-            mask[:BUFF, :] = 0
-            mask[:, :BUFF] = 0
-            mask[:, -BUFF:] = 0
-
-        mask[mask == 0] = np.nan
-
-        with torch.set_grad_enabled(False):
-            p = torch.sigmoid(model(x)).cpu().numpy()
-
-        pl_im = denorm(np.transpose(x.squeeze(), (1, 2, 0)))
-
-        # Refine the predicted skeleton image
-        refined_skel = np.concatenate(
-            [
-                (thin(a)[np.newaxis, ...] > 0).astype(float) * mask
-                for a in p[0, ...] > 0.75
-            ],
-            axis=0,
-        )
-        # refined_skel[1,...] *= 2
-        # refined_skel = np.sum(refined_skel, axis=0)*mask
-
-        # prepare colored RGB images
-        rgb_predictions = paint_image_tensor(
-            pl_im, p[0, :, ...], [[1, 0, 0], [0, 1, 0]]
-        )
-        # rgb_body = paint_image(pl_im, p[0,0,...], [0.8, 0.75, 0])
-        # rgb_head = paint_image(pl_im, p[0,1,...], [0.8, 0.75, 0])
-        rgb_skel = paint_image_tensor(pl_im, refined_skel, [[1, 0, 0], [0, 1, 0]])
-        if dataloader.dataset.learning_set != "dubendorf":
-            gplt = gc[ind, ...]
-            rgb_gt = paint_image_tensor(pl_im, gplt, [[1, 0, 0], [0, 1, 0]])
-
-        if dataloader.dataset.learning_set != "dubendorf":
-            f, a = plt.subplots(1, 4, figsize=(20, 20))
-            p_class = np.argmax(p)
-            a[0].imshow(pl_im)
-            # a[0].imshow(pl_im*np.concatenate(3*[mask[...,np.newaxis]], axis=2))
-            a[0].axis("off")
-            # a[1].imshow(p[0,0,...]*mask)
-            a[1].imshow(rgb_predictions)
-            a[1].axis("off")
-            a[2].imshow(rgb_skel)
-            # a[4].imshow(refined_skel)
-            a[2].axis("off")
-            # a[2].imshow(p[0,0,...]*mask)
-            # a[2].imshow(rgb_head)
-            # a[2].axis("off")
-            # a[3].imshow(np.sum(gplt, axis=0))
-            a[3].imshow(rgb_gt)
-            a[3].axis("off")
-
-        else:
-            f, a = plt.subplots(1, 3, figsize=(20, 20))
-            p_class = np.argmax(p)
-            a[0].imshow(pl_im)
-            # a[0].imshow(pl_im*np.concatenate(3*[mask[...,np.newaxis]], axis=2))
-            a[0].axis("off")
-            # a[1].imshow(p[0,0,...]*mask)
-            a[1].imshow(rgb_predictions)
-            a[1].axis("off")
-            a[2].imshow(rgb_skel)
-            # a[4].imshow(refined_skel)
-            a[2].axis("off")
-            # a[3].imshow(refined_skel)
-            # a[3].axis('off')
+    main(args, cfg)
 
     # %%
     # ['resnet18', 'resnet34', 'resnet50', 'resnet101', 'resnet152',

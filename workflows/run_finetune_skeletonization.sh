@@ -2,8 +2,8 @@
 
 ## Set up pipeline to fine tune the supervised skeletonization model
 ROOT_DIR="/data/shared/mzb-workflow"
-MODEL=mit-b2-v3
-LSET_FOLD=$ROOT_DIR/data/learning_sets/project_portable_flume/skeletonization_v2
+MODEL=mit-b2-vJuly
+LSET_FOLD=$ROOT_DIR/data/learning_sets/project_portable_flume/skeletonization
 
 ## This has to be run once, to create the curated learning sets, 
 ## ------------------------------------------------------------
