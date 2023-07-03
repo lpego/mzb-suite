@@ -82,7 +82,7 @@ def read_pretrained_model(architecture, n_class):
     architecture = architecture.lower()
 
     if architecture == "vgg":
-        model = models.vgg16(pretrained=True)
+        model = models.vgg16(weights=models.VGG16_Weights.IMAGENET1K_V1)
 
         in_feat = model.classifier[-1].in_features
 
@@ -100,7 +100,7 @@ def read_pretrained_model(architecture, n_class):
                 param.requires_grad = False
 
     elif architecture == "resnet18":
-        model = models.resnet18(pretrained=True)
+        model = models.resnet18(weights=models.ResNet18_Weights.IMAGENET1K_V1)
         model.fc = nn.Linear(
             in_features=model.fc.in_features, out_features=n_class, bias=True
         )
@@ -113,7 +113,7 @@ def read_pretrained_model(architecture, n_class):
             param.requires_grad = True
 
     elif architecture == "resnet50":
-        model = models.resnet50(pretrained=True)
+        model = models.resnet50(weights=models.ResNet50_Weights.IMAGENET1K_V1)
         model.fc = nn.Linear(
             in_features=model.fc.in_features, out_features=n_class, bias=True
         )
@@ -126,7 +126,7 @@ def read_pretrained_model(architecture, n_class):
         #     param.requires_grad = True
 
     elif architecture == "densenet161":
-        model = models.densenet161(pretrained=True)
+        model = models.densenet161(weights=models.DenseNet161_Weights.IMAGENET1K_V1)
         model.classifier = nn.Linear(
             in_features=model.classifier.in_features, out_features=n_class, bias=True
         )
@@ -138,7 +138,7 @@ def read_pretrained_model(architecture, n_class):
             param.requires_grad = True
 
     elif architecture == "mobilenet":
-        model = models.mobilenet_v2(pretrained=True)
+        model = models.mobilenet_v2(weights=models.MobileNet_V2_Weights.IMAGENET1K_V1)
         model.classifier[1] = nn.Linear(
             in_features=model.classifier[1].in_features,
             out_features=n_class,
@@ -152,7 +152,9 @@ def read_pretrained_model(architecture, n_class):
             param.requires_grad = True
 
     elif architecture == "efficientnet-b2":
-        model = models.efficientnet_b2(pretrained=True)
+        model = models.efficientnet_b2(
+            weights=models.EfficientNet_B2_Weights.IMAGENET1K_V1
+        )
         model.classifier[1] = nn.Linear(
             in_features=model.classifier[1].in_features,
             out_features=n_class,
@@ -166,7 +168,9 @@ def read_pretrained_model(architecture, n_class):
             param.requires_grad = True
 
     elif architecture == "efficientnet-b1":
-        model = models.efficientnet_b1(pretrained=True, progress=False)
+        model = models.efficientnet_b1(
+            weights=models.EfficientNet_B1_Weights.IMAGENET1K_V1
+        )
         model.classifier[1] = nn.Linear(
             in_features=model.classifier[1].in_features,
             out_features=n_class,
@@ -180,7 +184,7 @@ def read_pretrained_model(architecture, n_class):
             param.requires_grad = True
 
     elif architecture == "vit16":
-        model = models.vit_b_16(pretrained=True)
+        model = models.vit_b_16(weights=models.ViT_B_16_Weights.IMAGENET1K_V1)
         model.heads.head = nn.Linear(
             in_features=model.heads.head.in_features,
             out_features=n_class,
@@ -194,7 +198,9 @@ def read_pretrained_model(architecture, n_class):
             param.requires_grad = True
 
     elif architecture == "convnext-small":
-        model = models.convnext_small(pretrained=True)
+        model = models.convnext_small(
+            weights=models.ConvNeXt_Small_Weights.IMAGENET1K_V1
+        )
         model.classifier[2] = nn.Linear(
             in_features=model.classifier[2].in_features, out_features=n_class, bias=True
         )

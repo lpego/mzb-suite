@@ -1,6 +1,7 @@
 name: mzbsuite
 channels:
   - pytorch
+  - nvidia
   - conda-forge
   - defaults
 dependencies:
@@ -8,6 +9,12 @@ dependencies:
   - numpy=1.25
   - pandas=1.5.3
   - yaml=0.2.5
+  - pytorch=2.0.1
+  - pytorch-cuda=11.8
+  - torchvision
+  - pytorch-lightning=2.0.3
+
   - pip
   - pip:
     - pyyaml=6.0
+    - wandb=0.15.4

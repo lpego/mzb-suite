@@ -114,17 +114,14 @@ def main(args, cfg):
 
     # instantiate trainer and train
     trainer = Trainer(
-        gpus=cfg.trcl_gpu_ids,  # [0,1],
+        accelerator="auto",  # cfg.trcl_num_gpus outdated
         max_epochs=cfg.trcl_number_epochs,
         strategy=DDPStrategy(
             find_unused_parameters=False
         ),  # TODO: check how to use in notebook
         precision=16,
         callbacks=cbacks,
-        auto_lr_find=False,  #
-        auto_scale_batch_size=False,
         logger=wb_logger,
-        replace_sampler_ddp=False,
         log_every_n_steps=1
         # profiler="simple",
     )

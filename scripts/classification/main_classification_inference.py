@@ -100,7 +100,7 @@ def main(args, cfg):
 
     trainer = pl.Trainer(
         max_epochs=1,
-        gpus=1,  # [0,1],
+        accelerator="auto",
         callbacks=[pbar_cb],
         enable_checkpointing=False,
         logger=False,

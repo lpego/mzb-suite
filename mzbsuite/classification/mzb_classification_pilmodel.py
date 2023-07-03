@@ -128,7 +128,7 @@ class MZBModel(pl.LightningModule):
         self.model = read_pretrained_model(self.architecture, self.num_classes)
 
         # initialize F1Score metric
-        result_metric = F1Score()
+        result_metric = F1Score(task="multiclass", num_classes=num_classes)
 
         # # check if full_state_update=False can be used safely
         # safe_to_use = check_forward_no_full_state(result_metric)
@@ -155,8 +155,8 @@ class MZBModel(pl.LightningModule):
         preds = torch.argmax(logits, dim=1)
         self.accuracy(preds, y)
 
-        self.log("trn_loss", loss, prog_bar=True)
-        self.log("trn_acc", self.accuracy, prog_bar=False)
+        self.log("trn_loss", loss, prog_bar=True, sync_dist=True)
+        self.log("trn_acc", self.accuracy, prog_bar=False, sync_dist=True)
 
         return loss
 
@@ -171,8 +171,8 @@ class MZBModel(pl.LightningModule):
         preds = torch.argmax(logits, dim=1)
         self.accuracy(preds, y)
 
-        self.log(f"{print_log}_loss", loss, prog_bar=True)
-        self.log(f"{print_log}_acc", self.accuracy, prog_bar=True)
+        self.log(f"{print_log}_loss", loss, prog_bar=True, sync_dist=True)
+        self.log(f"{print_log}_acc", self.accuracy, prog_bar=True, sync_dist=True)
         return loss
 
     def test_step(self, batch, batch_idx, print_log: str = "tst"):

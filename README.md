@@ -45,6 +45,7 @@ The full conda env is given in `environment.yml`. We need to check if the docker
 
 When training models, logging is made throught weight and biases automatically. Refer to the documentation of wandb for more details, at [https://docs.wandb.ai/](https://docs.wandb.ai/). You will need to create an account and to login to wandb to be able to log the training. 
 
+After installing all requirements, run `wandb login`.
 
 ## Changelog 
 
