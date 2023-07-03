@@ -3,68 +3,59 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-=====================================
-Welcome to mzb-suite's documentation!
-=====================================
+================================================
+MZB-WORFLOW: Macrozoobenthos data workflow suite 
+================================================
+
+This documentation introduces and illustrates some examples of the _Macrozoobenthos data processing workflow suite (mzb-workflow project)_. 
+
+The MZB project
+===============
+
+:doc:`files/installing`
+    How to install the project and ``mzb-suite`` package on your machine.
+
+:doc:`files/workflow_models`
+    Introduction to the project technical aspects and the models used.
+
+
+Examples
+========
+
+:doc:`files/examples/ex_intro`
+    Overview of data projessing abilities and limitations
+
+:doc:`files/examples/ex_preprocessing`
+    Example of data
+
+.. Hidden TOCs
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+    :caption: Project Documentation
+    :maxdepth: 1
+    :hidden:
 
-   files/intro
+    files/installing
+    files/workflow_models
 
-==================
-Indices and tables
-==================
+.. toctree::
+    :caption: Examples
+    :maxdepth: 1
+    :hidden:
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+    files/examples/ex_intro
+    files/examples/ex_preprocessing
 
-=================================
-Modules and script main functions
-=================================
+.. toctree::
+    :caption: Processing scripts
+    :maxdepth: 1
+    :hidden:
 
-Scripts
-=======
+    files/scripts/processing_scripts
 
-:mod:`main_classification_finetune`
------------------------------------
-.. automodule:: scripts.classification.main_classification_finetune
-    :members:
+.. toctree::
+    :caption: ``mzb-suite`` Modules
+    :maxdepth: 1 
+    :hidden:
 
-
-mzbsuite package
-================
-
-:mod:`mzb_classification_dataloader`
-------------------------------------
-.. automodule:: mzbsuite.classification.mzb_classification_dataloader
-    :members:
-
-:mod:`mzb_classification_pilmodel`
-----------------------------------
-.. automodule:: mzbsuite.classification.mzb_classification_pilmodel
-    :members:
-
-:mod:`mzb_skeletons_dataloader`
--------------------------------
-.. automodule:: mzbsuite.skeletons.mzb_skeletons_dataloader
-    :members:
-
-:mod:`mzb_skeletons_pilmodel`
------------------------------
-.. automodule:: mzbsuite.skeletons.mzb_skeletons_pilmodel
-	:members:
-
-:mod:`mzb_skeletons_helpers`
-----------------------------
-.. automodule:: mzbsuite.skeletons.mzb_skeletons_helpers
-	:members:
-
-:mod:`mzbsuite.utils`      
----------------------
-.. automodule:: mzbsuite.utils 
-	:members:
-
-
+    files/modules/mzbsuite

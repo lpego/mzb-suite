@@ -15,15 +15,17 @@ import sys
 
 sys.path.insert(0, os.path.abspath("../../"))
 
+from mzbsuite import __version__ as mzb_version
 
 # -- Project information -----------------------------------------------------
 
 project = "mzbsuite"
-copyright = "2023, Michele Volpi, Luca Pegoraro, Blake Matthews, Catherine Graham"
+date = 2023
 author = "Michele Volpi, Luca Pegoraro, Blake Matthews, Catherine Graham"
-
-# The full version, including alpha/beta/rc tags
-release = "0.0.1"
+version = mzb_version
+release = f"{version} alpha"
+copyright = f"{date} {author}"
+language = "en"
 
 
 # -- General configuration ---------------------------------------------------
@@ -38,6 +40,7 @@ extensions = [
     "sphinx.ext.autosummary",
     "sphinx.ext.doctest",
     "sphinx.ext.inheritance_diagram",
+    "sphinx_rtd_theme",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -53,9 +56,28 @@ exclude_patterns = []
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = "nature"
+html_theme = "sphinx_rtd_theme"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
+
+html_logo = "../assets/mzb-logo.svg"
+
+html_theme_options = {
+    # 'analytics_id': 'G-XXXXXXXXXX',  #  Provided by Google in your dashboard
+    # 'analytics_anonymize_ip': False,
+    "logo_only": True,
+    "display_version": True,
+    "prev_next_buttons_location": "bottom",
+    "style_external_links": False,
+    # "vcs_pageview_mode": "",
+    # "style_nav_header_background": "white",
+    # Toc options
+    "collapse_navigation": True,
+    "sticky_navigation": True,
+    "navigation_depth": 2,
+    "includehidden": True,
+    "titles_only": False,
+}
