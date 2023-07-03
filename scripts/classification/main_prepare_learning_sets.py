@@ -26,7 +26,7 @@ else:
 
 sys.path.append(prefix)
 
-from mzb_workflow.utils import cfg_to_arguments
+from mzbsuite.utils import cfg_to_arguments
 
 # %%
 parser = argparse.ArgumentParser()
@@ -89,7 +89,6 @@ if args.verbose:
 
 # Move files to target folders for all files in the curated learning set
 for s_fo in recode_order:
-
     target_folder = target_trn / recode_order[s_fo]
     target_folder.mkdir(exist_ok=True, parents=True)
 
@@ -102,7 +101,6 @@ size = cfg.lset_val_size
 trn_folds = [a.name for a in sorted(list(target_trn.glob("*")))]
 
 for s_fo in trn_folds:
-
     target_folder = target_val / s_fo
     target_folder.mkdir(exist_ok=True, parents=True)
 

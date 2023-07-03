@@ -54,7 +54,7 @@ Examples
     files/scripts/processing_scripts
 
 .. toctree::
-    :caption: ``mzb-suite`` Modules
+    :caption: mzb-suite Modules
     :maxdepth: 1 
     :hidden:
 
