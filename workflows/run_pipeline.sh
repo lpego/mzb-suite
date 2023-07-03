@@ -4,11 +4,11 @@ ROOT_DIR="/data/shared/mzb-workflow"
 MODEL="efficientnet-b2-v0"
 LSET_FOLD=$ROOT_DIR/data/learning_sets/project_portable_flume/aggregated_learning_sets
 
-python scripts/image_parsing/main_raw_to_clips.py \
-    --input_dir=$ROOT_DIR/data/raw/project_portable_flume \
-    --output_dir=$ROOT_DIR/data/derived/project_portable_flume/blobs/ \
-    --save_full_mask_dir=$ROOT_DIR/data/derived/project_portable_flume/full_image_masks \
-    --config_file=$ROOT_DIR/configs/configuration_flume_datasets.yaml
+# python scripts/image_parsing/main_raw_to_clips.py \
+#     --input_dir=$ROOT_DIR/data/raw/project_portable_flume \
+#     --output_dir=$ROOT_DIR/data/derived/project_portable_flume/blobs/ \
+#     --save_full_mask_dir=$ROOT_DIR/data/derived/project_portable_flume/full_image_masks \
+#     --config_file=$ROOT_DIR/configs/configuration_flume_datasets.yaml
     # -v
 
 ## CHECK: _mask_properties.csv file in the output directory, does not get filled correctly  
@@ -18,12 +18,12 @@ python scripts/image_parsing/main_raw_to_clips.py \
 # eg. on a validaton / test set, or on a new set of images, or whatever. be assured to pass only clips generated similarty 
 # to the first step (main_raw_to_clips.py)
 # classification models are stored in $ROOT_DIR/models/mzb-class/
-python scripts/classification/main_classification_inference.py \
-    --config_file=$ROOT_DIR/configs/configuration_flume_datasets.yaml \
-    --input_dir=$ROOT_DIR/data/learning_sets/project_portable_flume/aggregated_learning_sets/val_set \
-    --input_model=$ROOT_DIR/models/mzb-class/convnext-small \
-    --output_dir=$ROOT_DIR/results/classification/project_portable_flume/ \
-    -v
+# python scripts/classification/main_classification_inference.py \
+#     --config_file=$ROOT_DIR/configs/configuration_flume_datasets.yaml \
+#     --input_dir=$ROOT_DIR/data/learning_sets/project_portable_flume/aggregated_learning_sets/val_set \
+#     --input_model=$ROOT_DIR/models/mzb-class/convnext-small \
+#     --output_dir=$ROOT_DIR/results/classification/project_portable_flume/ \
+#     -v
 
 
 #### ADD FUNCTION TO EXTRACT ALL CLIPS WITHOUTH ERRORS 
@@ -52,13 +52,13 @@ python scripts/skeletons/main_unsupervised_skeleton_estimation.py \
 ## This is run on a custom folder structure and will regturn a csv with the results
 ## Specifically, this is run on the validation set to get the accuracy of the model
 ## ------------------------------------------------------------------------------------------
-python scripts/skeletons/main_supervised_skeleton_inference.py \
-    --config_file=$ROOT_DIR/configs/configuration_flume_datasets.yaml \
-    --input_dir=$LSET_FOLD \
-    --input_type="val" \
-    --input_model=$ROOT_DIR/models/mzb-skeleton-models/$MODEL \
-    --output_dir=$ROOT_DIR/data/derived/skeletons/project_portable_flume/supervised_skeletons/test_skseg_$MODEL \
-    --save_masks=$ROOT_DIR/data/derived/project_portable_flume/skeletons/supervised_skeletons/skseg_efficientnet-b2-v2/val_set_masks/ \
+# python scripts/skeletons/main_supervised_skeleton_inference.py \
+#     --config_file=$ROOT_DIR/configs/configuration_flume_datasets.yaml \
+#     --input_dir=$LSET_FOLD \
+#     --input_type="val" \
+#     --input_model=$ROOT_DIR/models/mzb-skeleton-models/$MODEL \
+#     --output_dir=$ROOT_DIR/data/derived/skeletons/project_portable_flume/supervised_skeletons/test_skseg_$MODEL \
+#     --save_masks=$ROOT_DIR/data/derived/project_portable_flume/skeletons/supervised_skeletons/skseg_efficientnet-b2-v2/val_set_masks/ \
 
 # ## And this is to parse a custom folder structure with images from different sources
 # ## ---------------------------------------------------------------------------------------------------

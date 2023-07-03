@@ -1,6 +1,7 @@
 
 # Arguments not to be spec via CLI
 glob_random_seed: 222 
+glob_root_folder: /data/shared/mzb-workflow/
 
 # Image parsing specific 
 impa_image_format: jpg
