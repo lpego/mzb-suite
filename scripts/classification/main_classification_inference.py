@@ -118,10 +118,11 @@ def main(args, cfg):
     else:
         data["gt"] = 0
 
-    out_dir = (
-        Path(args.output_dir)
-        / f"{model.data_dir.name}_{Path(args.input_model).name}_{datetime.now().strftime('%Y%m%d_%H%M')}"
-    )
+    # out_dir = (
+    #     Path(args.output_dir)
+    #     / f"{model.data_dir.name}_{Path(args.input_model).name}_{datetime.now().strftime('%Y%m%d_%H%M')}"
+    # )
+    out_dir = Path(args.output_dir)
     if not out_dir.exists():
         out_dir.mkdir(parents=True)
 
