@@ -110,8 +110,6 @@ def main(args, cfg):
     gc = np.concatenate(gt)
 
     # %%
-    cfg.skel_label_buffer_on_preds = 25
-    MASK = True if cfg.skel_label_buffer_on_preds else False
     # nn body preds
     preds_size = []
 
@@ -142,7 +140,7 @@ def main(args, cfg):
         refined_skel = np.transpose(np.asarray(refined_skel), (2, 0, 1))
 
         # mask out the edges of the image
-        if MASK:
+        if (cfg.skel_label_buffer_on_preds > 0) and (not cfg.skel_label_clip_with_mask):
             mask = np.ones_like(x[0, 0, ...])
             mask[-cfg.skel_label_buffer_on_preds :, :] = 0
             mask[: cfg.skel_label_buffer_on_preds, :] = 0
@@ -159,6 +157,24 @@ def main(args, cfg):
             refined_skel = [
                 (thin(a) > 0).astype(float) * mask for a in refined_skel[0:2, ...] > 50
             ]
+        elif cfg.skel_label_clip_with_mask:
+            # load mask
+            mask_insect = Image.open(
+                cfg.glob_blobs_folder / ti.name[:-4] + "_mask.jpg"
+            ).convert("RGB")
+            mask_insect = np.array(mask_insect)[:, :, 0] > 0
+            mask_insect = Image.fromarray(mask_insect)
+            mask_insect = np.array(
+                transforms.Resize(
+                    (o_size[1], o_size[0]),
+                    interpolation=transforms.InterpolationMode.BILINEAR,
+                )(mask_insect)
+            )
+            refined_skel = [
+                (thin(a) > 0).astype(float) * mask_insect
+                for a in refined_skel[0:2, ...] > 50
+            ]
+
         else:
             # Refine the predicted skeleton image
             refined_skel = [

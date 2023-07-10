@@ -2,7 +2,7 @@
 
 ## Set up pipeline to fine tune the supervised skeletonization model
 ROOT_DIR="/data/shared/mzb-workflow"
-MODEL=mit-b2-vJuly
+MODEL=mit-b2-v0
 LSET_FOLD=$ROOT_DIR/data/learning_sets/project_portable_flume/skeletonization
 
 ## This has to be run once, to create the curated learning sets, 
@@ -37,18 +37,22 @@ python scripts/skeletons/main_supervised_skeleton_inference.py \
     --input_type="val" \
     --input_model=$ROOT_DIR/models/mzb-skeleton-models/$MODEL \
     --output_dir=$ROOT_DIR/results/project_portable_flume/skeletons/supervised_skeletons/skseg_$MODEL/ \
-    --save_masks=$ROOT_DIR/data/derived_v2/project_portable_flume/skeletons/supervised_skeletons/skseg_$MODEL/mixed_set_masks/ \
+    --save_masks=$ROOT_DIR/data/derived/project_portable_flume/skeletons/supervised_skeletons/skseg_$MODEL/val_set_masks/ \
 #     -v
 
-# ## And this is to parse a custom folder structure with images from different sources
+# ## And this is to parse a custom folder structure with images from different sources. Turn True to run it. Takes some time.
 # ## ---------------------------------------------------------------------------------------------------
-python scripts/skeletons/main_supervised_skeleton_inference.py \
-    --config_file=$ROOT_DIR/configs/configuration_flume_datasets.yaml \
-    --input_dir=$ROOT_DIR/data/learning_sets/project_portable_flume/aggregated_learning_sets/mixed_set/ \
-    --input_type="external" \
-    --input_model=$ROOT_DIR/models/mzb-skeleton-models/$MODEL \
-    --output_dir=$ROOT_DIR/results/project_portable_flume/skeletons/supervised_skeletons/eskseg_$MODEL/ \
-    --save_masks=$ROOT_DIR/data/derived_v2/project_portable_flume/skeletons/supervised_skeletons/skseg_$MODEL/mixed_set_masks/ \
-    # -v
-
+if [ false ] ; 
+then
+    python scripts/skeletons/main_supervised_skeleton_inference.py \
+        --config_file=$ROOT_DIR/configs/configuration_flume_datasets.yaml \
+        --input_dir=$ROOT_DIR/data/learning_sets/project_portable_flume/aggregated_learning_sets/mixed_set/ \
+        --input_type="external" \
+        --input_model=$ROOT_DIR/models/mzb-skeleton-models/$MODEL \
+        --output_dir=$ROOT_DIR/results/project_portable_flume/skeletons/supervised_skeletons/skseg_$MODEL/ \
+        --save_masks=$ROOT_DIR/data/derived/project_portable_flume/skeletons/supervised_skeletons/skseg_$MODEL/mixed_set_masks/ \
+        # -v
+else
+    echo "Skipping inference on external set"
+fi
 

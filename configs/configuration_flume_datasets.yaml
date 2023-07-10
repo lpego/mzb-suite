@@ -2,6 +2,7 @@
 # Arguments not to be spec via CLI
 glob_random_seed: 222 
 glob_root_folder: /data/shared/mzb-workflow/
+glob_blobs_folder: /data/shared/mzb-workflow/data/derived/blobs/
 
 # Image parsing specific 
 impa_image_format: jpg
@@ -39,12 +40,12 @@ trcl_wandb_project_name: mzb-classifiers
 # trai_model_save_append: "-v1"
 
 ## Finetuning / training config for skeleton prediction
-trsk_learning_rate: 0.001
-trsk_batch_size: 16
+trsk_learning_rate: 0.0001
+trsk_batch_size: 32
 trsk_weight_decay: 0
-trsk_step_size_decay: 10
-trsk_number_epochs: 400
-trsk_gpu_ids: -1
+trsk_step_size_decay: 50
+trsk_number_epochs: 750
+# trsk_gpu_ids: -1
 trsk_save_topk: 1
 trsk_num_classes: 2
 trsk_model_pretrarch: mit_b2 #mit-b2 #efficientnet-b2
@@ -67,4 +68,5 @@ skel_conv_rate: 131.6625 #[133.1, 136.6, 133.2, 133.2, 133.2, 118.6, 133.4, 132.
 
 # supervised skeletonization
 skel_label_thickness: 3
-skel_label_buffer_on_preds: 25 
+skel_label_buffer_on_preds: 25
+skel_label_clip_with_mask: False # We need same set data (blobs and skeletonization training set are not the same filenames)
