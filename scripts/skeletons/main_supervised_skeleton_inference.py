@@ -207,10 +207,13 @@ def main(args, cfg):
         )
 
     preds_size = pd.concat(preds_size)
-    out_dir = Path(
-        f"{args.output_dir}_{dataset_name}_{datetime.now().strftime('%Y%m%d_%H%M')}"
-    )
+    # out_dir = Path(
+    #     f"{args.output_dir}_{dataset_name}_{datetime.now().strftime('%Y%m%d_%H%M')}"
+    # )
+    out_dir = Path(f"{args.output_dir}")
+
     out_dir.mkdir(exist_ok=True, parents=True)
+
     preds_size.to_csv(out_dir / f"size_skel_supervised_model.csv", index=False)
 
 
