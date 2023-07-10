@@ -56,7 +56,8 @@ else
         # -v
 fi
 
-python scripts/skeletons/main_supervised_skeleton_assessment.py \
-    --config_file=$ROOT_DIR/configs/configuration_flume_datasets.yaml \
-    --model_annotations=$ROOT_DIR/results/project_portable_flume/skeletons/supervised_skeletons/skseg_mit-b2-v0_flume_20230710_1631/size_skel_supervised_model.csv \
-    --manual_annotations=$ROOT_DIR/data/learning_sets/project_portable_flume/skeletonization/manual_annotations_summary.csv
+
+# python scripts/skeletons/main_supervised_skeleton_assessment.py \
+#     --config_file=$ROOT_DIR/configs/configuration_flume_datasets.yaml \
+#     --model_annotations=$ROOT_DIR/results/project_portable_flume/skeletons/supervised_skeletons/skseg_mit-b2-v0_flume_20230710_1646/size_skel_supervised_model.csv \
+#     --manual_annotations=$ROOT_DIR/data/learning_sets/project_portable_flume/skeletonization/manual_annotations_summary.csv

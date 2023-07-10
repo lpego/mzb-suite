@@ -57,7 +57,7 @@ trsk_wandb_project_name: mzb-skeletons
 
 ## Inference config 
 # infe_model_folder: models/mzb-classifiers/ # likely not used to allow renku parse as input
-infe_model_ckpt: last
+infe_model_ckpt: last # best or last, best is on validation error
 infe_num_classes: 8
 infe_image_glob: "*_rgb.jpg"
 
