@@ -57,6 +57,7 @@ else
 fi
 
 
+# ROOT_DIR="/data/shared/mzb-workflow"
 # python scripts/skeletons/main_supervised_skeleton_assessment.py \
 #     --config_file=$ROOT_DIR/configs/configuration_flume_datasets.yaml \
 #     --model_annotations=$ROOT_DIR/results/project_portable_flume/skeletons/supervised_skeletons/skseg_mit-b2-v0_flume_20230710_1646/size_skel_supervised_model.csv \
