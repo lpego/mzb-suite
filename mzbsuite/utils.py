@@ -1,11 +1,24 @@
+"""
+Module containing utility functions for mzbsuite
+C 2023, M. Volpi, Swiss Data Science Center
+"""
+
 from torchvision import models
 
 from pathlib import Path
 
-import torch
+# import torch
 import torch.nn as nn
 
 import numpy as np
+from sklearn.metrics import (
+    mean_absolute_error,
+    mean_squared_error,
+    max_error,
+    median_absolute_error,
+    r2_score,
+    explained_variance_score,
+)
 
 
 def noneparse(value):
@@ -60,6 +73,51 @@ class cfg_to_arguments(object):
     def __str__(self):
         """Prints the object as a string"""
         return self.__dict__.__str__()
+
+
+def regression_report(y_true, y_pred, PRINT=True):
+    """
+    Helper function to print regression metrics. Taken and adapted from
+    https://github.com/scikit-learn/scikit-learn/issues/18454#issue-708338254
+
+    Parameters
+    ----------
+    y_true: np.array
+        ground truth values
+    y_pred: np.array
+        predicted values
+    PRINT: bool
+        whether to print the metrics or not
+
+    Returns
+    -------
+    metrics: list
+        list of tuples with the name of the metric and its value
+    """
+
+    error = y_true - y_pred
+    percentile = [5, 25, 50, 75, 95]
+    percentile_value = np.percentile(error, percentile)
+
+    metrics = [
+        ("mean absolute error", mean_absolute_error(y_true, y_pred)),
+        ("median absolute error", median_absolute_error(y_true, y_pred)),
+        ("mean squared error", mean_squared_error(y_true, y_pred)),
+        ("max error", max_error(y_true, y_pred)),
+        ("r2 score", r2_score(y_true, y_pred)),
+        ("explained variance score", explained_variance_score(y_true, y_pred)),
+    ]
+
+    if PRINT:
+        print("Metrics for regression:")
+        for metric_name, metric_value in metrics:
+            print(f"{metric_name:>25s}: {metric_value: >20.3f}")
+
+        print("\nPercentiles:")
+        for p, pv in zip(percentile, percentile_value):
+            print(f"{p: 25d}: {pv:>20.3f}")
+
+    return metrics
 
 
 def read_pretrained_model(architecture, n_class):
