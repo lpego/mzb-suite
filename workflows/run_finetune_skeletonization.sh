@@ -22,11 +22,11 @@ fi
 
 ## This is run to fine tune the skeleton prediction model. It will read the curated learning sets and will return a new model
 ## ---------------------------------------------------------------------------------------------------------------
-python scripts/skeletons/main_supervised_skeletons_finetune.py \
-    --config_file=$ROOT_DIR/configs/configuration_flume_datasets.yaml \
-    --input_dir=$LSET_FOLD \
-    --save_model=$ROOT_DIR/models/mzb-skeleton-models/$MODEL \
-    # -v
+# python scripts/skeletons/main_supervised_skeletons_finetune.py \
+#     --config_file=$ROOT_DIR/configs/configuration_flume_datasets.yaml \
+#     --input_dir=$LSET_FOLD \
+#     --save_model=$ROOT_DIR/models/mzb-skeleton-models/$MODEL \
+#     # -v
 
 ## This is run on a custom folder structure and will regturn a csv with the results
 ## Specifically, this is run on the validation set to get the accuracy of the model
@@ -42,8 +42,10 @@ python scripts/skeletons/main_supervised_skeleton_inference.py \
 
 # ## And this is to parse a custom folder structure with images from different sources. Turn True to run it. Takes some time.
 # ## ---------------------------------------------------------------------------------------------------
-if [ false ] ; 
+if [ false ] ; # change to true to run inference on external set
 then
+    echo "Skipping inference on external set"
+else
     python scripts/skeletons/main_supervised_skeleton_inference.py \
         --config_file=$ROOT_DIR/configs/configuration_flume_datasets.yaml \
         --input_dir=$ROOT_DIR/data/learning_sets/project_portable_flume/aggregated_learning_sets/mixed_set/ \
@@ -52,7 +54,9 @@ then
         --output_dir=$ROOT_DIR/results/project_portable_flume/skeletons/supervised_skeletons/skseg_$MODEL/ \
         --save_masks=$ROOT_DIR/data/derived/project_portable_flume/skeletons/supervised_skeletons/skseg_$MODEL/mixed_set_masks/ \
         # -v
-else
-    echo "Skipping inference on external set"
 fi
 
+python scripts/skeletons/main_supervised_skeleton_assessment.py \
+    --config_file=$ROOT_DIR/configs/configuration_flume_datasets.yaml \
+    --model_annotations=$ROOT_DIR/results/project_portable_flume/skeletons/supervised_skeletons/skseg_mit-b2-v0_flume_20230710_1631/size_skel_supervised_model.csv \
+    --manual_annotations=$ROOT_DIR/data/learning_sets/project_portable_flume/skeletonization/manual_annotations_summary.csv
