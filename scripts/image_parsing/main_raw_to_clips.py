@@ -38,6 +38,7 @@ def main(args, cfg):
     None. Everything is saved to disk.
     """
 
+    PLOTS = False
     # define paths
     main_root = Path(args.input_dir)
     outdir = Path(args.output_dir)
@@ -285,10 +286,10 @@ def main(args, cfg):
             mask_props.append(sub_df)
             c += 1
 
-        if not PLOTS:
-            if mask_props:
-                mask_props = pd.concat(mask_props).reset_index().drop(columns=["index"])
-                mask_props.to_csv(outdir / "_mask_properties.csv")
+    if not PLOTS:
+        if mask_props:
+            mask_props = pd.concat(mask_props).reset_index().drop(columns=["index"])
+            mask_props.to_csv(outdir / "_mask_properties.csv")
 
 
 if __name__ == "__main__":
