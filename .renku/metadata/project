@@ -1,9 +1,8 @@
 {
   "@renku_data_type": "renku.domain_model.project.Project",
   "@renku_oid": "project",
-  "agent_version": "1.11.2",
+  "agent_version": "2.6.0",
   "annotations": [],
-  "automated_update": true,
   "creator": {
     "@renku_data_type": "renku.domain_model.provenance.agent.Person",
     "@renku_data_value": {
@@ -20,14 +19,20 @@
   },
   "description": "Full workflow for the Macrozoobenthos pipeline: \n- From raw images to insect / object level clips (blobs)\n- Classifying blobs into predefined classes \n- Parse classes into measures (skeleton, area)",
   "id": "/projects/biodetect/mzb-workflow",
-  "immutable_template_files": [],
   "keywords": [],
-  "minimum_renku_version": "1.7.0",
+  "minimum_renku_version": "2.4.0",
   "name": "mzb-workflow",
-  "template_id": "python-minimal",
-  "template_metadata": "{\"__template_source__\": \"https://github.com/SwissDataScienceCenter/renku-project-template\", \"__template_ref__\": \"0.4.1\", \"__template_id__\": \"python-minimal\", \"__namespace__\": \"biodetect\", \"__repository__\": \"https://renkulab.io/gitlab\", \"__sanitized_project_name__\": \"mzb-workflow\", \"__project_slug__\": \"biodetect/mzb-workflow\", \"__project_description__\": \"Full workflow for the Macrozoobenthos pipeline: \\n- From raw images to insect / object level clips (blobs)\\n- Classifying blobs into predefined classes \\n- Parse classes into measures (skeleton, area)\", \"__renku_version__\": \"1.11.2\", \"name\": \"mzb-workflow\", \"__name__\": \"mzb-workflow\", \"__template_version__\": \"a3fecfa9b347613f013782075bb17734f20688bb\", \"__automated_update__\": true}",
-  "template_ref": "0.4.1",
-  "template_source": "https://github.com/SwissDataScienceCenter/renku-project-template",
-  "template_version": "a3fecfa9b347613f013782075bb17734f20688bb",
-  "version": 9
+  "template_metadata": {
+    "@renku_data_type": "renku.domain_model.project.ProjectTemplateMetadata",
+    "@renku_data_value": {
+      "immutable_template_files": [],
+      "metadata": "{\"__template_source__\": \"https://github.com/SwissDataScienceCenter/renku-project-template\", \"__template_ref__\": \"0.4.1\", \"__template_id__\": \"python-minimal\", \"__namespace__\": \"biodetect\", \"__repository__\": \"https://renkulab.io/gitlab\", \"__sanitized_project_name__\": \"mzb-workflow\", \"__project_slug__\": \"biodetect/mzb-workflow\", \"__project_description__\": \"Full workflow for the Macrozoobenthos pipeline: \\n- From raw images to insect / object level clips (blobs)\\n- Classifying blobs into predefined classes \\n- Parse classes into measures (skeleton, area)\", \"__renku_version__\": \"1.11.2\", \"name\": \"mzb-workflow\", \"__name__\": \"mzb-workflow\", \"__template_version__\": \"a3fecfa9b347613f013782075bb17734f20688bb\", \"__automated_update__\": true}",
+      "ssh_supported": false,
+      "template_id": "python-minimal",
+      "template_ref": "0.4.1",
+      "template_source": "https://github.com/SwissDataScienceCenter/renku-project-template",
+      "template_version": "a3fecfa9b347613f013782075bb17734f20688bb"
+    }
+  },
+  "version": "10"
 }
