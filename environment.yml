@@ -1,4 +1,4 @@
-name: mzbsuite
+name: base # mzbsuite
 channels:
   - pytorch
   - nvidia
