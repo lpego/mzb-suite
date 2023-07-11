@@ -5,7 +5,7 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - python=3.10.11
+  - python=3.10
   - numpy=1.25
   - pandas=1.5.3
   - yaml=0.2.5
