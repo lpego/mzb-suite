@@ -20,5 +20,5 @@ dependencies:
   - pip:
     - pyyaml==6.0
     - wandb==0.15.4
-    - opencv-python==4.8.0
+    - opencv-python==4.6.0
     - segmentation_models_pytorch==0.3.3
