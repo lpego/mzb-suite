@@ -1,7 +1,7 @@
 # For finding latest versions of the base image see
 # https://github.com/SwissDataScienceCenter/renkulab-docker
-# ARG RENKU_BASE_IMAGE=renku/renkulab-py:3.9-0.13.1
-ARG RENKU_BASE_IMAGE=renku/renkulab-py:latest
+ARG RENKU_BASE_IMAGE=renku/renkulab-py:3.10-0.15.0
+# ARG RENKU_BASE_IMAGE=renku/renkulab-py:latest
 
 
 ########################################################
