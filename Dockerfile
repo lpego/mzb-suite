@@ -12,7 +12,7 @@ FROM ${RENKU_BASE_IMAGE} as builder
 # RENKU_VERSION determines the version of the renku CLI
 # that will be used in this image. To find the latest version,
 # visit https://pypi.org/project/renku/#history.
-ARG RENKU_VERSION=1.11.2
+ARG RENKU_VERSION=2.6.0
 
 # Install renku from pypi or from github if a dev version
 RUN if [ -n "$RENKU_VERSION" ] ; then \
