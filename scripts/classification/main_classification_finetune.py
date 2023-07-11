@@ -16,15 +16,6 @@ from pytorch_lightning import Trainer
 from pytorch_lightning.loggers import WandbLogger
 from pytorch_lightning.strategies.ddp import DDPStrategy
 
-try:
-    __IPYTHON__
-except:
-    prefix = ""  # or "../"
-else:
-    prefix = "../../"  # or "../"
-
-sys.path.append(f"{prefix}")
-
 from mzbsuite.classification.mzb_classification_pilmodel import MZBModel
 from mzbsuite.utils import cfg_to_arguments, SaveLogCallback
 
@@ -155,15 +146,6 @@ if __name__ == "__main__":
     )
     parser.add_argument("--verbose", "-v", action="store_true", help="print more info")
     args = parser.parse_args()
-
-    # args = {}
-    # args["config_file"] = f"{prefix}configs/global_configuration.yaml"
-    # args[
-    #     "input_dir"
-    # ] = f"{prefix}data/learning_sets/project_portable_flume/aggregated_learning_sets/"
-    # args["save_model"] = f"{prefix}models/mzb-class/"
-    # args["verbose"] = True
-    # args = cfg_to_arguments(args)
 
     with open(str(args.config_file), "r") as f:
         cfg = yaml.load(f, Loader=yaml.FullLoader)

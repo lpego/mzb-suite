@@ -36,7 +36,7 @@ python $ROOT_DIR/scripts/classification/main_classification_finetune.py \
     --config_file=$ROOT_DIR/configs/configuration_flume_datasets.yaml \
     --input_dir=$ROOT_DIR/data/learning_sets/project_portable_flume/aggregated_learning_sets/val_set \
     --input_model=$ROOT_DIR/models/mzb-classification-models/$MODEL \
-    --output_dir=$ROOT_DIR/results/project_portable_flume/classification/ \
+    --output_dir=$ROOT_DIR/results/project_portable_flume/classification/class_$MODEL_validation_set/ \
     -v
 
 # And this is to classify the mixed set, a custom folder structure with images from different sources
@@ -45,7 +45,7 @@ python $ROOT_DIR/scripts/classification/main_classification_inference.py \
     --config_file=$ROOT_DIR/configs/configuration_flume_datasets.yaml \
     --input_dir=$ROOT_DIR/data/learning_sets/project_portable_flume/aggregated_learning_sets/mixed_set \
     --input_model=$ROOT_DIR/models/mzb-classification-models/$MODEL \
-    --output_dir=$ROOT_DIR/results/project_portable_flume/classification/ \
+    --output_dir=$ROOT_DIR/results/project_portable_flume/classification/class_$MODEL_external_set/ \
     -v
 
 # --> the classifier using a ConvNext or EfficientNet-b2 model is best, so we will use that one probably. 

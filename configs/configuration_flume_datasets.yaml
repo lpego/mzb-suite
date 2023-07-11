@@ -35,7 +35,7 @@ trcl_number_epochs: 75
 # trcl_gpu_ids: -1 
 trcl_save_topk: 1
 trcl_num_classes: 8
-trcl_model_pretrarch: efficientnet-b2 #resenet50 #efficientnet-b2 #convnext-small #densenet161 #mobilenet
+trcl_model_pretrarch: convnext-small #resenet50 #efficientnet-b2 #convnext-small #densenet161 #mobilenet
 trcl_num_workers: 16
 trcl_wandb_project_name: mzb-classifiers
 # trai_model_save_append: "-v1"
@@ -59,7 +59,7 @@ trsk_wandb_project_name: mzb-skeletons
 # infe_model_folder: models/mzb-classifiers/ # likely not used to allow renku parse as input
 infe_model_ckpt: last # best or last, best is on validation error
 infe_num_classes: 8
-infe_image_glob: "*_rgb.jpg"
+infe_image_glob: "*_rgb.jpg" 
 
 ## Skeletonization
 # unsupervised skeletonization
