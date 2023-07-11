@@ -36,8 +36,8 @@ python scripts/skeletons/main_supervised_skeleton_inference.py \
     --input_dir=$LSET_FOLD \
     --input_type="val" \
     --input_model=$ROOT_DIR/models/mzb-skeleton-models/$MODEL \
-    --output_dir=$ROOT_DIR/results/project_portable_flume/skeletons/supervised_skeletons/skseg_$MODEL_validation_set/ \
-    --save_masks=$ROOT_DIR/data/derived/project_portable_flume/skeletons/supervised_skeletons/skseg_$MODEL/validation_set \
+    --output_dir=$ROOT_DIR/results/project_portable_flume/skeletons/supervised_skeletons/skseg_${MODEL}_validation_set/ \
+    --save_masks=$ROOT_DIR/data/derived/project_portable_flume/skeletons/supervised_skeletons/skseg_${MODEL}/validation_set \
 #     -v
 
 # ## And this is to parse a custom folder structure with images from different sources. Turn True to run it. Takes some time.
@@ -51,8 +51,8 @@ else
         --input_dir=$ROOT_DIR/data/learning_sets/project_portable_flume/aggregated_learning_sets/mixed_set/ \
         --input_type="external" \
         --input_model=$ROOT_DIR/models/mzb-skeleton-models/$MODEL \
-        --output_dir=$ROOT_DIR/results/project_portable_flume/skeletons/supervised_skeletons/skseg_$MODEL_external_mixed \
-        --save_masks=$ROOT_DIR/data/derived/project_portable_flume/skeletons/supervised_skeletons/skseg_$MODEL/mixed_set_masks/ \
+        --output_dir=$ROOT_DIR/results/project_portable_flume/skeletons/supervised_skeletons/skseg_${MODEL}_external_mixed \
+        --save_masks=$ROOT_DIR/data/derived/project_portable_flume/skeletons/supervised_skeletons/skseg_${MODEL}/mixed_set_masks/ \
         # -v
 fi
 

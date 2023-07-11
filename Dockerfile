@@ -1,6 +1,6 @@
 # For finding latest versions of the base image see
 # https://github.com/SwissDataScienceCenter/renkulab-docker
-ARG RENKU_BASE_IMAGE=renku/renkulab-py:3.10-0.15.0
+ARG RENKU_BASE_IMAGE=renku/renkulab-py:3.10-latest
 # ARG RENKU_BASE_IMAGE=renku/renkulab-py:latest
 
 
@@ -16,17 +16,17 @@ ARG RENKU_VERSION=1.11.2
 
 # Install renku from pypi or from github if a dev version
 RUN if [ -n "$RENKU_VERSION" ] ; then \
-        source .renku/venv/bin/activate ; \
-        currentversion=$(renku --version) ; \
-        if [ "$RENKU_VERSION" != "$currentversion" ] ; then \
-            pip uninstall renku -y ; \
-            gitversion=$(echo "$RENKU_VERSION" | sed -n "s/^[[:digit:]]\+\.[[:digit:]]\+\.[[:digit:]]\+\(rc[[:digit:]]\+\)*\(\.dev[[:digit:]]\+\)*\(+g\([a-f0-9]\+\)\)*\(+dirty\)*$/\4/p") ; \
-            if [ -n "$gitversion" ] ; then \
-                pip install --no-cache-dir --force "git+https://github.com/SwissDataScienceCenter/renku-python.git@$gitversion" ;\
-            else \
-                pip install --no-cache-dir --force renku==${RENKU_VERSION} ;\
-            fi \
-        fi \
+    source .renku/venv/bin/activate ; \
+    currentversion=$(renku --version) ; \
+    if [ "$RENKU_VERSION" != "$currentversion" ] ; then \
+    pip uninstall renku -y ; \
+    gitversion=$(echo "$RENKU_VERSION" | sed -n "s/^[[:digit:]]\+\.[[:digit:]]\+\.[[:digit:]]\+\(rc[[:digit:]]\+\)*\(\.dev[[:digit:]]\+\)*\(+g\([a-f0-9]\+\)\)*\(+dirty\)*$/\4/p") ; \
+    if [ -n "$gitversion" ] ; then \
+    pip install --no-cache-dir --force "git+https://github.com/SwissDataScienceCenter/renku-python.git@$gitversion" ;\
+    else \
+    pip install --no-cache-dir --force renku==${RENKU_VERSION} ;\
+    fi \
+    fi \
     fi
 #             End Renku install section                #
 ########################################################
