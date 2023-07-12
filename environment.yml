@@ -8,7 +8,6 @@ dependencies:
   - python=3.10
   - numpy=1.25
   - pandas=1.5.3
-  # - yaml==0.2.5
   - pytorch=2.0.1
   - pytorch-cuda=11.8
   - torchvision
