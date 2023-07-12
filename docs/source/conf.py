@@ -16,12 +16,15 @@ import sys
 sys.path.insert(0, os.path.abspath("../../"))
 
 from mzbsuite import __version__ as mzb_version
+from mzbsuite import __author__ as mzb_author
+from mzbsuite import __project_name__ as mzb_project_name
+from mzbsuite import __date__ as mzb_date
 
 # -- Project information -----------------------------------------------------
 
-project = "mzbsuite"
-date = 2023
-author = "Michele Volpi, Luca Pegoraro, Blake Matthews, Catherine Graham"
+project = mzb_project_name
+date = mzb_date
+author = mzb_author
 version = mzb_version
 release = f"{version} alpha"
 copyright = f"{date} {author}"
@@ -73,7 +76,7 @@ html_logo = "../assets/mzb-logo.svg"
 html_theme_options = {
     # 'analytics_id': 'G-XXXXXXXXXX',  #  Provided by Google in your dashboard
     # 'analytics_anonymize_ip': False,
-    "logo_only": True,
+    "logo_only": False,
     "display_version": True,
     "prev_next_buttons_location": "bottom",
     "style_external_links": False,
