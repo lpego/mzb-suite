@@ -13,7 +13,7 @@ import yaml
 import torch
 import pytorch_lightning as pl
 from pytorch_lightning import Trainer
-from pytorch_lightning.loggers import WandbLogger
+from pytorch_lightning.loggers import WandbLogger, TensorBoardLogger
 from pytorch_lightning.strategies.ddp import DDPStrategy
 
 from mzbsuite.classification.mzb_classification_pilmodel import MZBModel
@@ -102,10 +102,18 @@ def main(args, cfg):
     cbacks = [pbar_cb, best_val_cb, last_mod_cb, trdatelog]
 
     # TODOs: add possibility to use tensorboard
-    wb_logger = WandbLogger(
+    # if cfg.model_logger == "wandb":
+    logger = WandbLogger(
         project=cfg.trcl_wandb_project_name, name=name_run if name_run else None
     )
-    wb_logger.watch(model, log="all")
+    logger.watch(model, log="all")
+
+    # elif cfg.model_logger == "tensorboard":
+    #     logger = TensorBoardLogger(
+    #         save_dir=args.save_model,
+    #         name=name_run if name_run else None,
+    #         log_graph=True,
+    #     )
 
     # instantiate trainer and train
     trainer = Trainer(
@@ -116,7 +124,7 @@ def main(args, cfg):
         ),  # TODO: check how to use in notebook
         precision=16,
         callbacks=cbacks,
-        logger=wb_logger,
+        logger=logger,
         log_every_n_steps=1
         # profiler="simple",
     )
@@ -165,3 +173,6 @@ if __name__ == "__main__":
     torch.cuda.manual_seed(cfg.glob_random_seed)  # needed for torchvision 0.7
 
     sys.exit(main(args, cfg))
+
+# %%
+"

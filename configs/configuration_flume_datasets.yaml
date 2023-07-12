@@ -4,6 +4,7 @@ glob_random_seed: 222
 glob_root_folder: /data/shared/mzb-workflow/
 glob_blobs_folder: /data/shared/mzb-workflow/data/derived/blobs/
 glob_local_format: pdf
+model_logger: wandb
 
 # Image parsing specific 
 impa_image_format: jpg
