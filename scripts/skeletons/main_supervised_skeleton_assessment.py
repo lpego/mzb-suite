@@ -72,13 +72,13 @@ def main(args, cfg):
     merged_annotations.groupby("species").mean()[
         ["body_length", "error_body_skel"]
     ].plot(kind="bar", rot=90)
-    plt.savefig(args.input_dir / f"body_length_error.{cfg.glob_local_plot_format}")
+    plt.savefig(args.input_dir / f"body_length_error.{cfg.glob_local_format}")
 
     plt.figure()
     merged_annotations.groupby("species").mean()[
         ["head_length", "error_head_skel"]
     ].plot(kind="bar", rot=90)
-    plt.savefig(args.input_dir / f"head_width_error.{cfg.glob_local_plot_format}")
+    plt.savefig(args.input_dir / f"head_width_error.{cfg.glob_local_format}")
 
     # Scatterplot for errors of body length and colored by species
     plt.figure()
@@ -96,9 +96,7 @@ def main(args, cfg):
     plt.legend()
     plt.xlabel("True body length (mm)")
     plt.ylabel("Predicted body lenght (mm)")
-    plt.savefig(
-        args.input_dir / f"body_length_error_scatter.{cfg.glob_local_plot_format}"
-    )
+    plt.savefig(args.input_dir / f"body_length_error_scatter.{cfg.glob_local_format}")
 
     # Scatterplot for errors of head width and colored by species
     plt.figure()
@@ -118,9 +116,7 @@ def main(args, cfg):
     plt.legend()
     plt.xlabel("True head width (mm)")
     plt.ylabel("Predicted head width (mm)")
-    plt.savefig(
-        args.input_dir / f"head_width_error_scatter.{cfg.glob_local_plot_format}"
-    )
+    plt.savefig(args.input_dir / f"head_width_error_scatter.{cfg.glob_local_format}")
 
     # Relative errors in %
     merged_annotations["rel_error_body_skel"] = (
@@ -142,7 +138,7 @@ def main(args, cfg):
     )
     plt.ylabel("Relative error (%)")
     plt.xlabel("Species")
-    plt.savefig(args.input_dir / f"body_length_rel_error.{cfg.glob_local_plot_format}")
+    plt.savefig(args.input_dir / f"body_length_rel_error.{cfg.glob_local_format}")
 
     plt.figure()
     merged_annotations.groupby("species").mean()[["rel_error_head_skel"]].plot(
@@ -150,7 +146,7 @@ def main(args, cfg):
     )
     plt.ylabel("Relative error (%)")
     plt.xlabel("Species")
-    plt.savefig(args.input_dir / f"head_width_rel_error.{cfg.glob_local_plot_format}")
+    plt.savefig(args.input_dir / f"head_width_rel_error.{cfg.glob_local_format}")
 
     plt.close("all")
 

@@ -151,7 +151,7 @@ def main(args, cfg):
             cmap="Greys",
             display_labels=class_names,
         )
-        plt.savefig(out_dir / "confusion_matrix.png", dpi=300)
+        plt.savefig(out_dir / f"confusion_matrix.{cfg.glob_plot_format}", dpi=300)
 
         rep_txt = classification_report(
             gc, np.argmax(pc, axis=1), target_names=class_names, zero_division=0
