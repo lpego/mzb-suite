@@ -3,20 +3,20 @@
 ## Set up pipeline to fine tune the supervised skeletonization model
 ROOT_DIR="/data/shared/mzb-workflow"
 MODEL=mit-b2-v0
-LSET_FOLD=$ROOT_DIR/data/learning_sets/project_portable_flume/skeletonization
+LSET_FOLD=${ROOT_DIR}/data/learning_sets/project_portable_flume/skeletonization
 
 ## This has to be run once, to create the curated learning sets, 
 ## ------------------------------------------------------------
 if [ -d $LSET_FOLD ];
 then
-    echo "Directory $LSET_FOLD exists." 
+    echo "Directory ${LSET_FOLD} exists." 
 else 
-    echo "Directory $LSET_FOLD is being set up."
+    echo "Directory ${LSET_FOLD} is being set up."
     python scripts/skeletons/main_preprocess_manual_skeleton_annotations.py \
-        --input_raw_dir=$ROOT_DIR/data/raw/2021_swiss_invertebrates/manual_measurements/ \
-        --input_clips_dir=$ROOT_DIR/data/derived/project_portable_flume/blobs/ \
-        --output_dir=$LSET_FOLD \
-        --config_file=$ROOT_DIR/configs/configuration_flume_datasets.yaml \
+        --input_raw_dir=${ROOT_DIR}/data/raw/2021_swiss_invertebrates/manual_measurements/ \
+        --input_clips_dir=${ROOT_DIR}/data/derived/project_portable_flume/blobs/ \
+        --output_dir=${LSET_FOLD} \
+        --config_file=${ROOT_DIR}/configs/configuration_flume_datasets.yaml \
         # -v
 fi
 
@@ -32,12 +32,12 @@ fi
 ## Specifically, this is run on the validation set to get the accuracy of the model
 ## ------------------------------------------------------------------------------------------
 python scripts/skeletons/main_supervised_skeleton_inference.py \
-    --config_file=$ROOT_DIR/configs/configuration_flume_datasets.yaml \
-    --input_dir=$LSET_FOLD \
+    --config_file=${ROOT_DIR}/configs/configuration_flume_datasets.yaml \
+    --input_dir=${LSET_FOLD} \
     --input_type="val" \
-    --input_model=$ROOT_DIR/models/mzb-skeleton-models/$MODEL \
-    --output_dir=$ROOT_DIR/results/project_portable_flume/skeletons/supervised_skeletons/skseg_${MODEL}_validation_set/ \
-    --save_masks=$ROOT_DIR/data/derived/project_portable_flume/skeletons/supervised_skeletons/skseg_${MODEL}/validation_set \
+    --input_model=${ROOT_DIR}/models/mzb-skeleton-models/${MODEL} \
+    --output_dir=${ROOT_DIR}/results/project_portable_flume/skeletons/supervised_skeletons/skseg_${MODEL}_validation_set/ \
+    --save_masks=${ROOT_DIR}/data/derived/project_portable_flume/skeletons/supervised_skeletons/skseg_${MODEL}/validation_set \
 #     -v
 
 # ## And this is to parse a custom folder structure with images from different sources. Turn True to run it. Takes some time.
@@ -47,18 +47,18 @@ then
     echo "Skipping inference on external set"
 else
     python scripts/skeletons/main_supervised_skeleton_inference.py \
-        --config_file=$ROOT_DIR/configs/configuration_flume_datasets.yaml \
-        --input_dir=$ROOT_DIR/data/learning_sets/project_portable_flume/aggregated_learning_sets/mixed_set/ \
+        --config_file=${ROOT_DIR}/configs/configuration_flume_datasets.yaml \
+        --input_dir=${ROOT_DIR}/data/learning_sets/project_portable_flume/aggregated_learning_sets/mixed_set/ \
         --input_type="external" \
-        --input_model=$ROOT_DIR/models/mzb-skeleton-models/$MODEL \
-        --output_dir=$ROOT_DIR/results/project_portable_flume/skeletons/supervised_skeletons/skseg_${MODEL}_external_mixed \
-        --save_masks=$ROOT_DIR/data/derived/project_portable_flume/skeletons/supervised_skeletons/skseg_${MODEL}/mixed_set_masks/ \
+        --input_model=${ROOT_DIR}/models/mzb-skeleton-models/${MODEL} \
+        --output_dir=${ROOT_DIR}/results/project_portable_flume/skeletons/supervised_skeletons/skseg_${MODEL}_external_mixed \
+        --save_masks=${ROOT_DIR}/data/derived/project_portable_flume/skeletons/supervised_skeletons/skseg_${MODEL}/mixed_set_masks/ \
         # -v
 fi
 
-
-# ROOT_DIR="/data/shared/mzb-workflow"
-# python scripts/skeletons/main_supervised_skeleton_assessment.py \
-#     --config_file=$ROOT_DIR/configs/configuration_flume_datasets.yaml \
-#     --model_annotations=$ROOT_DIR/results/project_portable_flume/skeletons/supervised_skeletons/skseg_mit-b2-v0_flume_last_model/size_skel_supervised_model.csv \
-#     --manual_annotations=$ROOT_DIR/data/learning_sets/project_portable_flume/skeletonization/manual_annotations_summary.csv
+## Validate the model on the validation set 
+## ----------------------------------------
+python scripts/skeletons/main_supervised_skeleton_assessment.py \
+    --config_file=${ROOT_DIR}/configs/configuration_flume_datasets.yaml \
+    --model_annotations=${ROOT_DIR}/results/project_portable_flume/skeletons/supervised_skeletons/skseg_${MODEL}_validation_set/size_skel_supervised_model.csv \
+    --manual_annotations=${ROOT_DIR}/data/learning_sets/project_portable_flume/skeletonization/manual_annotations_summary.csv
