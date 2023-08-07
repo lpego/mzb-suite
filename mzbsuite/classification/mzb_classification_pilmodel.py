@@ -233,7 +233,6 @@ class MZBModel(pl.LightningModule):
     ######################
     # DATA RELATED HOOKS #
     ######################
-
     def train_dataloader(self, shuffle=True):
         """
         training data loader

@@ -12,7 +12,6 @@ import yaml
 
 import torch
 import pytorch_lightning as pl
-from pytorch_lightning import Trainer
 from pytorch_lightning.loggers import WandbLogger, TensorBoardLogger
 from pytorch_lightning.strategies.ddp import DDPStrategy
 
@@ -116,7 +115,7 @@ def main(args, cfg):
     #     )
 
     # instantiate trainer and train
-    trainer = Trainer(
+    trainer = pl.Trainer(
         accelerator="auto",  # cfg.trcl_num_gpus outdated
         max_epochs=cfg.trcl_number_epochs,
         strategy=DDPStrategy(
