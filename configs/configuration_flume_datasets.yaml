@@ -12,7 +12,7 @@ impa_clip_areas: [2750, 4900] # ignore areas outside of this (bottom right corne
 impa_area_threshold: 5000 # ignore areas smaller than this
 impa_gaussian_blur: [21, 21]
 impa_gaussian_blur_passes: 3
-impa_adaptive_threshold: 351
+impa_adaptive_threshold_block_size: 351
 impa_mask_postprocess_kernel: [11, 11]
 impa_mask_postprocess_passes: 5
 # impa_save_full_mask_dir: data/derived/project_portable_flume/full_image_masks
