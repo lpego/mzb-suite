@@ -18,12 +18,15 @@ The MZB project
 :doc:`files/workflow_models`
     Introduction to the project technical aspects and the models used.
 
+:doc:`files/configuration`
+    Explanation fo the configuration file and recommended parameter values. 
+
 
 Examples
 ========
 
 :doc:`files/examples/ex_intro`
-    Overview of data projessing abilities and limitations
+    Overview of data processing abilities and limitations
 
 :doc:`files/examples/ex_preprocessing`
     Example of data
@@ -37,6 +40,7 @@ Examples
 
     files/installing
     files/workflow_models
+    files/configuration
 
 .. toctree::
     :caption: Examples
