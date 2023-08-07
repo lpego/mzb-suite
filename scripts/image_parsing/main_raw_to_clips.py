@@ -57,12 +57,13 @@ def main(args, cfg):
     if args.verbose:
         print(f"parsing {len(files_proc)} files")
 
-    # define quick normalization function
-    norm = lambda x: (x - np.min(x)) / (np.max(x) - np.min(x))
-
     # make sure that this will be general enough
+    ### WE REALLY NEED TO CHANGE THIS!
     if "project_portable_flume" in str(main_root):
         location_cutout = [int(a) for a in cfg.impa_clip_areas]
+    
+    # define quick normalization function
+    norm = lambda x: (x - np.min(x)) / (np.max(x) - np.min(x))
 
     iterator = tqdm(files_proc, total=len(files_proc))
     for i, fo in enumerate(iterator):
@@ -121,6 +122,7 @@ def main(args, cfg):
         thresh = ndimage.binary_fill_holes(thresh)
 
         # cut out area related to measurement/color calibration widget
+        ### WE REALLY NEED TO CHANGE THIS!
         if "project_portable_flume" in str(main_root):
             thresh[location_cutout[0] :, location_cutout[1] :] = 0
 

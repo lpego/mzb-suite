@@ -49,7 +49,10 @@ extensions = [
     "sphinx.ext.doctest",
     "sphinx.ext.inheritance_diagram",
     "sphinx_rtd_theme",
+    "sphinx.ext.autosectionlabel"
 ]
+# Automatic sections etc creation, nested for each file
+autosectionlabel_prefix_document = True
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
@@ -71,7 +74,7 @@ html_theme = "sphinx_rtd_theme"
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
 
-html_logo = "../assets/mzb-logo.svg"
+html_logo = "../assets/mzbsuite_logo_v2.1.svg"
 
 html_theme_options = {
     # 'analytics_id': 'G-XXXXXXXXXX',  #  Provided by Google in your dashboard
