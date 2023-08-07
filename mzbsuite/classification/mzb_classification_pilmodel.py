@@ -10,7 +10,7 @@ from PIL import Image
 import torch
 import pytorch_lightning as pl
 
-from torch import nn
+# from torch import nn
 from torch.nn import functional as F
 from torch.utils.data import DataLoader, random_split
 from torch.utils.data.sampler import WeightedRandomSampler
