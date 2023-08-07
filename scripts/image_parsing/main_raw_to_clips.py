@@ -61,7 +61,7 @@ def main(args, cfg):
     ### WE REALLY NEED TO CHANGE THIS!
     if "project_portable_flume" in str(main_root):
         location_cutout = [int(a) for a in cfg.impa_clip_areas]
-    
+
     # define quick normalization function
     norm = lambda x: (x - np.min(x)) / (np.max(x) - np.min(x))
 
@@ -100,7 +100,7 @@ def main(args, cfg):
             255,
             cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
             cv2.THRESH_BINARY,
-            351,
+            cfg.impa_adaptive_threshold_block_size,
             -2,
         )
         # additional global threhsold to remove foreground vs background

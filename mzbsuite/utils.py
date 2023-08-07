@@ -21,27 +21,6 @@ from sklearn.metrics import (
 )
 
 
-def noneparse(value):
-    """
-    Helper function to parse None values from YAML files
-
-    Parameters
-    ----------
-    value: string
-        string to be parsed
-
-    Returns
-    -------
-    value: string or None
-        parsed string
-    """
-
-    if value.lower() == "none":
-        return None
-
-    return value
-
-
 class cfg_to_arguments(object):
     """
     This class is used to convert a dictionary to an object and extend the argparser.

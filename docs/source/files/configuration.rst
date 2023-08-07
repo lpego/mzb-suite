@@ -39,7 +39,7 @@ The second block of parameters is specific to image segmentation. If the segment
  - ``impa_area_threshold``: this is the minimum size (in pixels) that will be considered to be an organism; anything below this threshold will be discarded. When in doubt, start with a low threshold and increase until most noise is removed. 
  - ``impa_gaussian_blur``: ``[int, int]`` the size fo the kernel that will be used to smooth the image before processing; you can think of this as the "radius" of the blur: the larger the radius, the stronger the smoothing effect, but also more loss of details in the image. This should not be changed much except for very noisy images and/or with comparatively large organisms compared to the full size of the image. 
  - ``impa_gaussian_blur_passes``: ``[int]`` How many times the gaussian filter should be applied in sequence. 
- - ``impa_adaptive_threshold``: ``[int]`` This is the value of the local adaptive threshold,: with lower values, smaller areas will be set as foreground and vice versa. **NEED TO DOUBLE CHECK THIS**
+ - ``impa_adaptive_threshold_block_size``: ``[int]`` Size of the square neighborhood used to collect values and statistics for automatic thresholding. 
  - ``impa_mask_postprocess_kernel``: ``[int, int]`` This is the size of the post-processing kernel, that smooths out the segmentation masks; higher values correspond to smoothers edges but less details. 
  - ``impa_mask_postprocess_passes``: ``[int]`` Number of times the smoothing kernel is applied. 
 # impa_save_full_mask_dir: data/derived/project_portable_flume/full_image_masks
