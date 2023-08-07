@@ -196,83 +196,83 @@ if __name__ == "__main__":
 
     sys.exit(main(args, cfg))
 
-# %%
-if 0:
-    import torch
-    from matplotlib import pyplot as plt
-    from PIL import Image
+# # %% is this supposed to still be here??? 
+# if 0:
+#     import torch
+#     from matplotlib import pyplot as plt
+#     from PIL import Image
 
-    from mzbsuite.classification.mzb_classification_dataloader import Denormalize
+#     from mzbsuite.classification.mzb_classification_dataloader import Denormalize
 
-    dd = "results/classification/project_portable_flume/mixed_set_convnext-small-v0_20230309_1737/predictions.csv"
-    df_pred = pd.read_csv(prefix + dd)
-    df_pred = df_pred.set_index("file")
-    df_pred = df_pred.sort_index()
+#     dd = "results/classification/project_portable_flume/mixed_set_convnext-small-v0_20230309_1737/predictions.csv"
+#     df_pred = pd.read_csv(prefix + dd)
+#     df_pred = df_pred.set_index("file")
+#     df_pred = df_pred.sort_index()
 
-    mzb_class = 4
+#     mzb_class = 4
 
-    denorm = Denormalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225))
-    unc_score = -pc[:, mzb_class]
+#     denorm = Denormalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225))
+#     unc_score = -pc[:, mzb_class]
 
-    # # unc_score = np.sum(pc * np.log(pc), axis=1)
-    # # unc_score = np.sort(pc,axis=1)[:,-1] - np.sort(pc,axis=1)[:,-2]
+#     # # unc_score = np.sum(pc * np.log(pc), axis=1)
+#     # # unc_score = np.sort(pc,axis=1)[:,-1] - np.sort(pc,axis=1)[:,-2]
 
-    # ss = np.argsort(-pc[:, mzb_class])
-    ss = np.argsort(unc_score)
-    sub = ss
-    # sub = ss[gc[ss] == mzb_class]
+#     # ss = np.argsort(-pc[:, mzb_class])
+#     ss = np.argsort(unc_score)
+#     sub = ss
+#     # sub = ss[gc[ss] == mzb_class]
 
-    files = dataloader.dataset.img_paths
+#     files = dataloader.dataset.img_paths
 
-    plt.figure(figsize=(15, 5))
-    for c, name in enumerate(class_names):
-        # plt.hlines(gc[gc==c], xmin=np.where(gc==c)[0][0], xmax=np.where(gc==c)[0][-1])
-        plt.scatter(
-            np.where(gc == c)[0], np.ones_like(gc[gc == c]), label=f"{c}: {name}"
-        )
-    plt.plot(pc)
-    plt.legend()
-    plt.figure(figsize=(15, 5))
-    plt.plot(pc[yc == mzb_class, :])
-    plt.legend()
+#     plt.figure(figsize=(15, 5))
+#     for c, name in enumerate(class_names):
+#         # plt.hlines(gc[gc==c], xmin=np.where(gc==c)[0][0], xmax=np.where(gc==c)[0][-1])
+#         plt.scatter(
+#             np.where(gc == c)[0], np.ones_like(gc[gc == c]), label=f"{c}: {name}"
+#         )
+#     plt.plot(pc)
+#     plt.legend()
+#     plt.figure(figsize=(15, 5))
+#     plt.plot(pc[yc == mzb_class, :])
+#     plt.legend()
 
-    print(f"PREDICTING CLASS {class_names[mzb_class]}")
+#     print(f"PREDICTING CLASS {class_names[mzb_class]}")
 
-    DETECT = 0
-    DIFF = True
-    FR = 0
-    N = 10
+#     DETECT = 0
+#     DIFF = True
+#     FR = 0
+#     N = 10
 
-    preds = []
+#     preds = []
 
-    for i, ti in enumerate(sub):
-        if i < FR:
-            continue
+#     for i, ti in enumerate(sub):
+#         if i < FR:
+#             continue
 
-        fi = files[ti]
-        im = Image.open(fi).convert("RGB")
-        x = model.transform_ts(im)
-        x = x[np.newaxis, ...]
+#         fi = files[ti]
+#         im = Image.open(fi).convert("RGB")
+#         x = model.transform_ts(im)
+#         x = x[np.newaxis, ...]
 
-        with torch.set_grad_enabled(False):
-            p = torch.softmax(model(x), dim=1).cpu().numpy()
-            pl_im = denorm(np.transpose(x.squeeze(), (1, 2, 0)))
+#         with torch.set_grad_enabled(False):
+#             p = torch.softmax(model(x), dim=1).cpu().numpy()
+#             pl_im = denorm(np.transpose(x.squeeze(), (1, 2, 0)))
 
-        f, a = plt.subplots(1, 1, figsize=(4, 4))
-        p_class = np.argmax(pc[ti, :])
+#         f, a = plt.subplots(1, 1, figsize=(4, 4))
+#         p_class = np.argmax(pc[ti, :])
 
-        a.imshow(pl_im)
-        a.axis("off")
-        a.set_title(
-            f"Inference: predicted class {p_class} with P {pc[ti, p_class]:.2f}\n"
-            f"{files[ti]} \n GT {gc[ti]},  "
-            f"Y @ {pc[ti,mzb_class]:.2f}"
-        )
+#         a.imshow(pl_im)
+#         a.axis("off")
+#         a.set_title(
+#             f"Inference: predicted class {p_class} with P {pc[ti, p_class]:.2f}\n"
+#             f"{files[ti]} \n GT {gc[ti]},  "
+#             f"Y @ {pc[ti,mzb_class]:.2f}"
+#         )
 
-        # if pc[ti, mzb_class] < 0.01:
-        # break
+#         # if pc[ti, mzb_class] < 0.01:
+#         # break
 
-        if i > N:
-            break
+#         if i > N:
+#             break
 
 # %%

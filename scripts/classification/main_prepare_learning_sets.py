@@ -1,9 +1,11 @@
 # %%
-# This script takes the curated dataset (raw_leanrin_set) and prepares a refined learning set according to the taxonomy file.
+# This script takes the curated dataset (raw_learning_set) and prepares a refined learning set according to the taxonomy file.
 # Each class will be aggregated to a single class according to the taxonomy file and where the cut (eg order, family, genus) is specified in the config file.
 # The output structure is a directory tree with training and validation sets, each containing a folder for each class.
 
-# The input directory tree is speficied and curated by the user.
+# The input directory tree is specified and curated by the user.
+
+##### Need to wrap in main() ???
 
 import argparse
 import shutil
