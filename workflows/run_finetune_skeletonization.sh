@@ -2,7 +2,7 @@
 
 ## Set up pipeline to fine tune the supervised skeletonization model
 ROOT_DIR="/data/shared/mzb-workflow"
-MODEL=mit-b2-v0
+MODEL=mit-b2-v1
 LSET_FOLD=${ROOT_DIR}/data/learning_sets/project_portable_flume/skeletonization
 
 ## This has to be run once, to create the curated learning sets, 
@@ -22,11 +22,11 @@ fi
 
 ## This is run to fine tune the skeleton prediction model. It will read the curated learning sets and will return a new model
 ## ---------------------------------------------------------------------------------------------------------------
-# python scripts/skeletons/main_supervised_skeletons_finetune.py \
-#     --config_file=$ROOT_DIR/configs/configuration_flume_datasets.yaml \
-#     --input_dir=$LSET_FOLD \
-#     --save_model=$ROOT_DIR/models/mzb-skeleton-models/$MODEL \
-#     # -v
+python scripts/skeletons/main_supervised_skeletons_finetune.py \
+    --config_file=$ROOT_DIR/configs/configuration_flume_datasets.yaml \
+    --input_dir=$LSET_FOLD \
+    --save_model=$ROOT_DIR/models/mzb-skeleton-models/$MODEL \
+    # -v
 
 ## This is run on a custom folder structure and will regturn a csv with the results
 ## Specifically, this is run on the validation set to get the accuracy of the model

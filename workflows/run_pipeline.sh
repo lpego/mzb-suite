@@ -69,4 +69,4 @@ python scripts/skeletons/main_unsupervised_skeleton_estimation.py \
 #     --input_model=${ROOT_DIR}/models/mzb-skeleton-models/${MODEL} \
 #     --output_dir=${ROOT_DIR}/results/project_portable_flume/skeletons/supervised_skeletons/skseg_${MODEL}_mixed_set/ \
 #     --save_masks=${ROOT_DIR}/data/derived/project_portable_flume/skeletons/supervised_skeletons/${MODEL}/mixed_set_masks/ \
-# -v
+# -v    
