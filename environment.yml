@@ -21,3 +21,4 @@ dependencies:
     - wandb==0.15.4
     - opencv-python==4.6.0.66
     - segmentation_models_pytorch==0.3.3
+    - sphinx-rtd-theme==1.2.2 
