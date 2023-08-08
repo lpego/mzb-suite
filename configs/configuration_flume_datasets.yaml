@@ -32,14 +32,14 @@ trcl_learning_rate: 0.001
 trcl_batch_size: 16
 trcl_weight_decay: 0
 trcl_step_size_decay: 5
-trcl_number_epochs: 75
+trcl_number_epochs: 10 # 75
 # trcl_gpu_ids: -1 
 trcl_save_topk: 1
 trcl_num_classes: 8
 trcl_model_pretrarch: convnext-small #resenet50 #efficientnet-b2 #convnext-small #densenet161 #mobilenet
 trcl_num_workers: 16
-trcl_wandb_project_name: mzb-classifiers
-# trai_model_save_append: "-v1"
+trcl_wandb_project_name: mzb-classifiers # needed if using weight and biases logger
+trcl_logger: tensorboard # or tensorboard
 
 ## Finetuning / training config for skeleton prediction
 trsk_learning_rate: 0.001
@@ -53,6 +53,7 @@ trsk_num_classes: 2
 trsk_model_pretrarch: mit_b2 #mit-b2 #efficientnet-b2
 trsk_num_workers: 16
 trsk_wandb_project_name: mzb-skeletons
+trsk_logger: tensorboard # or wandb # needed if using weight and biases logger
 # trsk_tversky_loss_w1: 
 # trai_model_save_append: "-v1"
 

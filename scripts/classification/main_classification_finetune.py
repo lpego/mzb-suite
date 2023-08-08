@@ -100,19 +100,19 @@ def main(args, cfg):
     name_run = f"classifier-{cfg.trcl_model_pretrarch}"  # f"{model.pretrained_network}"
     cbacks = [pbar_cb, best_val_cb, last_mod_cb, trdatelog]
 
-    # TODOs: add possibility to use tensorboard
-    # if cfg.model_logger == "wandb":
-    logger = WandbLogger(
-        project=cfg.trcl_wandb_project_name, name=name_run if name_run else None
-    )
-    logger.watch(model, log="all")
+    # Define logger, and use either wandb or tensorboard
+    if cfg.trcl_logger == "wandb":
+        logger = WandbLogger(
+            project=cfg.trcl_wandb_project_name, name=name_run if name_run else None
+        )
+        logger.watch(model, log="all")
 
-    # elif cfg.model_logger == "tensorboard":
-    #     logger = TensorBoardLogger(
-    #         save_dir=args.save_model,
-    #         name=name_run if name_run else None,
-    #         log_graph=True,
-    #     )
+    elif cfg.trcl_logger == "tensorboard":
+        logger = TensorBoardLogger(
+            save_dir=args.save_model,
+            name=name_run if name_run else None,
+            log_graph=True,
+        )
 
     # instantiate trainer and train
     trainer = pl.Trainer(
