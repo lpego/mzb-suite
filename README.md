@@ -70,5 +70,6 @@ _Not in any priority_
 - [ ] Add a README.md to the data folder
 - [ ] Spend some time in thinking whether it is better to have one big config file, or one config file per module, or one config file per script.
 
-- [ ] check WANDBD accounts and api for loggers
-- [ ] Renku workflows for the different modules
+- [x] check WANDBD accounts and api for loggers [Added support for tensorboard, running locally]
+- [ ] Renku workflows for the different modules 
+    - [Or add `renku run` ... in front of command in `sh` scripts]
