@@ -69,6 +69,7 @@ _Not in any priority_
 - [ ] Add the dubendorf data use case to check consistency for multiple projects 
 - [ ] Add a README.md to the data folder
 - [ ] Spend some time in thinking whether it is better to have one big config file, or one config file per module, or one config file per script.
+    - Can also be moved into subfolders -- but I guess one config per experiments with clear sections is better. 
 
 - [x] check WANDBD accounts and api for loggers [Added support for tensorboard, running locally]
 - [ ] Renku workflows for the different modules 
