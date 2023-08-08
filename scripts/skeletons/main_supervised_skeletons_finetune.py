@@ -13,7 +13,7 @@ import yaml
 import torch
 import pytorch_lightning as pl
 from pytorch_lightning import Trainer
-from pytorch_lightning.loggers import WandbLogger
+from pytorch_lightning.loggers import WandbLogger, TensorBoardLogger
 from pytorch_lightning.strategies.ddp import DDPStrategy
 
 from mzbsuite.skeletons.mzb_skeletons_pilmodel import MZBModel_skels
@@ -96,11 +96,20 @@ def main(args, cfg):
 
     name_run = f"skel-{model.architecture}"
     cbacks = [pbar_cb, best_val_cb, last_mod_cb, trdatelog]
-    wb_logger = WandbLogger(
-        project=cfg.trsk_wandb_project_name, name=name_run if name_run else None
-    )
-    wb_logger.watch(model, log="all")
-    # TensorBoardLogger("tb_logs", name="")
+
+    # Define logger, and use either wandb or tensorboard
+    if cfg.trsk_logger == "wandb":
+        logger = WandbLogger(
+            project=cfg.trsk_wandb_project_name, name=name_run if name_run else None
+        )
+        logger.watch(model, log="all")
+
+    elif cfg.trsk_logger == "tensorboard":
+        logger = TensorBoardLogger(
+            save_dir=args.save_model,
+            name=name_run if name_run else None,
+            log_graph=True,
+        )
 
     trainer = Trainer(
         accelerator="auto",  # cfg.trcl_num_gpus outdated
@@ -108,7 +117,7 @@ def main(args, cfg):
         strategy=DDPStrategy(find_unused_parameters=False),
         precision=16,
         callbacks=cbacks,
-        logger=wb_logger,
+        logger=logger,
         log_every_n_steps=1,
     )
 

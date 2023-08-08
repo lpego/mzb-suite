@@ -2,7 +2,7 @@
 # set up pipeline to fine tune the classification model
 
 ROOT_DIR="/data/shared/mzb-workflow"
-MODEL="convnext-small-v0"
+MODEL="convnext-small-vtest-1"
 LSET_FOLD=$ROOT_DIR/data/learning_sets/project_portable_flume/aggregated_learning_sets
 
 # OUTPUT_DIR_CLASSIFICATION_INFERENCE=$ROOT_DIR/results/project_portable_flume/classification/classification_inference
@@ -27,11 +27,11 @@ fi
 
 # This is run to fine tune the classification model. It will read the curated learning sets and will return a new model
 # ---------------------------------------------------------------------------------------------------------------
-# python $ROOT_DIR/scripts/classification/main_classification_finetune.py \
-#     --config_file=$ROOT_DIR/configs/configuration_flume_datasets.yaml \
-#     --input_dir=$ROOT_DIR/data/learning_sets/project_portable_flume/aggregated_learning_sets/ \
-#     --save_model=$ROOT_DIR/models/mzb-classification-models/$MODEL \
-#     -v
+python $ROOT_DIR/scripts/classification/main_classification_finetune.py \
+    --config_file=$ROOT_DIR/configs/configuration_flume_datasets.yaml \
+    --input_dir=$ROOT_DIR/data/learning_sets/project_portable_flume/aggregated_learning_sets/ \
+    --save_model=$ROOT_DIR/models/mzb-classification-models/$MODEL \
+    # -v
 
 # This is run to classify a custom folder structure and will regturn a csv with the results
 # Specifically, this is run on the validation set to get the accuracy of the model
@@ -41,7 +41,7 @@ python ${ROOT_DIR}/scripts/classification/main_classification_inference.py \
     --input_dir=${ROOT_DIR}/data/learning_sets/project_portable_flume/aggregated_learning_sets/val_set \
     --input_model=${ROOT_DIR}/models/mzb-classification-models/${MODEL} \
     --output_dir=${ROOT_DIR}/results/project_portable_flume/classification/class_${MODEL}_validation_set/ \
-    -v
+    # -v
 
 # And this is to classify the mixed set, a custom folder structure with images from different sources
 # ---------------------------------------------------------------------------------------------------
@@ -50,6 +50,6 @@ python ${ROOT_DIR}/scripts/classification/main_classification_inference.py \
     --input_dir=${ROOT_DIR}/data/learning_sets/project_portable_flume/aggregated_learning_sets/mixed_set \
     --input_model=${ROOT_DIR}/models/mzb-classification-models/${MODEL} \
     --output_dir=${ROOT_DIR}/results/project_portable_flume/classification/class_${MODEL}_external_set/ \
-    -v
+    # -v
 
 # --> the classifier using a ConvNext or EfficientNet-b2 model is best, so we will use that one probably. 
