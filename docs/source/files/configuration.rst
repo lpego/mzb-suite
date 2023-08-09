@@ -3,51 +3,35 @@ Configuration
 
 All information related to a project is contained in a configuration file, located in ``/configs/{configuration_file.yaml}``. This file, together with input/output directories and other parameters specified directly via CLI (i.e. Command Line Interface) or via shell script (see also :doc:`Workflows and Models <workflow_models>`), passes the necessary parameters to the scripts. 
 
-We provide a template configuration file as well as a complete configuration file for the example project, *Portable Flume*. 
+The idea here is that the user can specify all necessary parameters for each project in this configuration file, so that one batch of images acquired in the same way (i.e. one project) always corresponds to one configuration file. 
+
+We provide a complete configuration file for the example project, *Portable Flume*, that can be used as a template for user's own configuration file for their projects. 
 
 Parameters explanation
 **********************
 
 This list is structured as follows: 
 
- .. code-block:: yaml
-    
+    .. code-block:: yaml 
+        
         parameter_name: [admissible_value_1, admissible_value_2] 
-
-Description of parameter, suggested values and rationale. 
-
-.. code-block::
-   :caption: A cool example
-
-       The output of this line starts with four spaces.
-
-.. code-block::
-
-       The output of this line has no spaces at the beginning.
-
-
-
-This is a list just for testing 
-    Is this thing indented? 
-    
-    Can I do multiline even? 
-
+    Description of parameter, suggested values and rationale. 
 
 .. admonition:: \ \ 
 
-    Need to figure out a better way to format this than using code blocks and go through all the pars again... 
+    Parameters appear in the same order as in the configuration file template for clarity, however the order of parameters makes no difference for the functioning of the pipelines. 
 
 .. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This first block contains some general parameters: 
 
     .. # Arguments not to be spec via CLI. 
-
- - ``glob_random_seed``: this is just a arbitrary number used by model trainers, important for reproducibility. 
- - ``glob_root_folder``: this is the root folder of the project, it could be for example ``/home/user/my_project/``. 
- - ``glob_blobs_folder``: this is the location where you want the clips of the segmented organisms to be saved; we strongly recommend putting this inside of the main data folder, for example ``/data/shared/mzb-workflow/data/derived/blobs/``. 
- - ``glob_local_format``: what format do you want the plotting outputs to be saved in; acceptable values are: ``pdf``, ``jpg``, ``png`` and other common formats. **NEED TO DOUBLE CHECK THIS**
- - ``model_logger``: which data logger is used to track model training progress; for the moment, only ``wandb`` (`Weights & Biases <https://wandb.ai/site>`_) is supported. Note that W&B requires an account and to be setup by the user, see **WEIGHTS_&_BIASES_XXX**. 
+ 
+ - ``glob_random_seed``: ``[int]`` this is just a arbitrary number used by model trainers, important for reproducibility. 
+ - ``glob_root_folder``: ``[string]`` this is the root folder of the project, it could be for example ``/home/user/my_project/``. 
+ - ``glob_blobs_folder``: ``[string]`` this is the location where you want the clips of the segmented organisms to be saved; we strongly recommend putting this inside of the main data folder, for example ``/data/shared/mzb-workflow/data/derived/blobs/``. 
+ - ``glob_local_format``: ``[jpg, pdf, ...]`` what format do you want the plotting outputs to be saved in; acceptable values are: ``pdf``, ``jpg``, ``png`` and other common formats. **NEED TO DOUBLE CHECK THIS**
+ - ``model_logger``: ``[wandb]`` which data logger is used to track model training progress; for the moment, only ``wandb`` (`Weights & Biases <https://wandb.ai/site>`_) is supported. Note that W&B requires an account and to be setup by the user, see **WEIGHTS_&_BIASES_XXX**. 
 
 The second block of parameters is specific to image segmentation. If the segmentation results are not satisfactory (i.e. organisms incompletely clipped, debris or other noise segmented as organisms, etc), changing these values might produce better results: 
 
@@ -232,3 +216,22 @@ Below a complete example of a configuration file for the example project *Portab
 
 The taxonomy file
 *****************
+This file contains information about the taxonomy of each class (e.g. species, genus, or other taxa) in the dataset. The first column should be named ``query`` and should contain the name of the class; all the other columns should correspond to a taxonomic rank, and should contain the pertinent taxon for that class. 
+
+This should be saved as CSV file in an appropriate location (for instance, ``/data/MAB_taxonomy.csv``), structured like so: 
+
++---------------+---------+------------+---------+-----------+---------------+----------+---------------+----------+
+| query         | kingdom | phylum     | class   | subclass  | order         | suborder | family        | genus    |
++===============+=========+============+=========+===========+===============+==========+===============+==========+
+| ephemeroptera | Metazoa | Arthropoda | Insecta | Pterygota | Ephemeroptera | NA       | NA            | NA       |
++---------------+---------+------------+---------+-----------+---------------+----------+---------------+----------+
+| heptageniidae | Metazoa | Arthropoda | Insecta | Pterygota | Ephemeroptera | Setisura | Heptageniidae | NA       |
++---------------+---------+------------+---------+-----------+---------------+----------+---------------+----------+
+| isoperla      | Metazoa | Arthropoda | Insecta | Pterygota | Plecoptera    | NA       | Perlodidae    | Isoperla |
++---------------+---------+------------+---------+-----------+---------------+----------+---------------+----------+
+
+Such a taxonomy file can be easily generated from a list of classes using utilities like the `R package taxize or others <https://github.com/ropensci/taxize>`_. 
+
+Please note that the taxonomic rank selection can be different (for instance, it could be ``class, family, genus, species``), the only constrain is that the requested taxonomic cutoff rank (parameter `lset_class_cut``) must also exist in the taxonomy file. If for some classes the requested taxonomic cutoff has no value or is NA (due to the fact that that level is not available or the query is at a higher taxonomic rank), then that class is dropped. 
+
+So, if our taxonomy file looks like the table above, if we requested taxonomic cutoff ``order``, we would obtain 2 classes (Ephemeroptera, line 1+2; Plecoptera, line 3); if we requested taxonomic cutoff ``family``, we would obtain 2 classes (Hpetageniidae, line 2; Perlodidae, line 3); if we requested taxonomic cutoff ``suborder``, we would obtain 1 class (Setisura, line 2). 
