@@ -30,6 +30,7 @@ def main(args, cfg):
 
     args: argparse.Namespace
         Arguments parsed from the command line. Specifically:
+        
             - input_dir: path to the directory containing the raw clips
             - output_dir: path to the directory where the learning sets will be saved
             - config_file: path to the config file with train / inference parameters

@@ -23,14 +23,14 @@ root
 # %%
 def main(args, cfg):
     """
-    Main function to run an assessement of the legth measurements.
+    Main function to run an assessment of the length measurements.
     Computes the absolute error between manual annotations and model predictions, and reports plots grouped by species.
-
 
     Parameters
     ----------
     args: argparse.Namespace
-        arguments parsed from the command line. Specifically:
+        Arguments parsed from the command line. Specifically:
+        
             - args.input_dir: path to the directory with the model predictions
             - args.manual_annotations: path to the manual annotations
             - args.model_annotations: path to the model predictions

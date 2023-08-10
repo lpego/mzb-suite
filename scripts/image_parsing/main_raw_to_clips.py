@@ -21,9 +21,9 @@ def main(args, cfg):
 
     Parameters
     ----------
-
-    args : argparse.Namespace
+    args : argparse.Namespace 
         Arguments passed to the script. Namely:
+        
             - input_dir: path to directory with raw images
             - output_dir: path to directory where to clip images
             - save_full_mask_dir: path to directory where to save labeled full masks

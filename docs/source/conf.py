@@ -49,10 +49,14 @@ extensions = [
     "sphinx.ext.doctest",
     "sphinx.ext.inheritance_diagram",
     "sphinx_rtd_theme",
-    "sphinx.ext.autosectionlabel"
+    "sphinx.ext.autosectionlabel", 
+    "sphinx.ext.napoleon"
 ]
-# Automatic sections etc creation, nested for each file
+# Automatic labels for sections etc, prefixed for each file for each file
+# NOTE: cannot have the same section name within the same file!
 autosectionlabel_prefix_document = True
+
+# Napoleon is for formatting NumPy and Google style docstring
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
@@ -88,7 +92,7 @@ html_theme_options = {
     # Toc options
     "collapse_navigation": True,
     "sticky_navigation": True,
-    "navigation_depth": 2,
+    "navigation_depth": 3,
     "includehidden": True,
     "titles_only": False,
 }

@@ -26,14 +26,13 @@ os.environ["MKL_THREADING_LAYER"] = "GNU"
 def main(args, cfg):
     """
     Function to train a model for classification of macrozoobenthos images.
-    The model is trained on the dataset specified in the config file.
-    The model is saved in the folder specified in the config file.
-    The model is saved every 50 steps and at the end of the training.
+    The model is trained on the dataset specified in the config file, saved to the folder specified every 50 steps and at the end of the training.
 
     Parameters
     ----------
     args : argparse.Namespace
         Namespace containing the arguments passed to the script. Notably:
+        
             - input_dir: path to the directory containing the images to be classified
             - save_model: path to the directory where the model will be saved
             - config_file: path to the config file with train / inference parameters

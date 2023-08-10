@@ -34,6 +34,7 @@ def main(args, cfg):
     ----------
     args : argparse.Namespace
         Namespace containing the arguments passed to the script. Notably:
+        
             - input_dir: path to the directory containing the images to be classified
             - input_type: type of input data, either "val" or "external"
             - input_model: path to the directory containing the model to be used for inference

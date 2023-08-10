@@ -24,11 +24,10 @@ from mzbsuite.skeletons.mzb_skeletons_helpers import (
     traverse_graph,
 )
 
-from mzbsuite.utils import cfg_to_arguments, noneparse
+from mzbsuite.utils import cfg_to_arguments#, noneparse
 
 
 def main(args, cfg):
-    PLOTS = False
     """
     Main function for skeleton estimation (body size) in the unsupervised setting.
 
@@ -36,12 +35,14 @@ def main(args, cfg):
     ----------
     args : argparse.Namespace
         Arguments parsed from command line. Namely:
+        
             - config_file: path to the configuration file
             - input_dir: path to the directory containing the masks
             - output_dir: path to the directory where to save the results
             - save_masks: path to the directory where to save the masks as jpg
             - list_of_files: path to the csv file containing the classification predictions
             - v (verbose): whether to print more info
+            
     cfg : argparse.Namespace
         Arguments parsed from the configuration file.
 
@@ -49,6 +50,7 @@ def main(args, cfg):
     -------
     None. All is saved to disk at specified locations.
     """
+    PLOTS = False
 
     if args.save_masks is not None:
         args.save_masks = Path(f"{args.save_masks}")
