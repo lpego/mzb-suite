@@ -3,6 +3,7 @@
 # Edit at https://www.gitignore.io/?templates=macos,python,R,linux,vim,emacs,visualstudiocode,intellij
 
 .vscode
+README_old.md
 
 ### Emacs ###
 # -*- mode: gitignore; -*-

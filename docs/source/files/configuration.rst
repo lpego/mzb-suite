@@ -218,7 +218,7 @@ The taxonomy file
 *****************
 This file contains information about the taxonomy of each class (e.g. species, genus, or other taxa) in the dataset. The first column should be named ``query`` and should contain the name of the class; all the other columns should correspond to a taxonomic rank, and should contain the pertinent taxon for that class. 
 
-This should be saved as CSV file in an appropriate location (for instance, ``/data/MAB_taxonomy.csv``), structured like so: 
+This should be saved as CSV file in an appropriate location (for instance, ``/data/MZB_taxonomy.csv``), structured like so: 
 
 +---------------+---------+------------+---------+-----------+---------------+----------+---------------+----------+
 | query         | kingdom | phylum     | class   | subclass  | order         | suborder | family        | genus    |
