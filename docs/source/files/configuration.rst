@@ -38,7 +38,7 @@ The second block of parameters is specific to image segmentation. If the segment
     .. # Image parsing specific
 
  - ``impa_image_format``: ``[jpg, png, ...]`` what format are the original images in? Should be caps insensitive and support common formats like ``jpg``, ``png`` and others. 
- - ``impa_clip_areas``: ``[int, int]`` it's common to place a reference scale and colour grid in images (see also :doc:`Introduction to examples <examples/ex_intro>`), here you can define the area of the image where it is placed, so that it can be cropped out. You should specify this as the coordinates (in pixels) of the bottom-right corner of the portion of the image you want analysed, so that the regions that fall outside of it can be cropped out, for example ``[2750, 4900]`` will exclude all areas *right* of 2750 pixles and *below* 4900 pixels. 
+ - ``impa_clip_areas``: ``[int, int]`` it's common to place a reference scale and colour grid in images (see also :doc:`Introduction to examples <examples/ex_intro>`), here you can define the area of the image where it is placed, so that it can be cropped out. You should specify this as the coordinates (in pixels) of the bottom-right corner of the portion of the image you want analysed, so that the regions that fall outside of it can be cropped out, for example ``[2750, 4900]`` will exclude all areas *right* of 2750 pixels and *below* 4900 pixels. 
  - ``impa_area_threshold``: this is the minimum size (in pixels) that will be considered to be an organism; anything below this threshold will be discarded. When in doubt, start with a low threshold and increase until most noise is removed. 
  - ``impa_gaussian_blur``: ``[int, int]`` the size fo the kernel that will be used to smooth the image before processing; you can think of this as the "radius" of the blur: the larger the radius, the stronger the smoothing effect, but also more loss of details in the image. This should not be changed much except for very noisy images and/or with comparatively large organisms compared to the full size of the image. 
  - ``impa_gaussian_blur_passes``: ``[int]`` How many times the gaussian filter should be applied in sequence. 
@@ -76,13 +76,13 @@ The following parameters relate to model training of the classification model. T
  
  - ``trcl_save_topk``: ``[int]`` How many models should be saved among the best? You can specify if you want to retain the best 1-2-5 etc best models after training; this can be beneficial for evaluating overfitting and convergence. Suggested value: ``1``. 
  - ``trcl_num_classes``: ``[int]`` How many classes should the model be trained for? This needs to be defined by the user, and it corresponds to how many taxa are at the specified taxonomic rank. In our example we had ``8``. 
- - ``trcl_model_pretrarch``: ``[convnext-small, resenet50, efficientnet-b2, convnext-small, densenet161, mobilenet]`` Which model architecture should be used for training; the supported architectures are detailed in :ref:`workflow_models:Available models` **NEED TO FIX THIS REFERENCE!** 
+ - ``trcl_model_pretrarch``: ``[convnext-small, resenet50, efficientnet-b2, convnext-small, densenet161, mobilenet]`` Which model architecture should be used for training; the supported architectures are detailed in :ref:`files/workflow_models:Available models`. 
  - ``trcl_num_workers``: ``[int]`` How many processes (i.e. workers) do you want the dataloader to spawn? A good rule of thumb is to use the same number of workers as number of threads of your CPU. In our example the value is ``16``. 
  - ``trcl_wandb_project_name``: ``[string]`` Name of the Weights & Biases tracker for your project; you should change this to something meaningful for your project; in our case it was ``mzb-classifiers``. 
 
     .. # trai_model_save_append: "-v1"
 
-This next block con tains parameters for the supervised skeleton prediction model (see :ref:`workflow_models:Supervised Skeleton Prediction` **NEED TO FIX THIS REFERENCE!** ). The same consideration as for the previous block apply. 
+This next block con tains parameters for the supervised skeleton prediction model (see :ref:`files/workflow_models:Supervised Skeleton Prediction`). The same consideration as for the previous block apply. 
 
     .. ## Finetuning / training config for skeleton prediction
 
@@ -96,7 +96,7 @@ This next block con tains parameters for the supervised skeleton prediction mode
 
  - ``trsk_save_topk``: ``[int]`` How many models should be saved among the best? You can specify if you want to retain the best 1-2-5 etc best models after training; this can be beneficial for evaluating overfitting and convergence. Suggested value: ``1``. 
  - ``trsk_num_classes``: ``[int]`` Since this is a binary classifier (i.e. pixels are either part of the predicted skeleton or they are not), this should be ``2``. In case of annotations referring to multiple features this can be changed according to the number of features. 
- - ``trsk_model_pretrarch``: ``[mit_b2, mit-b2, efficientnet-b2]`` Which model architecture should be used for training; the supported architectures are detailed in :ref:`workflow_models:Available models` **NEED TO ADD SUPERVISED SKELETONS IMPLEMENTED MODELS!** 
+ - ``trsk_model_pretrarch``: ``[mit_b2, mit-b2, efficientnet-b2]`` Which model architecture should be used for training; the supported architectures are detailed in :ref:`files/workflow_models:Available models`. 
  - ``trsk_num_workers``: ``[int]`` How many processes (i.e. workers) do you want the dataloader to spawn? A good rule of thumb is to use the same number of workers as number of threads of your CPU. In our example the value is ``16``. 
  - ``trsk_wandb_project_name``: ``[string]`` Name of the Weights & Biases tracker for your project; you should change this to something meaningful for your project; in our case it was ``mzb-skeletons``. 
 
@@ -110,7 +110,7 @@ This block contains further convenience parameters for inference using trained s
 
  - ``infe_model_ckpt``: ``[last, best]`` Which model should be used? The ``last`` model is the newest training iteration, and ``best`` is the model that performed best on the validation set (available only if a validation set is specified). 
  - ``infe_num_classes``: ``[int]`` How many classes should the inference be carried out on? It should be the same number of classes the model has been trained on. In our example it was ``8``. 
- - ``infe_image_glob``: ``[string]`` What suffix and/or extension should be attached to output images? This should be placed in double quotes ``""`` and can be a capture pattern (also called regular expression, see `glob documentation <https://docs.python.org/3/library/glob.html>`). In our case, we append a suffix and extension at the end of the original image name (using the wildcard ``*``): ``"*_rgb.jpg"``.  
+ - ``infe_image_glob``: ``[string]`` What suffix and/or extension should be attached to output images? This should be placed in double quotes ``""`` and can be a capture pattern (also called regular expression, see `glob documentation <https://docs.python.org/3/library/glob.html>`_). In our case, we append a suffix and extension at the end of the original image name (using the wildcard ``*``): ``"*_rgb.jpg"``.  
 
 These parameters are related to the unsupervised skeletonization: 
 
@@ -118,7 +118,7 @@ These parameters are related to the unsupervised skeletonization:
     .. ## unsupervised skeletonization
 
  - ``skel_class_exclude``: ``[string]`` Should any class be excluded from the processing? For example, unidentifiable organisms or calibration images. In our cases these images were labelled as ``errors``. 
- - ``skel_conv_rate``: ``[float]`` This is the pixel-to-millimitres conversion rate. It has to be provided by the user and is used for all images in the dataset (see :ref:`workflow_models:` **NEED TO DOUBLE CHECK WHERE THIS REF POINTS TO**). In our case this was ``131.6625``, obtained averaging manual measurements over several images. 
+ - ``skel_conv_rate``: ``[float]`` This is the pixel-to-millimitres conversion rate. It has to be provided by the user and is used for all images in the dataset (see :ref:`files/scripts/processing_scripts:Segmentation`). In our case this was ``131.6625``, obtained averaging manual measurements over several images. 
 
 .. # skel_save_usnup_masks: data/derived/project_portable_flume/skeletons/automatic_skeletons/
 
