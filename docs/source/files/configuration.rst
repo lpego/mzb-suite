@@ -17,6 +17,7 @@ This list is structured as follows:
         parameter_name: [admissible_value_1, admissible_value_2] 
     Description of parameter, suggested values and rationale. 
 
+
 .. admonition:: \ \ 
 
     Parameters appear in the same order as in the configuration file template for clarity, however the order of parameters makes no difference for the functioning of the pipelines. 
