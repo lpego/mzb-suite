@@ -38,6 +38,9 @@ Processing scripts
 :doc:`files/scripts/processing_scripts`
     Detailed explanation for processing functions
 
+:doc:`files/scripts/diverse_preprocessing`
+    Details of other convenience scripts
+
 .. Hidden TOCs
 
 .. toctree::
@@ -63,6 +66,7 @@ Processing scripts
     :hidden:
 
     files/scripts/processing_scripts
+    files/scripts/diverse_preprocessing
 
 .. toctree::
     :caption: mzb-suite Modules
