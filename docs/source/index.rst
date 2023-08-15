@@ -7,7 +7,7 @@
 MZB-WORFLOW: Macrozoobenthos data workflow suite 
 ================================================
 
-This documentation introduces and illustrates some examples of the _Macrozoobenthos data processing workflow suite (mzb-workflow project)_. 
+This documentation introduces and illustrates some examples of the *Macrozoobenthos data processing workflow suite (mzb-suite)*. 
 
 The MZB project
 ===============
@@ -30,6 +30,13 @@ Examples
 
 :doc:`files/examples/ex_preprocessing`
     Example of data
+
+
+Processing scripts
+==================
+
+:doc:`files/scripts/processing_scripts`
+    Detailed explanation for processing functions
 
 .. Hidden TOCs
 
