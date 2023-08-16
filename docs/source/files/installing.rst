@@ -13,24 +13,37 @@ Docker container
 -------------------
 For less experienced users, we recommend installing via Docker. You can find instructions on how to install the Docker Engine here: `<https://docs.docker.com/get-docker/>`_
 
-*(coming soon)*
+Once the Docker Engine has been correctly installed, you can download the project's Docker image from: 
 
-Cloning the project
--------------------
+    .. class:: 
 
-The project is currently hosted on the `Swiss Data Science Center <https://datascience.ch>`_ GitLab server. 
+    `*link coming soon* <LINK_TO_DOCKER_IMAGE>`_ 
 
-.. admonition:: \ \ 
-   
-   If you don't have Git installed, you can follow instructions `here <https://git-scm.com/downloads>`_. We recommend using Git because it allows to easily update the package and tracking any changes you make. 
+and launch it from the Graphical User Interface (GUI) of Docker. 
 
-To clone the project, you simply need to clone it into your projects folder: 
+This should open a terminal within the Docker environment where you can start using the project's modules immediately! 
+
+Manual install
+--------------
+
+If you prefer to install the project directly in your local environment or just want to use the functions in your own scripts, you can download the project's  repository. 
+The project is currently hosted on the `Swiss Data Science Center <https://datascience.ch>`_ GitLab server, you can find the repository here: 
+
+    .. class:: 
+
+    `<https://gitlab.renkulab.io/biodetect/mzb-workflow>`_. 
+
+To download the project, you simply need to clone it into a location of your choice: 
 
 .. code-block:: bash
 
     git clone git@renkulab.io:biodetect/mzb-workflow.git
 
-This will create a folder called ``mzb-workflow`` in your projects folder. 
+.. admonition:: \ \ 
+   
+   If you don't have Git installed, you can follow instructions `here <https://git-scm.com/downloads>`_. We recommend using Git because it allows to easily update the package and tracking any changes you make. 
+
+This will create a folder called ``mzb-workflow`` in the current working directory. 
 
 .. hint:: \ \ 
    If you don't want to use Git, you can directly download an archive of the `repository <https://renkulab.io/gitlab/biodetect/mzb-workflow>`_ from GitLab and extract it manually. 
@@ -39,8 +52,11 @@ You can then install the necessary packages using the conda package manager and 
 
 .. code-block:: bash
 
-    cd mzb-workflow
+    cd mzb-workflow    # chdir mzb-workflow in Windows
     conda env create -f environment.yml
+
+.. hint:: \ \ 
+   If you don't have Anaconda installed, you can can get the installer from `<https://www.anaconda.com/download>`_.
 
 This should install the ``mzbsuite`` package as well, but if this does not work, you can simply install it via pip as: 
 
@@ -50,7 +66,7 @@ This should install the ``mzbsuite`` package as well, but if this does not work,
 
     pip install -e .
 
-the ``-e`` flag will install the package in editable mode, so that you can make changes to the package and they will be reflected in your environment. 
+the ``-e`` flag will install the package in editable mode, so that you can make changes to the functions in ``mzbsuite`` and they will be reflected in your environment. 
 
 .. admonition:: \ \ 
    
@@ -61,3 +77,5 @@ the ``-e`` flag will install the package in editable mode, so that you can make 
     conda list -n mzbsuite
 
    and check that ``mzbsuite`` appears in the  list. 
+
+If there are no errors then you're all set up and can start using the modules. 
