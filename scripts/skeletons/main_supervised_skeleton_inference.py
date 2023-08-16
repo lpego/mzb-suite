@@ -89,6 +89,7 @@ def main(args, cfg):
     pbar_cb = pl.callbacks.progress.TQDMProgressBar(refresh_rate=5)
 
     trainer = pl.Trainer(
+        precision=32,
         max_epochs=1,
         accelerator="gpu" if torch.cuda.is_available() else "cpu",
         devices=1 if torch.cuda.is_available() else None,
