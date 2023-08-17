@@ -7,7 +7,7 @@ variables:
 stages:
   - build
 
-test_image_build:
+image_build:
   stage: build
   image: docker:stable
   before_script:
