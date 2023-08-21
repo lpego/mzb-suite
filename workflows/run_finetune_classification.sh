@@ -2,7 +2,7 @@
 # set up pipeline to fine tune the classification model
 
 ROOT_DIR="/data/shared/mzb-workflow"
-MODEL="convnext-small-vtest-1"
+MODEL="convnext-small-vtest-2"
 LSET_FOLD=$ROOT_DIR/data/learning_sets/project_portable_flume/aggregated_learning_sets
 
 # OUTPUT_DIR_CLASSIFICATION_INFERENCE=$ROOT_DIR/results/project_portable_flume/classification/classification_inference
