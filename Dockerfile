@@ -35,9 +35,14 @@ FROM renku/renkulab-py:3.10-0.18.1
 # except for the last end with backslash '\' to continue the RUN line
 #
 
+USER root
 RUN apt-get update && \
-    apt-get install -y ffmpeg libsm6 libxext6 \
+    apt-get install -y --no-install-recommends \
+    ffmpeg \
+    libsm6 \
+    libxext6 \
     htop
+USER ${NB_USER}
 
 # USER root
 # RUN apt-get update && \
