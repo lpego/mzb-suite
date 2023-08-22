@@ -1,4 +1,4 @@
-name: mzbsuite
+name: mzb-forge
 channels:
   - pytorch
   - nvidia
@@ -21,7 +21,7 @@ dependencies:
   - pip:
     - pyyaml==6.0
     - wandb==0.15.8
-    - opencv-python==4.6.0.66
+    - opencv-python==4.8.0.76
     - segmentation_models_pytorch==0.3.3
     - sphinx-rtd-theme==1.2.2
     - tensorboard==2.13.0
