@@ -50,7 +50,7 @@ USER ${NB_USER}
 #    apt-utils \
 #    vim
 # USER ${NB_USER}
-`
+
 # install the python dependencies
 COPY requirements.txt environment.yml /tmp/
 RUN mamba env update -f /tmp/environment.yml && \
