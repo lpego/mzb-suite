@@ -60,6 +60,3 @@ RUN mamba env update -f /tmp/environment.yml && \
     rm -rf ${HOME}/.renku/venv
 
 COPY --from=builder ${HOME}/.renku/venv ${HOME}/.renku/venv
-
-RUN mamba env remove --name base
-RUN mamba create --name base --clone mzbsuite
