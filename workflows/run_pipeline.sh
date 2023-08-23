@@ -2,13 +2,14 @@
 
 ROOT_DIR="/data/shared/mzb-workflow"
 MODEL="efficientnet-b2-v0"
-LSET_FOLD=${ROOT_DIR}/data/learning_sets/project_portable_flume/aggregated_learning_sets
+LSET_FOLD=${ROOT_DIR}/data/learning_sets/project_portable_flume/aggregated_learning_sets_test
 
-# python scripts/image_parsing/main_raw_to_clips.py \
-#     --input_dir=${ROOT_DIR}/data/raw/project_portable_flume \
-#     --output_dir=${ROOT_DIR}/data/derived/project_portable_flume/blobs/ \
-#     --save_full_mask_dir=${ROOT_DIR}/data/derived/project_portable_flume/full_image_masks \
-#     --config_file=${ROOT_DIR}/configs/configuration_flume_datasets.yaml
+echo
+python scripts/image_parsing/main_raw_to_clips.py \
+    --input_dir=${ROOT_DIR}/data/raw/project_portable_flume \
+    --output_dir=${ROOT_DIR}/data/derived/project_portable_flume/blobs_tr/ \
+    --save_full_mask_dir=${ROOT_DIR}/data/derived/project_portable_flume/full_image_masks_test \
+    --config_file=${ROOT_DIR}/configs/configuration_flume_datasets.yaml
     # -v
 
 ## CHECK: _mask_properties.csv file in the output directory, does not get filled correctly  
@@ -41,12 +42,12 @@ LSET_FOLD=${ROOT_DIR}/data/learning_sets/project_portable_flume/aggregated_learn
 # For this, the next step that uses a supervised neural network is required.
 # this function also takes a list of files to process, if you want to run it on a subset of the data. As csv with column "file"
 ## ------------------------------------------------------------------------------------------
-python scripts/skeletons/main_unsupervised_skeleton_estimation.py \
-    --config_file=${ROOT_DIR}/configs/configuration_flume_datasets.yaml \
-    --input_dir=${ROOT_DIR}/data/derived/project_portable_flume/blobs/ \
-    --output_dir=${ROOT_DIR}/results/project_portable_flume/skeletons/automatic_skeletons/ \
-    --save_masks=${ROOT_DIR}/data/derived/project_portable_flume/skeletons/automatic_skeletons/ \
-    --list_of_files=None \
+# python scripts/skeletons/main_unsupervised_skeleton_estimation.py \
+#     --config_file=${ROOT_DIR}/configs/configuration_flume_datasets.yaml \
+#     --input_dir=${ROOT_DIR}/data/derived/project_portable_flume/blobs/ \
+#     --output_dir=${ROOT_DIR}/results/project_portable_flume/skeletons/automatic_skeletons/ \
+#     --save_masks=${ROOT_DIR}/data/derived/project_portable_flume/skeletons/automatic_skeletons/ \
+#     --list_of_files=None \
     # -v
 
 ## This is run on a custom folder structure and will regturn a csv with the results
