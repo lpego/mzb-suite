@@ -1,4 +1,4 @@
-name: mzb-forge
+name: mzbsuite
 channels:
   - pytorch
   - nvidia
@@ -19,7 +19,9 @@ dependencies:
   - ipykernel=6.25.0
   - scipy=1.11.2
   - pip
+  
   - pip:
+    - -e .
     - pyyaml==6.0
     - wandb==0.15.8
     - opencv-python==4.8.0.76

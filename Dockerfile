@@ -50,7 +50,7 @@ USER ${NB_USER}
 #    apt-utils \
 #    vim
 # USER ${NB_USER}
-
+`
 # install the python dependencies
 COPY requirements.txt environment.yml /tmp/
 RUN mamba env update -f /tmp/environment.yml && \
@@ -60,3 +60,6 @@ RUN mamba env update -f /tmp/environment.yml && \
     rm -rf ${HOME}/.renku/venv
 
 COPY --from=builder ${HOME}/.renku/venv ${HOME}/.renku/venv
+
+RUN conda env remove --name base
+RUN mamba create --name base --clone mzbsuite
