@@ -57,6 +57,7 @@ def main(args, cfg):
 
     model.data_dir = Path(args.input_dir)
     model.num_classes = cfg.infe_num_classes
+    model.num_workers_loader = 4
 
     model.eval()
 
