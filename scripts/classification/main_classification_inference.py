@@ -72,9 +72,7 @@ def main(args, cfg):
 
     trainer = pl.Trainer(
         max_epochs=1,
-        accelerator=torch.device("gpu")
-        if torch.cuda.is_available()
-        else torch.device("cpu"),
+        accelerator="gpu" if torch.cuda.is_available() else "cpu",
         devices=1 if torch.cuda.is_available() else 8,
         callbacks=[pbar_cb],
         enable_checkpointing=False,
