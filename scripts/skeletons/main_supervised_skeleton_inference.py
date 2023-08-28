@@ -34,7 +34,7 @@ def main(args, cfg):
     ----------
     args : argparse.Namespace
         Namespace containing the arguments passed to the script. Notably:
-        
+
             - input_dir: path to the directory containing the images to be classified
             - input_type: type of input data, either "val" or "external"
             - input_model: path to the directory containing the model to be used for inference
@@ -66,6 +66,7 @@ def main(args, cfg):
     model.im_folder = model.data_dir / "images"
     model.bo_folder = model.data_dir / "sk_body"
     model.he_folder = model.data_dir / "sk_head"
+    model.num_workers_loader = 4
 
     # this is unfortunately necessary to get the model to work, reindex trn/val split
     np.random.seed(12)
