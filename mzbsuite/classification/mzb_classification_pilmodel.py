@@ -320,7 +320,7 @@ class MZBModel(pl.LightningModule):
         # number of draws from the weighted random samples matches the 2 * (n_positive // batch_size)
         return DataLoader(
             val_d,
-            batch_size=10,  # self.batch_size,
+            batch_size=self.batch_size,
             shuffle=False,
             drop_last=True,
             num_workers=self.num_workers_loader,

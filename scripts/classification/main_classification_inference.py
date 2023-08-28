@@ -39,6 +39,8 @@ def main(args, cfg):
     None. Saves the results in the specified folder.
     """
 
+    torch.hub.set_dir("./models/hub/")
+
     dirs = find_checkpoints(
         Path(args.input_model).parents[0],
         version=Path(args.input_model).name,
@@ -46,19 +48,23 @@ def main(args, cfg):
     )
 
     mod_path = dirs[0]
+    # print(mod_path)
 
-    model = MZBModel()
-    model = model.load_from_checkpoint(
-        checkpoint_path=mod_path,
-        map_location=torch.device("gpu")
-        if torch.cuda.is_available()
-        else torch.device("cpu"),
+    model = MZBModel(
+        pretrained_network=cfg.trcl_model_pretrarch,
     )
 
+    model = model.load_from_checkpoint(checkpoint_path=mod_path, map_location="cpu")
+    # torch.device("gpu")
+    #   if torch.cuda.is_available()
+    #  else torch.device("cpu"),
+    # )
+
+    model.to("cpu")
     model.data_dir = Path(args.input_dir)
     model.num_classes = cfg.infe_num_classes
-    model.num_workers_loader = 4
-
+    model.num_workers_loader = 8
+    model.batch_size = 1
     model.eval()
 
     if "val_set" in model.data_dir.name:
@@ -68,20 +74,21 @@ def main(args, cfg):
             model.data_dir, glob_pattern=cfg.infe_image_glob
         )
 
-    pbar_cb = pl.callbacks.progress.TQDMProgressBar(refresh_rate=5)
+    # pbar_cb = pl.callbacks.progress.TQDMProgressBar(refresh_rate=5)
 
     trainer = pl.Trainer(
         max_epochs=1,
         accelerator="gpu" if torch.cuda.is_available() else "cpu",
-        devices=1 if torch.cuda.is_available() else 8,
-        callbacks=[pbar_cb],
+        devices=1 if torch.cuda.is_available() else 1,
+        # callbacks=[pbar_cb],
         enable_checkpointing=False,
         logger=False,
     )
 
     outs = trainer.predict(
-        model=model, dataloaders=[dataloader], return_predictions=True
+        model=model, dataloaders=[dataloader]  # , return_predictions=True
     )
+    print(outs)
 
     if cfg.lset_taxonomy:
         mzb_taxonomy = pd.read_csv(Path(cfg.lset_taxonomy))
@@ -95,6 +102,7 @@ def main(args, cfg):
     y = []
     p = []
     gt = []
+
     for out in outs:
         y.append(out[0].numpy().squeeze())
         p.append(out[1].numpy().squeeze())

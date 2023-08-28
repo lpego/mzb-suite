@@ -1,8 +1,8 @@
 
 # Arguments not to be spec via CLI
 glob_random_seed: 222 
-glob_root_folder: /data/shared/mzb-workflow/
-glob_blobs_folder: /data/shared/mzb-workflow/data/derived/blobs/
+glob_root_folder: /work/mzb-workflow/
+glob_blobs_folder: /work/mzb-workflow/data/derived/blobs/
 glob_local_format: pdf
 model_logger: wandb
 
@@ -25,7 +25,7 @@ impa_save_clips_plus_features: True
 ## and such into specific subfolers
 lset_class_cut: order
 lset_val_size: 0.1
-lset_taxonomy: /data/shared/mzb-workflow/data/MZB_taxonomy.csv
+lset_taxonomy: /work/mzb-workflow/data/MZB_taxonomy.csv
 
 ## Finetuning / training config for classifier
 trcl_learning_rate: 0.001
@@ -36,7 +36,7 @@ trcl_number_epochs: 10 # 75
 # trcl_gpu_ids: -1 
 trcl_save_topk: 1
 trcl_num_classes: 8
-trcl_model_pretrarch: efficientnet-b2 #resenet50 #efficientnet-b2 #convnext-small #densenet161 #mobilenet
+trcl_model_pretrarch: convnext-small #resenet50 #efficientnet-b2 #convnext-small #densenet161 #mobilenet
 trcl_num_workers: 16
 trcl_wandb_project_name: mzb-classifiers # needed if using weight and biases logger
 trcl_logger: wandb # tensorboard | wandb -- select the logger for training
