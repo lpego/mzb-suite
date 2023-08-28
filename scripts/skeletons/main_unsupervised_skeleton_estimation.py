@@ -24,7 +24,7 @@ from mzbsuite.skeletons.mzb_skeletons_helpers import (
     traverse_graph,
 )
 
-from mzbsuite.utils import cfg_to_arguments#, noneparse
+from mzbsuite.utils import cfg_to_arguments, noneparse
 
 
 def main(args, cfg):

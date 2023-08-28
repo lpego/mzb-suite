@@ -25,7 +25,7 @@ def main(args, cfg):
     ----------
     args : argparse.Namespace
         Namespace containing the arguments passed to the script. Notably:
-        
+
             - input_dir: path to the directory containing the images to be classified
             - input_model: path to the directory containing the model to be used for inference
             - output_dir: path to the directory where the results will be saved
@@ -50,6 +50,9 @@ def main(args, cfg):
     model = MZBModel()
     model = model.load_from_checkpoint(
         checkpoint_path=mod_path,
+        map_location=torch.device("gpu")
+        if torch.cuda.is_available()
+        else torch.device("cpu"),
     )
 
     model.data_dir = Path(args.input_dir)
@@ -68,8 +71,10 @@ def main(args, cfg):
 
     trainer = pl.Trainer(
         max_epochs=1,
-        accelerator="gpu" if torch.cuda.is_available() else "cpu",
-        devices=1 if torch.cuda.is_available() else None,
+        accelerator=torch.device("gpu")
+        if torch.cuda.is_available()
+        else torch.device("cpu"),
+        devices=1 if torch.cuda.is_available() else 8,
         callbacks=[pbar_cb],
         enable_checkpointing=False,
         logger=False,
@@ -197,7 +202,7 @@ if __name__ == "__main__":
 
     sys.exit(main(args, cfg))
 
-# # %% is this supposed to still be here??? 
+# # %% is this supposed to still be here???
 # if 0:
 #     import torch
 #     from matplotlib import pyplot as plt
