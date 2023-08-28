@@ -63,8 +63,8 @@ def main(args, cfg):
     model.to("cpu")
     model.data_dir = Path(args.input_dir)
     model.num_classes = cfg.infe_num_classes
-    model.num_workers_loader = 8
-    model.batch_size = 1
+    model.num_workers_loader = 4
+    model.batch_size = 8
     model.eval()
 
     if "val_set" in model.data_dir.name:
@@ -74,13 +74,13 @@ def main(args, cfg):
             model.data_dir, glob_pattern=cfg.infe_image_glob
         )
 
-    # pbar_cb = pl.callbacks.progress.TQDMProgressBar(refresh_rate=5)
+    pbar_cb = pl.callbacks.progress.TQDMProgressBar(refresh_rate=1)
 
     trainer = pl.Trainer(
         max_epochs=1,
         accelerator="gpu" if torch.cuda.is_available() else "cpu",
         devices=1 if torch.cuda.is_available() else 1,
-        # callbacks=[pbar_cb],
+        callbacks=[pbar_cb],
         enable_checkpointing=False,
         logger=False,
     )
@@ -88,7 +88,6 @@ def main(args, cfg):
     outs = trainer.predict(
         model=model, dataloaders=[dataloader]  # , return_predictions=True
     )
-    print(outs)
 
     if cfg.lset_taxonomy:
         mzb_taxonomy = pd.read_csv(Path(cfg.lset_taxonomy))
@@ -208,84 +207,3 @@ if __name__ == "__main__":
     cfg = cfg_to_arguments(cfg)
 
     sys.exit(main(args, cfg))
-
-# # %% is this supposed to still be here???
-# if 0:
-#     import torch
-#     from matplotlib import pyplot as plt
-#     from PIL import Image
-
-#     from mzbsuite.classification.mzb_classification_dataloader import Denormalize
-
-#     dd = "results/classification/project_portable_flume/mixed_set_convnext-small-v0_20230309_1737/predictions.csv"
-#     df_pred = pd.read_csv(prefix + dd)
-#     df_pred = df_pred.set_index("file")
-#     df_pred = df_pred.sort_index()
-
-#     mzb_class = 4
-
-#     denorm = Denormalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225))
-#     unc_score = -pc[:, mzb_class]
-
-#     # # unc_score = np.sum(pc * np.log(pc), axis=1)
-#     # # unc_score = np.sort(pc,axis=1)[:,-1] - np.sort(pc,axis=1)[:,-2]
-
-#     # ss = np.argsort(-pc[:, mzb_class])
-#     ss = np.argsort(unc_score)
-#     sub = ss
-#     # sub = ss[gc[ss] == mzb_class]
-
-#     files = dataloader.dataset.img_paths
-
-#     plt.figure(figsize=(15, 5))
-#     for c, name in enumerate(class_names):
-#         # plt.hlines(gc[gc==c], xmin=np.where(gc==c)[0][0], xmax=np.where(gc==c)[0][-1])
-#         plt.scatter(
-#             np.where(gc == c)[0], np.ones_like(gc[gc == c]), label=f"{c}: {name}"
-#         )
-#     plt.plot(pc)
-#     plt.legend()
-#     plt.figure(figsize=(15, 5))
-#     plt.plot(pc[yc == mzb_class, :])
-#     plt.legend()
-
-#     print(f"PREDICTING CLASS {class_names[mzb_class]}")
-
-#     DETECT = 0
-#     DIFF = True
-#     FR = 0
-#     N = 10
-
-#     preds = []
-
-#     for i, ti in enumerate(sub):
-#         if i < FR:
-#             continue
-
-#         fi = files[ti]
-#         im = Image.open(fi).convert("RGB")
-#         x = model.transform_ts(im)
-#         x = x[np.newaxis, ...]
-
-#         with torch.set_grad_enabled(False):
-#             p = torch.softmax(model(x), dim=1).cpu().numpy()
-#             pl_im = denorm(np.transpose(x.squeeze(), (1, 2, 0)))
-
-#         f, a = plt.subplots(1, 1, figsize=(4, 4))
-#         p_class = np.argmax(pc[ti, :])
-
-#         a.imshow(pl_im)
-#         a.axis("off")
-#         a.set_title(
-#             f"Inference: predicted class {p_class} with P {pc[ti, p_class]:.2f}\n"
-#             f"{files[ti]} \n GT {gc[ti]},  "
-#             f"Y @ {pc[ti,mzb_class]:.2f}"
-#         )
-
-#         # if pc[ti, mzb_class] < 0.01:
-#         # break
-
-#         if i > N:
-#             break
-
-# %%
