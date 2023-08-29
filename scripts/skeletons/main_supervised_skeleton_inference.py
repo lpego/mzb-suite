@@ -49,6 +49,9 @@ def main(args, cfg):
     -------
     None. Saves the results in the specified folder.
     """
+
+    torch.hub.set_dir("./models/hub/")
+
     dirs = find_checkpoints(
         Path(args.input_model).parents[0],
         version=Path(args.input_model).name,
@@ -59,7 +62,7 @@ def main(args, cfg):
 
     model = MZBModel_skels()
     model.model = model.load_from_checkpoint(
-        checkpoint_path=mod_path,
+        checkpoint_path=mod_path, map_location=torch.device("cpu")
     )
 
     model.data_dir = Path(args.input_dir)
@@ -67,6 +70,7 @@ def main(args, cfg):
     model.bo_folder = model.data_dir / "sk_body"
     model.he_folder = model.data_dir / "sk_head"
     model.num_workers_loader = 4
+    model.batch_size = 8
 
     # this is unfortunately necessary to get the model to work, reindex trn/val split
     np.random.seed(12)
@@ -78,7 +82,7 @@ def main(args, cfg):
     model.eval()
     model.freeze()
 
-    if ("flume" in str(args.input_dir)) and (args.input_type == "val"):
+    if args.input_type == "val":  # ("flume" in str(args.input_dir)) and
         dataloader = model.val_dataloader()
         dataset_name = "flume"
     elif args.input_type == "external":
@@ -87,13 +91,13 @@ def main(args, cfg):
 
     im_fi = dataloader.dataset.img_paths
 
-    pbar_cb = pl.callbacks.progress.TQDMProgressBar(refresh_rate=5)
+    pbar_cb = pl.callbacks.progress.TQDMProgressBar(refresh_rate=1)
 
     trainer = pl.Trainer(
         precision=32,
         max_epochs=1,
         accelerator="gpu" if torch.cuda.is_available() else "cpu",
-        devices=1 if torch.cuda.is_available() else None,
+        devices=1 if torch.cuda.is_available() else 1,
         callbacks=[pbar_cb],
         enable_checkpointing=False,
         logger=False,
