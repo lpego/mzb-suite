@@ -60,6 +60,4 @@ RUN mamba env update -f /tmp/environment.yml && \
     mamba env export -n "root" && \
     rm -rf ${HOME}/.renku/venv
 
-RUN pip install -e mzbsuite
-
 COPY --from=builder ${HOME}/.renku/venv ${HOME}/.renku/venv
