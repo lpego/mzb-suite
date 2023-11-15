@@ -22,6 +22,7 @@ RUN if [ -n "$RENKU_VERSION" ] ; then \
     fi \
     fi \
     fi
+
 #             End Renku install section                #
 ########################################################
 

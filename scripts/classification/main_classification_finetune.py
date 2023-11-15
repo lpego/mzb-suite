@@ -32,7 +32,7 @@ def main(args, cfg):
     ----------
     args : argparse.Namespace
         Namespace containing the arguments passed to the script. Notably:
-        
+
             - input_dir: path to the directory containing the images to be classified
             - save_model: path to the directory where the model will be saved
             - config_file: path to the config file with train / inference parameters
@@ -60,7 +60,7 @@ def main(args, cfg):
         dirpath=args.save_model,
         filename="last-{step}",
         every_n_train_steps=50,
-        save_top_k=cfg.trcl_save_topk,
+        # save_top_k=cfg.trcl_save_topk
     )
 
     # Define progress bar callback
