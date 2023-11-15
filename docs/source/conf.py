@@ -37,7 +37,6 @@ source_suffix = ".rst"
 exclude_patterns = []
 master_doc = "index"
 
-
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
@@ -50,13 +49,19 @@ extensions = [
     "sphinx.ext.inheritance_diagram",
     "sphinx_rtd_theme",
     "sphinx.ext.autosectionlabel", 
-    "sphinx.ext.napoleon"
+    "sphinx.ext.napoleon", 
+    "nbsphinx",
 ]
+
 # Automatic labels for sections etc, prefixed for each file for each file
 # NOTE: cannot have the same section name within the same file!
 autosectionlabel_prefix_document = True
 
 # Napoleon is for formatting NumPy and Google style docstring
+
+# Jupyter notebooks are handled by nbsphinx
+nbsphinx_allow_errors = True # this allows errors in .ipynb file executions
+nbsphinx_execute = 'never' # don't execute notebooks at each build
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]

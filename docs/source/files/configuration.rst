@@ -15,7 +15,8 @@ This list is structured as follows:
     .. code-block:: yaml 
         
         parameter_name: [admissible_value_1, admissible_value_2] 
-    Description of parameter, suggested values and rationale. 
+    
+Description of parameter, suggested values and rationale. 
 
 
 .. admonition:: \ \ 
@@ -83,7 +84,7 @@ The following parameters relate to model training of the classification model. T
 
     .. # trai_model_save_append: "-v1"
 
-This next block con tains parameters for the supervised skeleton prediction model (see :ref:`files/workflow_models:Supervised Skeleton Prediction`). The same consideration as for the previous block apply. 
+This next block contains parameters for the supervised skeleton prediction model (see :ref:`files/workflow_models:Supervised Skeleton Prediction`). The same considerations as for the previous block apply. 
 
     .. ## Finetuning / training config for skeleton prediction
 
