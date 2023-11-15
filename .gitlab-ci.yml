@@ -1,3 +1,4 @@
+### Docker image build (Renku)
 variables:
   GIT_STRATEGY: fetch
   GIT_SSL_NO_VERIFY: "true"
@@ -5,8 +6,11 @@ variables:
   DOCKER_BUILDKIT: 1
 
 stages:
+  - test
+  - deploy
   - build
 
+### RenkuLab Docker image build
 image_build:
   stage: build
   image: docker:stable
@@ -16,3 +20,74 @@ image_build:
     CI_COMMIT_SHA_7=$(echo $CI_COMMIT_SHA | cut -c1-7)
     docker build --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA_7 .
     docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA_7
+    echo -e "\n\n\n The Docker image can be located at: \n" $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA_7 "\n\n\n"
+
+# ### Testing envs and dependencies
+# simple_pandoc:
+#   stage: test
+#   image:
+#     name: pandoc/core
+#     entrypoint: ["/bin/sh", "-c"]
+#   script:
+#     pandoc --help
+
+# nbsphinx:
+#   stage: test
+#   image:
+#     name: pandoc/core
+#     entrypoint: ["/bin/sh", "-c"]
+#   script:
+#   - pip install -U sphinx
+#   - pip install sphinx-rtd-theme nbsphinx
+#   - sphinx-build -b html docs/source/ public/
+#   # only:
+#   # - branches
+#   # except:
+#   # - master
+
+### GitLab Pages CI/CD integration, from https://nbsphinx.readthedocs.io/en/latest/usage.html 
+variables:
+  PIP: python3 -m pip
+  SPHINX: python3 -m sphinx -W --keep-going --color
+
+build-docs:
+  stage: test
+  image: python:3-slim
+  script:
+    - apt-get update -y
+    - apt-get install -y --no-install-recommends pandoc
+    - $PIP install -r doc/requirements.txt
+    - $SPHINX -d doctrees doc html -b html
+    - $SPHINX -d doctrees doc linkcheck -b linkcheck
+  artifacts:
+    when: always
+    paths:
+      - html
+      - linkcheck/output.*
+
+pages:
+  stage: deploy
+  image: python:3-slim
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - mv html public
+  artifacts:
+    paths:
+      - public
+  rules:
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+
+# ### GitLab Pages deployment of Sphinx documentation
+# deploy_pages:
+#   stage: deploy
+#   image: python:3.7-alpine
+#   script:
+#   - pip install -U sphinx
+#   - pip install sphinx-rtd-theme nbsphinx
+#   - sphinx-build -b html docs/source/ public/
+#   artifacts:
+#     paths:
+#     - public
+#   only:
+#   - luca_docs

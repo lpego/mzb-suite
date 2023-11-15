@@ -18,6 +18,7 @@ Anyone that wants to process images of macrozoobenthos acquired in a lab setting
 
 # Get started
 <!-- LINKS -->
+General documentation [here](https://gitlab.renkulab.io/biodetect/mzb-workflow/-/tree/luca_docs). 
 
 1. Installation 
 
@@ -55,11 +56,22 @@ _Not in any priority_
 
 - [x] check env and pandas in it use, build `setupy.py` 
 - [ ] Add module for evaluations, and for generating plots
-- [ ] Add notebooks for plotting of results, images, etc. 
-- [x] Check all docstrings and potenitally build documentation into html
+- [x] Add notebooks for plotting of results, images, etc. 
+    - [ ] missing finetuning supervised skeletonization notebook still.. 
+- [x] Check all docstrings and potentially build documentation into html
 - [ ] Add the dubendorf data use case to check consistency for multiple projects 
-- [ ] Add a README.md to the data folder
+- [x] Add a README.md to the data folder
 - [x] Spend some time in thinking whether it is better to have one big config file, or one config file per module, or one config file per script.
+- [ ] in the documentation, `docs/source/files/workflow_models.rst`, add section called "Supervised Skeleton Prediction" and explain model architectures used for supevised skeleton prediction (this should also fix Sphinx build warnings for missing refs). 
+
+- [ ] Double check that excluding the millimetre/colour scale in images works properly
+- [ ] Change scale exclusion parameter in conifg & docs so that you select square where scale is to exclude, instead of selecting the pixels to keep in the image
+- [ ] Fix notebooks outputs: 
+    - [ ] `segmentation.ipynb` replace plots in-place while running instead of generating new ones. 
+    - [ ] `skeletonizatn_unsupervised.ipynb` replace plots in-place while running instead of generating new ones. 
+    - [ ] `skeletonization_supervised_inference.ipynb` returns empty predictions in notebook... 
+    - [ ] missing finetuning supervised skeletonization notebook still.. 
+    - [ ] `classification_finetune.ipynb` last cell (actually retraining the model) might not be compatible with an interactive environment... 
 
 - [x] check WANDBD accounts and api for loggers [Added support for tensorboard, running locally]
 - [ ] Renku workflows for the different modules 
