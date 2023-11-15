@@ -19,8 +19,7 @@ image_build:
   script: |
     CI_COMMIT_SHA_7=$(echo $CI_COMMIT_SHA | cut -c1-7)
     docker build --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA_7 .
-    # docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA_7
-    docker push $CI_REGISTRY_IMAGE:latest
+    docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA_7
     echo -e "\n\n\n The Docker image can be located at: \n" $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA_7 "\n\n\n"
 
 # ### Testing envs and dependencies
