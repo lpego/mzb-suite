@@ -18,7 +18,7 @@ Anyone that wants to process images of macrozoobenthos acquired in a lab setting
 
 # Get started
 <!-- LINKS -->
-General documentation [here](https://gitlab.renkulab.io/biodetect/mzb-workflow/-/tree/luca_docs). 
+General documentation [here](). 
 
 1. Installation 
 
@@ -43,36 +43,74 @@ LEAVE BLANK FOR PREPRINT OR PAPER
 
 ## Changelog 
 
+**v0.2.0** Pipeline in functional state, lots of modifications from previous ver...  
+
 **v0.1.0** First release. Attempt to structure project and scripts in a way that is easy to understand and maintain.
 
-## TODOs
+## ToDo list
 
-_Not in any priority_ 
+### Feature requests
+- [ ] Add original image file name as a separate column in all outputs `csv`
+- [ ] Add options to provide multiple px/mm conversion rates, one for each image (i.e. parse `csv` file as dictionary to pass as arguments)
+- [ ] Add module for evaluations, and for generating plots
+- [ ] Change scale exclusion parameter in `configs` & documentation so that you select square where scale is to exclude, instead of selecting the pixels to keep in the image
+
+### General
+- [ ] Move taxonomy file location onto running parameters from configuration file
+- [ ] Clean unused workflow `sh` files and comments within them
+- [ ] `worflows/full_pipeline_cutom.sh` has no execute permission in repo
+- [ ] Reduce images in example dataset
+- [ ] Set up push mirror GitLab → GitHub (without LFS files)
+- [ ] Renku workflows for the different modules (or add `renku run` ... in front of command in `sh` scripts)
+
+### Functionality and data
+- [ ] Double check that excluding the millimetre/colour scale in images works properly 
+- [ ] Add the Dübendorf data use case to check consistency for multiple projects
+
+### JupyterLab via Renku
+- [ ] JupyterLab screws up all the filepaths… Working dir is home/jovyan/work
+- [ ] Notebooks not picking up correct conda env in JupyterLab... 
+- [ ] Cannot run .sh script in the console directly if in cwd??? 
+- [ ] Notebooks don’t pick up conda env… 
+- [ ] Finding and changing filepaths in Jupyter notebooks is difficult for users… 
+
+### Documentation
+- [ ] Put docs on ReadTheDocs and/or GitHub Pages
+	- [ ] See if you can pull the commit name and reconstruct the docker image name on renku dynamically in the documentation (source/files/installing.rst)... 
+	- [ ] Otherwise just grab a recent one that build correctly and stick with that
+- [ ] Add "Quickstart" section with tutorial in the documentation
+- [ ] in the documentation, `docs/source/files/workflow_models.rst`, add section called "Supervised Skeleton Prediction" and explain model architectures used for supevised skeleton prediction (this should also fix Sphinx build warnings for missing refs).
+- [x] Merge ToDo in `README.md` and Evernote. 
+
+### Notebooks 
+- [ ] model retraining not working in notebook interactive envinroment... 
+- [ ] compress long code blocks? 
+- [ ] direct links to documentation within markdown cells in notebooks 
+- [ ] make notebook for supervised skeletons finetuning 
+- [ ] Fix notebooks outputs: 
+	- [ ] `segmentation.ipynb` replace plots in-place while running instead of generating new ones. 
+	- [ ] `skeletonizatn_unsupervised.ipynb` replace plots in-place while running instead of generating new ones. 
+	- [ ] `skeletonization_supervised_inference.ipynb` returns empty predictions in notebook... 
+	- [ ] `classification_finetune.ipynb` last cell (actually retraining the model) might not be compatible with an interactive environment...
+
+### Figures to make for paper
+- [ ] Class (im)balance for flume MZB samples 
+- [x] Accuracy for classification model  - `results/project_portable_flume/class_convnext-small-v0_validation_set`
+- [x] Accuracy for supervised skeletonization model (length and head width) - `results/project_portable_flume/skseg_mit-b2-v1_validation_set`
+- [ ] Accuracy for unsupervised skeletonization (length) 
+
+   
+--- 
+   
+**OLD COMPLETED TODO ITEMS - v0.1.0** - _Not in any priority_ 
 - [x] ALIGN ALL LEARNING SET IMAGES TO NEW PIPELINE, from pngs to jpgs
 - [x] Check measures of supervised skeletonizations (length and width) and compare to manual annotations
 - [x] LICENSE and AUTHORS and CITATION placeholders
 - [x] update the skeleton files: image blobs are now named differently! 
 - [x] Fix how save folders are passed for the supervised skeletonization
-
 - [x] check env and pandas in it use, build `setupy.py` 
-- [ ] Add module for evaluations, and for generating plots
 - [x] Add notebooks for plotting of results, images, etc. 
-    - [ ] missing finetuning supervised skeletonization notebook still.. 
 - [x] Check all docstrings and potentially build documentation into html
-- [ ] Add the dubendorf data use case to check consistency for multiple projects 
 - [x] Add a README.md to the data folder
 - [x] Spend some time in thinking whether it is better to have one big config file, or one config file per module, or one config file per script.
-- [ ] in the documentation, `docs/source/files/workflow_models.rst`, add section called "Supervised Skeleton Prediction" and explain model architectures used for supevised skeleton prediction (this should also fix Sphinx build warnings for missing refs). 
-
-- [ ] Double check that excluding the millimetre/colour scale in images works properly
-- [ ] Change scale exclusion parameter in conifg & docs so that you select square where scale is to exclude, instead of selecting the pixels to keep in the image
-- [ ] Fix notebooks outputs: 
-    - [ ] `segmentation.ipynb` replace plots in-place while running instead of generating new ones. 
-    - [ ] `skeletonizatn_unsupervised.ipynb` replace plots in-place while running instead of generating new ones. 
-    - [ ] `skeletonization_supervised_inference.ipynb` returns empty predictions in notebook... 
-    - [ ] missing finetuning supervised skeletonization notebook still.. 
-    - [ ] `classification_finetune.ipynb` last cell (actually retraining the model) might not be compatible with an interactive environment... 
-
-- [x] check WANDBD accounts and api for loggers [Added support for tensorboard, running locally]
-- [ ] Renku workflows for the different modules 
-    - [Or add `renku run` ... in front of command in `sh` scripts]
+- [x] check `wandb` accounts and api for loggers (added support for tensorboard, running locally)
