@@ -1,23 +1,3 @@
-"", "db","query","kingdom","phylum","class","subclass","order","suborder","family","genus"
-"1","ncbi","acari","Metazoa","Arthropoda","Arachnida","Acari",NA,NA,NA,NA
-"2","ncbi","baetidae","Metazoa","Arthropoda","Insecta","Pterygota","Ephemeroptera","Pisciforma","Baetidae",NA
-"3","ncbi","blephariceridae","Metazoa","Arthropoda","Insecta","Pterygota","Diptera","Nematocera","Blephariceridae",NA
-"4","ncbi","chironomidae","Metazoa","Arthropoda","Insecta","Pterygota","Diptera","Nematocera","Chironomidae",NA
-"5","ncbi","diptera","Metazoa","Arthropoda","Insecta","Pterygota","Diptera",NA,NA,NA
-"6","ncbi","ephemeroptera","Metazoa","Arthropoda","Insecta","Pterygota","Ephemeroptera",NA,NA,NA
-"7","ncbi","heptageniidae","Metazoa","Arthropoda","Insecta","Pterygota","Ephemeroptera","Setisura","Heptageniidae",NA
-"8","ncbi","isoperla","Metazoa","Arthropoda","Insecta","Pterygota","Plecoptera",NA,"Perlodidae","Isoperla"
-"9","ncbi","leuctra","Metazoa","Arthropoda","Insecta","Pterygota","Plecoptera",NA,"Leuctridae","Leuctra"
-"10","ncbi","oligochaeta","Metazoa","Annelida","Clitellata","Oligochaeta",NA,NA,NA,NA
-"11","ncbi","protonemura","Metazoa","Arthropoda","Insecta","Pterygota","Plecoptera",NA,"Nemouridae","Protonemura"
-"12","ncbi","amphinemura","Metazoa","Arthropoda","Insecta","Pterygota","Plecoptera",NA,"Nemouridae","Amphinemura"
-"13","ncbi","baetis","Metazoa","Arthropoda","Insecta","Pterygota","Ephemeroptera","Pisciforma","Baetidae","Baetis"
-"14","ncbi","brachyptera","Metazoa","Arthropoda","Insecta","Pterygota","Plecoptera",NA,"Taeniopterygidae","Brachyptera"
-"15","ncbi","coleoptera","Metazoa","Arthropoda","Insecta","Pterygota","Coleoptera",NA,NA,NA
-"16","ncbi","ephemerellidae","Metazoa","Arthropoda","Insecta","Pterygota","Ephemeroptera","Furcatergalia","Ephemerellidae",NA
-"17","ncbi","hydropsychidae","Metazoa","Arthropoda","Insecta","Pterygota","Trichoptera","Annulipalpia","Hydropsychidae",NA
-"18","ncbi","leptophlebiidae","Metazoa","Arthropoda","Insecta","Pterygota","Ephemeroptera","Furcatergalia","Leptophlebiidae",NA
-"19","ncbi","leuctridae","Metazoa","Arthropoda","Insecta","Pterygota","Plecoptera",NA,"Leuctridae",NA
-"20","ncbi","plecoptera","Metazoa","Arthropoda","Insecta","Pterygota","Plecoptera",NA,NA,NA
-"21","ncbi","simuliidae","Metazoa","Arthropoda","Insecta","Pterygota","Diptera","Nematocera","Simuliidae",NA
-"22","ncbi","errors","errors","errors","errors","errors","errors","errors","errors","errors"
+version https://git-lfs.github.com/spec/v1
+oid sha256:abf48c8b3f5b602cfe29e424305b2149b709b815423ec327721b5b63dbc79f1a
+size 2452
