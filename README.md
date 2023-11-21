@@ -1,24 +1,27 @@
-# What is mzb-suite? 
-mzb-suite is a image processing pipeline for lab images of macrozoobenthos (MZB), partially automating data processing from images.  
+![GitHub Pages](https://github.com/lpego/sphinx-rtd-test/actions/workflows/deploy_docs.yaml/badge.svg)
+![GitLab Docker build](https://gitlab.renkulab.io/biodetect/mzb-workflow/badges/master/pipeline.svg)
 
-![Overview of the mzb-suite](docs/assets/MZB_pipeline_v2.1.png)
+# What is mzb-suite? 
+`mzb-suite` is an image processing pipeline for lab images of macrozoobenthos (MZB), partially automating data extraction from images.  
+
+![Overview of mzb-suite](docs/assets/MZB_pipeline_v2.1.png)
 
 ## What can it be used for? 
-- Segment individual macrozoobenthos organisms in images, both raw and manually annotated ones. 
-- Organise data in a folder structure that is easy to navigate, and that can be used for further analysis. 
-- Extract total length of individual organisms (unsupervised) and both length and head width (supervised). 
+- Segment individual MZB organisms in images, both raw and manually annotated ones. 
+- Extract total length of individual organisms (unsupervised), and both length and head width (supervised). 
 - Use pre-trained Machine Learning (ML) models to predict identity of a subset of taxa. 
 - Assisted ML model re-training using user-provided annotations. 
+- Organize data in a folder structure that is easy to navigate, and that can be used for further analysis. 
 - Worked examples and documentation are provided to adapt the pipeline to user project. 
 
 ## Who can use it? 
-Anyone that wants to process images of macrozoobenthos acquired in a lab setting, with fixed focal length, uniform background and lighting conditions. The pipeline can handle small amounts of noise in the images, but any debris similar in size to the organisms of interest will not be filtered out, making this pipeline unsuitable for images taken in the field. 
+Anyone that wants to process images of MZB acquired in a lab setting, with fixed focal length, uniform background and lighting conditions. The pipeline can handle small amounts of noise in the images, but any debris similar in size to the organisms of interest will not be filtered out, making this pipeline unsuitable for images taken in the field. 
 
 -------------------------------------------
 
 # Get started
 <!-- LINKS -->
-General documentation [here](). 
+The documentation is on [GitHub Pages](https://lpego.github.io/mab-workflow/). 
 
 1. Installation 
 
@@ -42,6 +45,8 @@ LEAVE BLANK FOR PREPRINT OR PAPER
 ------------------------------------------- -->
 
 ## Changelog 
+
+**v0.2.1** Adding CI to GitHub and GitHub Pages for serving docs. 
 
 **v0.2.0** Pipeline in functional state, lots of modifications from previous ver...  
 
@@ -75,7 +80,7 @@ LEAVE BLANK FOR PREPRINT OR PAPER
 - [ ] Finding and changing filepaths in Jupyter notebooks is difficult for users… 
 
 ### Documentation
-- [ ] Put docs on ReadTheDocs and/or GitHub Pages
+- [x] Put docs on ReadTheDocs and/or GitHub Pages
 	- [ ] See if you can pull the commit name and reconstruct the docker image name on renku dynamically in the documentation (source/files/installing.rst)... 
 	- [ ] Otherwise just grab a recent one that build correctly and stick with that
 - [ ] Add "Quickstart" section with tutorial in the documentation
