@@ -64,7 +64,7 @@ LEAVE BLANK FOR PREPRINT OR PAPER
 ### General
 - [ ] Move taxonomy file location onto running parameters from configuration file
 - [ ] Clean unused workflow `sh` files and comments within them
-- [ ] `worflows/full_pipeline_cutom.sh` has no execute permission in repo
+- [ ] `worflows/full_pipeline_custom.sh` has no execute permission in repo
 - [ ] Reduce images in example dataset
 - [ ] Set up push mirror GitLab → GitHub (without LFS files)
 - [ ] Renku workflows for the different modules (or add `renku run` ... in front of command in `sh` scripts)
@@ -82,6 +82,8 @@ LEAVE BLANK FOR PREPRINT OR PAPER
 
 ### Documentation
 - [x] Put docs on ReadTheDocs and/or GitHub Pages
+	- [x] Configure ReadTheDocs integration
+	- [ ] Configure automated docs build in GitHub Pages from mirror repo
 	- [ ] See if you can pull the commit name and reconstruct the docker image name on renku dynamically in the documentation (source/files/installing.rst)... 
 	- [ ] Otherwise just grab a recent one that build correctly and stick with that
 - [ ] Add "Quickstart" section with tutorial in the documentation
@@ -89,7 +91,7 @@ LEAVE BLANK FOR PREPRINT OR PAPER
 - [x] Merge ToDo in `README.md` and Evernote. 
 
 ### Notebooks 
-- [ ] model retraining not working in notebook interactive envinroment... 
+- [ ] model retraining not working in notebook interactive environment... 
 - [ ] compress long code blocks? 
 - [ ] direct links to documentation within markdown cells in notebooks 
 - [ ] make notebook for supervised skeletons finetuning 
