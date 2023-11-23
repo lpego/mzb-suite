@@ -14,6 +14,20 @@ stages:
 image_build:
   stage: build
   image: docker:stable
+  only:
+    changes:
+      - Dockerfile
+      - setup.py
+      - environment.yml
+      - requirements.txt
+      - mzbsuite
+      - scripts
+      - workflows
+      - data
+      - configs
+      - models
+      - .gitlab-ci.yml
+      - .dockerignore
   before_script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN http://$CI_REGISTRY
   script: |
@@ -22,7 +36,7 @@ image_build:
     docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA_7
     echo -e "\n\n\n The Docker image can be located at: \n" $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA_7 "\n\n\n"
 
-# ### RenkuLab's deployment of GitLab *does not* support GitLab Pages... 
+# ### NOTE: RenkuLab's deployment of GitLab *does not* support GitLab Pages... 
 # ### Below is an incomplete attempt at building and deploying Sphinx documentation to GitLab Pages. 
 
 # ### GitLab Pages CI/CD integration, from https://nbsphinx.readthedocs.io/en/latest/usage.html 
@@ -30,7 +44,7 @@ image_build:
 #   PIP: python3 -m pip
 #   SPHINX: python3 -m sphinx -W --keep-going --color
 
-# build-docs:
+# testing-docs-env:
 #   stage: test
 #   image: python:3-slim
 #   script:
