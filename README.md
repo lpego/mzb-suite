@@ -1,4 +1,5 @@
 ![GitHub Pages](https://github.com/lpego/sphinx-rtd-test/actions/workflows/deploy_docs.yaml/badge.svg)
+[![ReadTheDocs Status](https://readthedocs.org/projects/badges-gitlab/badge/?version=latest)](https://badges-gitlab.readthedocs.io/en/latest/?badge=latest)
 ![GitLab Docker build](https://gitlab.renkulab.io/biodetect/mzb-workflow/badges/master/pipeline.svg)
 
 # What is mzb-suite? 
