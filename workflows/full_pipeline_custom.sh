@@ -2,7 +2,7 @@
 
 # Definition of recurrent patterns
 
-ROOT_DIR="/work/mzb-workflow/"
+ROOT_DIR="/work/mzb-workflow"
 MODEL_C="convnext-small-v0"
 MODEL_S="mit-b2-v0"
 ## ------------------------------------------------------
