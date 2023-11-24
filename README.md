@@ -22,7 +22,8 @@ Anyone that wants to process images of MZB acquired in a lab setting, with fixed
 
 # Get started
 <!-- LINKS -->
-The documentation is on [GitHub Pages](https://lpego.github.io/mab-workflow/). 
+The documentation is on [ReadTheDocs](https://mzb-workflow.readthedocs.io/en/latest/) 
+<!-- and [GitHub Pages](https://lpego.github.io/mab-workflow/).  -->
 
 1. Installation 
 
