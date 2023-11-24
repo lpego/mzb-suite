@@ -14,20 +14,20 @@ stages:
 image_build:
   stage: build
   image: docker:stable
-  only:
-    changes:
-      - Dockerfile
-      - setup.py
-      - environment.yml
-      - requirements.txt
-      - mzbsuite/*
-      - scripts/*
-      - workflows/*
-      - data/*
-      - configs/*
-      - models/*
-      - .gitlab-ci.yml
-      - .dockerignore
+  # only:
+  #   changes:
+  #     - Dockerfile
+  #     - setup.py
+  #     - environment.yml
+  #     - requirements.txt
+  #     - mzbsuite/*
+  #     - scripts/*
+  #     - workflows/*
+  #     - data/*
+  #     - configs/*
+  #     - models/*
+  #     - .gitlab-ci.yml
+  #     - .dockerignore
   before_script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN http://$CI_REGISTRY
   script: |
