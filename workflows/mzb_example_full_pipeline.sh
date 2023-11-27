@@ -1,7 +1,7 @@
 #!/bin/bash 
 
-## Definition of running parameters. 
-## The root path specified here in ROOT_DIR is for working with notebooks on virtual sessions on Renkulab, your path may differ! 
+## Definition of recurrent patterns
+## The root path is for working with notebooks on virtual sessions on Renkulab, your path may differ! 
 ROOT_DIR="/home/jovyan/work/mzb-workflow"
 MODEL_C="convnext-small-v0"
 MODEL_S="mit-b2-v0"
@@ -14,9 +14,10 @@ python scripts/image_parsing/main_raw_to_clips.py \
     --config_file=${ROOT_DIR}/configs/configuration_flume_datasets.yaml \
     -v
 
-## This is run to classify organisms into taxonimic categories and will return a csv with the results (filename, predicted class, probability of prediction) 
-## if run on eg. on a validaton / test set, it will also produce accuracy metrics. 
-## Make sure to pass this module only similarly generated clips as in the the first step (main_raw_to_clips.py); 
+## This is run to classify a custom folder structure and will regturn a csv with the results 
+## (filename, predicted class, probability of prediction)
+## eg. on a validaton / test set, or on a new set of images, or whatever. be assured to pass only clips generated similarty 
+## to the first step (main_raw_to_clips.py)
 ## classification models are stored in ${ROOT_DIR}/models/mzb-class/
 ## ------------------------------------------------------------------------------------------
 python scripts/classification/main_classification_inference.py \
@@ -26,9 +27,11 @@ python scripts/classification/main_classification_inference.py \
     --output_dir=${ROOT_DIR}/results/mzb_example/classification/val_set/ \
     -v
 
-## This part runs the unsupervised skeletonization and measurement. It will read all the mask clips created in the first step
-## and will return a csv with the results (filename, skeleton, etc). 
-## This unsupervised pipeline can only approximate length of the insect, and not the width of the head.
+## This part run the unsupervised skeletonization and measurement. It will read all the mask clips created at the first step
+## and will return a csv with the results (filename, skeleton, etc)
+## The pipeline to get these numbers is unsupervised, but can only approximate length of the insect, and not the width of the head.
+## For this, the next step that uses a supervised neural network is required.
+## this function also takes a list of files to process, if you want to run it on a subset of the data. As csv with column "file"
 ## ------------------------------------------------------------------------------------------
 python scripts/skeletons/main_unsupervised_skeleton_estimation.py \
     --config_file=${ROOT_DIR}/configs/configuration_flume_datasets.yaml \
@@ -38,8 +41,9 @@ python scripts/skeletons/main_unsupervised_skeleton_estimation.py \
     --list_of_files=None \
     -v
 
-## This runs a supervised DL model to predict body length and head width skeletons; 
-## it stores the masks as images, and saves measurements into a csv file. 
+## And this is to use a supervised model to parse skeletons. It predicts both body length and head width
+## and stores the masks as images, and saves measurements into a csv
+## This is to parse a folder containing only images (not subdirectories)
 ## ---------------------------------------------------------------------------------------------------
 python scripts/skeletons/main_supervised_skeleton_inference.py \
     --config_file=${ROOT_DIR}/configs/configuration_flume_datasets.yaml \
