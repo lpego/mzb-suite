@@ -11,7 +11,7 @@ python scripts/image_parsing/main_raw_to_clips.py \
     --input_dir=${ROOT_DIR}/data/mzb_example_data/raw_img/ \
     --output_dir=${ROOT_DIR}/data/mzb_example_data/derived/blobs/ \
     --save_full_mask_dir=${ROOT_DIR}/data/mzb_example_data/derived/full_image_masks \
-    --config_file=${ROOT_DIR}/configs/configuration_flume_datasets.yaml \
+    --config_file=${ROOT_DIR}/configs/mzb_example_config.yaml \
     -v
 
 ## This is run to classify organisms into taxonimic categories and will return a csv with the results (filename, predicted class, probability of prediction) 
@@ -20,7 +20,7 @@ python scripts/image_parsing/main_raw_to_clips.py \
 ## classification models are stored in ${ROOT_DIR}/models/mzb-class/
 ## ------------------------------------------------------------------------------------------
 python scripts/classification/main_classification_inference.py \
-    --config_file=${ROOT_DIR}/configs/configuration_flume_datasets.yaml \
+    --config_file=${ROOT_DIR}/configs/mzb_example_config.yaml \
     --input_dir=${ROOT_DIR}/data/mzb_example_data/training_dataset/val_set/ \
     --input_model=${ROOT_DIR}/models/mzb-classification-models/$MODEL_C \
     --output_dir=${ROOT_DIR}/results/mzb_example/classification/val_set/ \
@@ -31,7 +31,7 @@ python scripts/classification/main_classification_inference.py \
 ## This unsupervised pipeline can only approximate length of the insect, and not the width of the head.
 ## ------------------------------------------------------------------------------------------
 python scripts/skeletons/main_unsupervised_skeleton_estimation.py \
-    --config_file=${ROOT_DIR}/configs/configuration_flume_datasets.yaml \
+    --config_file=${ROOT_DIR}/configs/mzb_example_config.yaml \
     --input_dir=${ROOT_DIR}/data/mzb_example_data/derived/blobs/ \
     --output_dir=${ROOT_DIR}/results/mzb_example/skeletons/automatic_skeletons/ \
     --save_masks=${ROOT_DIR}/data/mzb_example_data/derived/skeletons/automatic_skeletons/ \
@@ -42,7 +42,7 @@ python scripts/skeletons/main_unsupervised_skeleton_estimation.py \
 ## it stores the masks as images, and saves measurements into a csv file. 
 ## ---------------------------------------------------------------------------------------------------
 python scripts/skeletons/main_supervised_skeleton_inference.py \
-    --config_file=${ROOT_DIR}/configs/configuration_flume_datasets.yaml \
+    --config_file=${ROOT_DIR}/configs/mzb_example_config.yaml \
     --input_dir=${ROOT_DIR}/data/mzb_example_data/training_dataset/val_set/plecoptera/ \
     --input_type="external" \
     --input_model=${ROOT_DIR}/models/mzb-skeleton-models/$MODEL_S \
