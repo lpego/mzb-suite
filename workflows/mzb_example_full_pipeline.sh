@@ -7,7 +7,7 @@ MODEL_C="convnext-small-v0"
 MODEL_S="mit-b2-v0"
 
 ## ------------------------------------------------------
-python scripts/image_parsing/main_raw_to_clips.py \
+python ${ROOT_DIR}/scripts/image_parsing/main_raw_to_clips.py \
     --input_dir=${ROOT_DIR}/data/mzb_example_data/raw_img/ \
     --output_dir=${ROOT_DIR}/data/mzb_example_data/derived/blobs/ \
     --save_full_mask_dir=${ROOT_DIR}/data/mzb_example_data/derived/full_image_masks \
@@ -19,7 +19,7 @@ python scripts/image_parsing/main_raw_to_clips.py \
 ## Make sure to pass this module only similarly generated clips as in the the first step (main_raw_to_clips.py); 
 ## classification models are stored in ${ROOT_DIR}/models/mzb-class/
 ## ------------------------------------------------------------------------------------------
-python scripts/classification/main_classification_inference.py \
+python ${ROOT_DIR}/scripts/classification/main_classification_inference.py \
     --input_dir=${ROOT_DIR}/data/mzb_example_data/training_dataset/trn_set/ \
     --input_model=${ROOT_DIR}/models/mzb-classification-models/${MODEL_C} \
     --output_dir=${ROOT_DIR}/results/mzb_example/classification/trn_set/ \
@@ -30,7 +30,7 @@ python scripts/classification/main_classification_inference.py \
 ## and will return a csv with the results (filename, skeleton, etc). 
 ## This unsupervised pipeline can only approximate length of the insect, and not the width of the head.
 ## ------------------------------------------------------------------------------------------
-python scripts/skeletons/main_unsupervised_skeleton_estimation.py \
+python ${ROOT_DIR}/scripts/skeletons/main_unsupervised_skeleton_estimation.py \
     --input_dir=${ROOT_DIR}/data/mzb_example_data/derived/blobs/ \
     --output_dir=${ROOT_DIR}/results/mzb_example/skeletons/unsupervised_skeletons/ \
     --save_masks=${ROOT_DIR}/data/mzb_example_data/derived/skeletons/unsupervised_skeletons/ \
@@ -41,7 +41,7 @@ python scripts/skeletons/main_unsupervised_skeleton_estimation.py \
 ## This runs a supervised DL model to predict body length and head width skeletons; 
 ## it stores the masks as images, and saves measurements into a csv file. 
 ## ---------------------------------------------------------------------------------------------------
-python scripts/skeletons/main_supervised_skeleton_inference.py \
+python ${ROOT_DIR}/scripts/skeletons/main_supervised_skeleton_inference.py \
     --input_dir=${ROOT_DIR}/data/mzb_example_data/derived/blobs/ \
     --input_type="external" \
     --input_model=${ROOT_DIR}/models/mzb-skeleton-models/${MODEL_S} \
