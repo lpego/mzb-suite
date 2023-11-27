@@ -20,10 +20,10 @@ python scripts/image_parsing/main_raw_to_clips.py \
 ## classification models are stored in ${ROOT_DIR}/models/mzb-class/
 ## ------------------------------------------------------------------------------------------
 python scripts/classification/main_classification_inference.py \
+    --input_dir=${ROOT_DIR}/data/mzb_example_data/training_dataset/trn_set/ \
+    --input_model=${ROOT_DIR}/models/mzb-classification-models/${MODEL_C} \
+    --output_dir=${ROOT_DIR}/results/mzb_example/classification/trn_set/ \
     --config_file=${ROOT_DIR}/configs/mzb_example_config.yaml \
-    --input_dir=${ROOT_DIR}/data/mzb_example_data/training_dataset/val_set/ \
-    --input_model=${ROOT_DIR}/models/mzb-classification-models/$MODEL_C \
-    --output_dir=${ROOT_DIR}/results/mzb_example/classification/val_set/ \
     -v
 
 ## This part runs the unsupervised skeletonization and measurement. It will read all the mask clips created in the first step
@@ -31,10 +31,10 @@ python scripts/classification/main_classification_inference.py \
 ## This unsupervised pipeline can only approximate length of the insect, and not the width of the head.
 ## ------------------------------------------------------------------------------------------
 python scripts/skeletons/main_unsupervised_skeleton_estimation.py \
-    --config_file=${ROOT_DIR}/configs/mzb_example_config.yaml \
     --input_dir=${ROOT_DIR}/data/mzb_example_data/derived/blobs/ \
-    --output_dir=${ROOT_DIR}/results/mzb_example/skeletons/automatic_skeletons/ \
-    --save_masks=${ROOT_DIR}/data/mzb_example_data/derived/skeletons/automatic_skeletons/ \
+    --output_dir=${ROOT_DIR}/results/mzb_example/skeletons/unsupervised_skeletons/ \
+    --save_masks=${ROOT_DIR}/data/mzb_example_data/derived/skeletons/unsupervised_skeletons/ \
+    --config_file=${ROOT_DIR}/configs/mzb_example_config.yaml \
     --list_of_files=None \
     -v
 
@@ -42,9 +42,10 @@ python scripts/skeletons/main_unsupervised_skeleton_estimation.py \
 ## it stores the masks as images, and saves measurements into a csv file. 
 ## ---------------------------------------------------------------------------------------------------
 python scripts/skeletons/main_supervised_skeleton_inference.py \
-    --config_file=${ROOT_DIR}/configs/mzb_example_config.yaml \
-    --input_dir=${ROOT_DIR}/data/mzb_example_data/training_dataset/val_set/plecoptera/ \
+    --input_dir=${ROOT_DIR}/data/mzb_example_data/derived/blobs/ \
     --input_type="external" \
-    --input_model=${ROOT_DIR}/models/mzb-skeleton-models/$MODEL_S \
-    --output_dir=${ROOT_DIR}/results/mzb_example/skeletons/supervised_skeletons/skseg_$MODEL_S_val_set\
-    --save_masks=${ROOT_DIR}/data/mzb_example_data/derived/skeletons/supervised_skeletons/$MODEL_S/val_set_masks/ \
+    --input_model=${ROOT_DIR}/models/mzb-skeleton-models/${MODEL_S} \
+    --output_dir=${ROOT_DIR}/results/mzb_example/skeletons/supervised_skeletons/ \
+    --save_masks=${ROOT_DIR}/data/mzb_example_data/derived/skeletons/supervised_skeletons/ \
+    --config_file=${ROOT_DIR}/configs/mzb_example_config.yaml \ 
+    -v
