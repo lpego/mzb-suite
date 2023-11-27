@@ -1,14 +1,14 @@
 Configuration
-#############
+=============
 
-All information related to a project is contained in a configuration file, located in ``/configs/{configuration_file.yaml}``. This file, together with input/output directories and other parameters specified directly via CLI (i.e. Command Line Interface) or via shell script (see also :doc:`Workflows and Models <workflow_models>`), passes the necessary parameters to the scripts. 
+All **project parameters** (i.e. pertaining to a specific dataset) are contained in a configuration file, located in ``/configs/{configuration_file}.yaml``. This file, together with input/output directories and other running parameters specified directly via CLI (i.e. Command Line Interface) or via shell script (see also :doc:`Workflows and Models <workflow_models>`), passes the necessary parameters to the scripts. 
 
 The idea here is that the user can specify all necessary parameters for each project in this configuration file, so that one batch of images acquired in the same way (i.e. one project) always corresponds to one configuration file. 
 
 We provide a complete configuration file for the example project, *Portable Flume*, that can be used as a template for user's own configuration file for their projects. 
 
 Parameters explanation
-**********************
+----------------------
 
 This list is structured as follows: 
 
@@ -32,15 +32,15 @@ This first block contains some general parameters:
  - ``glob_random_seed``: ``[int]`` this is just a arbitrary number used by model trainers, important for reproducibility. 
  - ``glob_root_folder``: ``[string]`` this is the root folder of the project, it could be for example ``/home/user/my_project/``. 
  - ``glob_blobs_folder``: ``[string]`` this is the location where you want the clips of the segmented organisms to be saved; we strongly recommend putting this inside of the main data folder, for example ``/data/shared/mzb-workflow/data/derived/blobs/``. 
- - ``glob_local_format``: ``[jpg, pdf, ...]`` what format do you want the plotting outputs to be saved in; acceptable values are: ``pdf``, ``jpg``, ``png`` and other common formats. **NEED TO DOUBLE CHECK THIS**
- - ``model_logger``: ``[wandb]`` which data logger is used to track model training progress; for the moment, only ``wandb`` (`Weights & Biases <https://wandb.ai/site>`_) is supported. Note that W&B requires an account and to be setup by the user, see **WEIGHTS_&_BIASES_XXX**. 
+ - ``glob_local_format``: ``[jpg, pdf, ...]`` what format do you want the plotting outputs to be saved in; acceptable values are: ``pdf``, ``jpg``, ``png`` and other common formats (see `matplotlib <https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.savefig.html>`_ documentation for details).
+ - ``model_logger``: ``[wandb, tensorboard]`` which data logger is used to track model training progress; for the moment, ``wandb`` (`Weights & Biases <https://wandb.ai/site>`_) and ``tensorboard`` (`TensorBoard <https://www.tensorflow.org/tensorboard>`_) are supported. Note that W&B requires an account and to be setup by the user, see :ref:`files/workflow_models:Logging your model's training`. 
 
 The second block of parameters is specific to image segmentation. If the segmentation results are not satisfactory (i.e. organisms incompletely clipped, debris or other noise segmented as organisms, etc), changing these values might produce better results: 
 
     .. # Image parsing specific
 
  - ``impa_image_format``: ``[jpg, png, ...]`` what format are the original images in? Should be caps insensitive and support common formats like ``jpg``, ``png`` and others. 
- - ``impa_clip_areas``: ``[int, int]`` it's common to place a reference scale and colour grid in images (see also :doc:`Introduction to examples <examples/ex_intro>`), here you can define the area of the image where it is placed, so that it can be cropped out. You should specify this as the coordinates (in pixels) of the bottom-right corner of the portion of the image you want analysed, so that the regions that fall outside of it can be cropped out, for example ``[2750, 4900]`` will exclude all areas *right* of 2750 pixels and *below* 4900 pixels. 
+ - ``impa_clip_areas``: ``[int, int]`` it's common to place a reference scale and colour grid in images, here you can define the area of the image where it is placed, so that it can be cropped out. You should specify this as the coordinates (in pixels) of the bottom-right corner of the portion of the image you want analyzed, so that the regions that fall outside of it can be cropped out, for example ``[2750, 4900]`` will exclude all areas *right* of 2750 pixels and *below* 4900 pixels. 
  - ``impa_area_threshold``: this is the minimum size (in pixels) that will be considered to be an organism; anything below this threshold will be discarded. When in doubt, start with a low threshold and increase until most noise is removed. 
  - ``impa_gaussian_blur``: ``[int, int]`` the size fo the kernel that will be used to smooth the image before processing; you can think of this as the "radius" of the blur: the larger the radius, the stronger the smoothing effect, but also more loss of details in the image. This should not be changed much except for very noisy images and/or with comparatively large organisms compared to the full size of the image. 
  - ``impa_gaussian_blur_passes``: ``[int]`` How many times the gaussian filter should be applied in sequence. 
@@ -78,13 +78,13 @@ The following parameters relate to model training of the classification model. T
  
  - ``trcl_save_topk``: ``[int]`` How many models should be saved among the best? You can specify if you want to retain the best 1-2-5 etc best models after training; this can be beneficial for evaluating overfitting and convergence. Suggested value: ``1``. 
  - ``trcl_num_classes``: ``[int]`` How many classes should the model be trained for? This needs to be defined by the user, and it corresponds to how many taxa are at the specified taxonomic rank. In our example we had ``8``. 
- - ``trcl_model_pretrarch``: ``[convnext-small, resenet50, efficientnet-b2, convnext-small, densenet161, mobilenet]`` Which model architecture should be used for training; the supported architectures are detailed in :ref:`files/workflow_models:Available models`. 
+ - ``trcl_model_pretrarch``: ``[convnext-small, resenet50, efficientnet-b2, convnext-small, densenet161, mobilenet]`` Which model architecture should be used for training; the supported architectures are detailed in :ref:`files/workflow_models:Models`. 
  - ``trcl_num_workers``: ``[int]`` How many processes (i.e. workers) do you want the dataloader to spawn? A good rule of thumb is to use the same number of workers as number of threads of your CPU. In our example the value is ``16``. 
  - ``trcl_wandb_project_name``: ``[string]`` Name of the Weights & Biases tracker for your project; you should change this to something meaningful for your project; in our case it was ``mzb-classifiers``. 
 
     .. # trai_model_save_append: "-v1"
 
-This next block contains parameters for the supervised skeleton prediction model (see :ref:`files/workflow_models:Supervised Skeleton Prediction`). The same considerations as for the previous block apply. 
+This next block contains parameters for the supervised skeleton prediction model (see :ref:`files/scripts/processing_scripts:Supervised Skeleton Prediction`). The same considerations as for the previous block apply. 
 
     .. ## Finetuning / training config for skeleton prediction
 
@@ -98,7 +98,7 @@ This next block contains parameters for the supervised skeleton prediction model
 
  - ``trsk_save_topk``: ``[int]`` How many models should be saved among the best? You can specify if you want to retain the best 1-2-5 etc best models after training; this can be beneficial for evaluating overfitting and convergence. Suggested value: ``1``. 
  - ``trsk_num_classes``: ``[int]`` Since this is a binary classifier (i.e. pixels are either part of the predicted skeleton or they are not), this should be ``2``. In case of annotations referring to multiple features this can be changed according to the number of features. 
- - ``trsk_model_pretrarch``: ``[mit_b2, mit-b2, efficientnet-b2]`` Which model architecture should be used for training; the supported architectures are detailed in :ref:`files/workflow_models:Available models`. 
+ - ``trsk_model_pretrarch``: ``[mit_b2, mit-b2, efficientnet-b2]`` Which model architecture should be used for training; the supported architectures are detailed in :ref:`files/workflow_models:Models`. 
  - ``trsk_num_workers``: ``[int]`` How many processes (i.e. workers) do you want the dataloader to spawn? A good rule of thumb is to use the same number of workers as number of threads of your CPU. In our example the value is ``16``. 
  - ``trsk_wandb_project_name``: ``[string]`` Name of the Weights & Biases tracker for your project; you should change this to something meaningful for your project; in our case it was ``mzb-skeletons``. 
 
@@ -137,7 +137,7 @@ These are additional parameters for supervised skeletonization model output:
 
 
 Complete configuration file for *Portable Flume*
-************************************************
+------------------------------------------------
 Below a complete example of a configuration file for the example project *Portable Flume*. 
 
 .. code-block:: yaml
@@ -217,7 +217,7 @@ Below a complete example of a configuration file for the example project *Portab
     skel_label_clip_with_mask: False # We need same set data (blobs and skeletonization training set are not the same filenames)
 
 The taxonomy file
-*****************
+-----------------
 This file contains information about the taxonomy of each class (e.g. species, genus, or other taxa) in the dataset. The first column should be named ``query`` and should contain the name of the class; all the other columns should correspond to a taxonomic rank, and should contain the pertinent taxon for that class. 
 
 This should be saved as CSV file in an appropriate location (for instance, ``/data/MZB_taxonomy.csv``), structured like so: 
@@ -232,8 +232,10 @@ This should be saved as CSV file in an appropriate location (for instance, ``/da
 | isoperla      | Metazoa | Arthropoda | Insecta | Pterygota | Plecoptera    | NA       | Perlodidae    | Isoperla |
 +---------------+---------+------------+---------+-----------+---------------+----------+---------------+----------+
 
-Such a taxonomy file can be easily generated from a list of classes using utilities like the `R package taxize or others <https://github.com/ropensci/taxize>`_. 
+Such a taxonomy file can be easily generated from a list of classes using utilities like the R package `taxize <https://github.com/ropensci/taxize>`_ or others. 
 
 Please note that the taxonomic rank selection can be different (for instance, it could be ``class, family, genus, species``), the only constrain is that the requested taxonomic cutoff rank (parameter `lset_class_cut``) must also exist in the taxonomy file. If for some classes the requested taxonomic cutoff has no value or is NA (due to the fact that that level is not available or the query is at a higher taxonomic rank), then that class is dropped. 
 
 So, if our taxonomy file looks like the table above, if we requested taxonomic cutoff ``order``, we would obtain 2 classes (Ephemeroptera, line 1+2; Plecoptera, line 3); if we requested taxonomic cutoff ``family``, we would obtain 2 classes (Hpetageniidae, line 2; Perlodidae, line 3); if we requested taxonomic cutoff ``suborder``, we would obtain 1 class (Setisura, line 2). 
+
+Please also see :ref:`files/scripts/processing_scripts:Preparing training data` for details on the function that prepares the traning data using the taxonomy file. 

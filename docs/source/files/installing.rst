@@ -1,35 +1,110 @@
 Installation
 ============
 
-The Project contains two main parts: 
-    1. The ``mzbsuite`` package; 
-    2. The ``scripts`` and ``workflow`` files making use of its functions. 
+There are a few ways to work with the project: 
 
-The ``mzbsuite`` folder (in Python this is called a package) contains higher-level functions that can be imported from other scripts and used to create complex processing pipelines, while the ``scripts`` and ``workflow`` folders contain files that make use of functions implemented in ``mzbsuite`` to run single modules or the processing pipeline as a whole. 
+    #. Run it in an `Online session on RenkuLab`_ (easiest setup, but limited computing power)
+    #. Run it on your local machine using the `Docker container`_ (medium setup, can use your computer resources)
+    #. `Install libraries locally`_ directly on your computer (longest setup, troubleshooting potentially needed, but affords maximum flexibility)
 
-The file ``environment.yml`` contains all the minimal dependencies for the project, and should install the functions in ``mzbsuite`` as well. However, if this does not work, the ``mzbsuite`` package can be installed separately using the ``setup.py`` file in the ``mzbsuite`` folder, via ``pip`` (see :ref:`here <pip_install_mzbsuite>`)
+.. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Online session on RenkuLab
+---------------------------
+To try out ``mzbsuite``, the quickest way to is to spin a virtual session on Renkulab: 
+
+#. Go to `<https://renkulab.io/>`_ and create an account (or log in if you already have one). 
+#. Once you're logged in, go to `<https://renkulab.io/projects/biodetect/mzb-workflow>`_ 
+#. Start the virtual session: 
+
+    #. in the project overview you should see a green play button
+    #. click the dorp-down menu arrow on its right and select "Start with options"; 
+    #. Under "Session class" select Large (1 CPU, 4 GB RAM, 64 GB disk)
+    #. Drag the bar for "Amount of storage" to 10 GB. 
+    #. Toggle the switch "Automatically fetch LFS data"
+    #. At the bottom of the page click "Start session"
+    #. Be patient! It can take several minutes for the session to start. 
+
+.. image:: ../../assets/Renkulab_virtual_session.gif
+
+Once the session has started you should drop directly into the JupyterLab interface. 
+From there you can work through the notebooks in :ref:`Examples`. 
+
+We don't recommend this method for for long term use, as the online session are shut down for maintenance, so data not exported will be lost. 
+
+.. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Docker container
--------------------
-For less experienced users, we recommend installing via Docker. You can find instructions on how to install the Docker Engine here: `<https://docs.docker.com/get-docker/>`_
+----------------
+If you want to run the pipeline on yur own data and local computer resources but you are not too familiar with managing python environments, we recommend installing via Docker. 
 
-Once the Docker Engine has been correctly installed, you can download the project's Docker image from: 
+#. First, install the `Docker Engine <https://docs.docker.com/get-docker/>`_ 
 
-    .. class:: 
+    .. admonition:: \ \ 
 
-    `*link coming soon* <LINK_TO_DOCKER_IMAGE>`_ 
+        Admin privileges may be needed to install Docker Engine.  
 
-and launch it from the Graphical User Interface (GUI) of Docker. 
+#. After the installation, launch the Docker app and wait until it's *fully* started. 
 
-This should open a terminal within the Docker environment where you can start using the project's modules immediately! 
+#. Open a terminal in a directory you would like to save your work in (you must have write permissions). 
 
-Manual install
---------------
+    .. hint:: 
+
+        If you don't know how to open a terminal, instructions for `Windows <https://superuser.com/a/340051>`_ and `Mac <https://support.apple.com/guide/terminal/open-new-terminal-windows-and-tabs-trmlb20c7888/mac>`_. 
+
+#. Download and launch the project's Docker image by running the following lines in a terminal window: 
+
+    ⚠️ WARNING: this may take a while to run the first time, as it needs to download the Docker image (~5 GB)
+
+    .. code-block:: bash 
+        
+        imageName=registry.renkulab.io/biodetect/mzb-workflow:8805a38
+        repoName=mzb-workflow
+        docker run --rm -ti -v ${PWD}:/work/${repoName} --workdir /work/${repoName} -p 8888:8888 ${imageName} jupyter lab --ip=0.0.0.0
+
+    .. hint:: 
+        If you are on Windows, use this instead: 
+        
+        .. code-block:: console
+            
+            set imageName=registry.renkulab.io/biodetect/mzb-workflow:8805a38
+            set repoName=mzb-workflow
+            docker run --rm -ti -v %cd%:/work/%repoName% --workdir /work/%repoName% -p 8888:8888 %imageName% jupyter lab --ip=0.0.0.0
+    
+#. The last few lines of the output should look something like this: 
+
+    .. code-block:: console
+
+        To access the server, open this file in a browser:
+            file:///home/jovyan/.local/share/jupyter/runtime/jpserver-14-open.html
+        Or copy and paste one of these URLs:
+            http://a62c488a6f4c:8888/lab?token=2fb162adc7251f04e37cb8d6f1f55db2fbdbc7d2e1d9e1e8
+            http://127.0.0.1:8888/lab?token=2fb162adc7251f04e37cb8d6f1f55db2fbdbc7d2e1d9e1e8
+
+#. Copy-paste the URL address starting with ``http://127.0.0.1`` into your browser (e.g. Firefox, Chrome), hit Enter, and you should drop into the JupyterLab interface. 
+
+The procedure is the same when starting the Docker image the following times, except it will not download it again therefore should be much faster launching it. 
+
+    .. hint:: 
+        If you would rather use an IDE, we recommend `Visual Studio Code <https://code.visualstudio.com/>`_; to access the Docker container read about `VS Code Docker extension <https://code.visualstudio.com/docs/containers/overview>`_ and `working with containers <https://code.visualstudio.com/docs/devcontainers/containers>`_. 
+
+Using the most up to date image
+_______________________________
+The Docker image linked above in ``imageName`` is a manually pinned image that we tested and we know works. It might not contain the most most up to date versions of scripts if we pushed changes to the repo recently. If you want to pull the most updated Docker image, please follow instructions `<here https://renku.readthedocs.io/en/stable/how-to-guides/own_machine/reusing-docker-images.html>`_. 
+
+.. admonition:: \ \ 
+
+    Make sure that the Docker image is correctly built before pulling it; you can check build status `here <https://gitlab.renkulab.io/biodetect/mzb-workflow/-/pipelines>`_. 
+
+.. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Install libraries locally
+-------------------------
 
 If you prefer to install the project directly in your local environment or just want to use the functions in your own scripts, you can download the project's  repository. 
 The project is currently hosted on the `Swiss Data Science Center <https://datascience.ch>`_ GitLab server, you can find the repository here: 
 
-    .. class:: 
+    .. rst-class:: center
 
     `<https://gitlab.renkulab.io/biodetect/mzb-workflow>`_. 
 
@@ -56,11 +131,12 @@ You can then install the necessary packages using the conda package manager and 
     conda env create -f environment.yml
 
 .. hint:: \ \ 
-   If you don't have Anaconda installed, you can can get the installer from `<https://www.anaconda.com/download>`_.
-
-This should install the ``mzbsuite`` package as well, but if this does not work, you can simply install it via pip as: 
+   If you don't have the ``conda`` command available, you need to install it.    
+   We strongly recommend using Mamba, find installation instruction `here <https://mamba-framework.readthedocs.io/en/latest/installation_guide.html>`_; but if you prefer you can also install `Anaconda <https://www.anaconda.com/download>`_.
 
 .. _pip_install_mzbsuite:
+
+This should install the ``mzbsuite`` package as well, but if this does not work, you can simply install it via pip as: 
 
 .. code-block:: bash
 
@@ -78,4 +154,4 @@ the ``-e`` flag will install the package in editable mode, so that you can make 
 
    and check that ``mzbsuite`` appears in the  list. 
 
-If there are no errors then you're all set up and can start using the modules. 
+If there are no errors then you're all set up and can start using the modules! 

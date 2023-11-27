@@ -1,12 +1,10 @@
 ``mzbsuite`` module
 ===================
-
-- install it 
-- main modules 
+Here we detail the main classes and functions in ``mzbsuite``. 
 
 
-Functions and docstrings 
-========================
+.. Classes
+.. -------
 
 :mod:`mzb_classification_dataloader`
 ------------------------------------
@@ -27,6 +25,9 @@ Functions and docstrings
 -----------------------------
 .. automodule:: mzbsuite.skeletons.mzb_skeletons_pilmodel
 	:members:
+
+.. Helper functions and docstrings 
+.. -------------------------------
 
 :mod:`mzb_skeletons_helpers`
 ----------------------------

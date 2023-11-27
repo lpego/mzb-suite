@@ -7,7 +7,20 @@
 MZB-WORFLOW: Macrozoobenthos data workflow suite 
 ================================================
 
-This documentation introduces and illustrates some examples of the *Macrozoobenthos data processing workflow suite (mzb-suite)*. 
+Welcome to the ``mzb-suite`` documentation! Here we introduce the package functionality and illustrate some examples of the *Macrozoobenthos data processing workflow and suite* ``mzb-suite``. 
+
+.. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Quickstart
+==========
+
+To try out ``mzb-suite``, the quickest way to is to spin a virtual session on RenkuLab, follow instructions on :ref:`files/installing:Online session on RenkuLab`. 
+
+If you are not familiar with the JupyterLab interface, have a look at :ref:`files/examples/read_example:Working with notebooks`. 
+
+To launch the example workflow and inspect the results, see :ref:`files/workflow_models:Workflow files`. 
+
+.. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The MZB project
 ===============
@@ -15,21 +28,22 @@ The MZB project
 :doc:`files/installing`
     How to install the project and ``mzb-suite`` package on your machine.
 
+:doc:`files/project_structure`
+    What does what in the project repository.
+
 :doc:`files/workflow_models`
-    Introduction to the project technical aspects and the models used.
+    How to work with the project, details about the workflows and models used.
 
 :doc:`files/configuration`
     Explanation fo the configuration file and recommended parameter values. 
 
+.. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Examples
 ========
 
-:doc:`files/examples/ex_intro`
-    Overview of data processing abilities and limitations
-
-:doc:`files/examples/ex_preprocessing`
-    Example of data
+:doc:`files/examples/read_example`
+    How to change paths to files in notebooks
 
 :doc:`files/examples/segmentation`
     Example of extracting clips from large images
@@ -46,6 +60,7 @@ Examples
 :doc:`files/examples/classification_finetune`
     Example of retraining classification model
 
+.. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Processing scripts
 ==================
@@ -56,6 +71,8 @@ Processing scripts
 :doc:`files/scripts/diverse_preprocessing`
     Details of other convenience scripts
 
+.. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 .. Hidden TOCs
 
 .. toctree::
@@ -64,6 +81,7 @@ Processing scripts
     :hidden:
 
     files/installing
+    files/project_structure
     files/workflow_models
     files/configuration
 
@@ -72,6 +90,7 @@ Processing scripts
     :maxdepth: 1
     :hidden:
 
+    files/examples/read_example
     files/examples/segmentation
     files/examples/skeletonization_unsupervised
     files/examples/skeletonization_supervised_inference
@@ -87,7 +106,7 @@ Processing scripts
     files/scripts/diverse_preprocessing
 
 .. toctree::
-    :caption: mzb-suite Modules
+    :caption: mzbsuite Module
     :maxdepth: 1 
     :hidden:
 

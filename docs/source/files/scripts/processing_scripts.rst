@@ -1,14 +1,29 @@
 Processing scripts
 ##################
 
-*Explain how those scripts can be used as main functions.*
+All the code in ``scripts/`` (except ``diverse_preprocessing``, see :ref:`files/scripts/diverse_preprocessing:Other scripts`) is encapsulated in a ``main`` function, with a short statement towards the end of the code: 
+
+.. code-block:: 
+
+    if __name__ == "__main__": 
+        {code}
+
+This idiom allows the code to be run when called as a script (for example, when we call it using a ``.sh`` file or run it in interactive session, see :ref:`files/workflow_models:Working with the project`), but also allows it to be imported as a module and therefore call its functions in your own scripts directly. 
+
+You can read more about ``__main__`` functions in this `tutorial <https://realpython.com/if-name-main-python/>`_. 
+
+Below we explain the various scripts that make up the three module in ``mzbsuite``: 
+
+    - :ref:`files/scripts/processing_scripts:Segmentation`
+    - :ref:`files/scripts/processing_scripts:Skeleton Prediction`
+    - :ref:`files/scripts/processing_scripts:Classification`
 
 .. - Automdodules
 
 .. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 
 Segmentation
-************
+------------
 This module takes as input images with multiple organisms and separates them in smaller clips, each containing a single organism. It consists mainly of built in functionality of ``opencv2``. 
 
 :mod:`scripts.image_parsing.main_raw_to_clips` 
@@ -65,11 +80,11 @@ This module takes as input images with multiple organisms and separates them in 
 .. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 
 Skeleton Prediction
-*******************
+-------------------
 In this toolbox, we offer two ways of performing an estimation of the body size of organisms. One is unsupervised (i.e. Unsupervised Skeleton Prediction), and relies on the estimation of the skeleton from the binary mask. The other is supervised, and relies on a model trained from manually annotated data. 
 
 Unsupervised Skeleton Prediction
-================================
+________________________________
 The main function ``scripts.skeletons.main_unsupervised_skeleton_estimation.py`` implements the unsupervised skeleton estimation from binary masks. We estimate the mask's skeleton, estimate a filament segmentation, and compute the longest path traversing the whole skeleton. We return the longest path, assuming it corresponds to the length of the organism's body.  
 
 Each mask is represented by 0 and 1 pixel values, where 0 is the background and 1 is the foreground, the latter corresponding to the organism. The algorithm is applied individually to each binary mask, as follows: 
@@ -94,8 +109,8 @@ Each mask is represented by 0 and 1 pixel values, where 0 is the background and 
     - ``area``: the area of the organism in pixels (computed as the sum of the foreground pixels in the binary mask)
 
 Supervised Skeleton Prediction
-==============================
-This module is composed of 3 scripts: ``scripts.skeletons.main_supervised_skeleton_inference.py`` uses models pre-trained on manually annotated images, whereby an expert drew length and head width for a range of MZB taxa (see **APPENDIX_XXX** for further details); ``scripts.skeletons.main_supervised_skeleton_assessment.py`` compares model prediction with manual annotations and plots them out; ``scripts.skeletons.main_supervised_skeleton_finetune.py`` allows to re-train the model with user's annotations. 
+______________________________
+This module is composed of 3 scripts: ``scripts.skeletons.main_supervised_skeleton_inference.py`` uses models pre-trained on manually annotated images, whereby an expert drew length and head width for a range of MZB taxa; ``scripts.skeletons.main_supervised_skeleton_assessment.py`` compares model prediction with manual annotations and plots them out; ``scripts.skeletons.main_supervised_skeleton_finetune.py`` allows to re-train the model with user's annotations. 
 
 :mod:`scripts.skeletons.main_supervised_skeleton_inference` 
 
@@ -140,7 +155,7 @@ The re-training script ``main_supervised_skeletons_finetune.py`` is as follows:
 #. Setup progress bar and keep track of logging date with custom class ``mzbsuite.utils.SaveLogCallback``. 
 #. Use the custom class ``mzbsuite.skeletons.mzb_skeletons_pilmodel.MZBModel_skels`` to pass config file arguments to model. 
 #. Check if there is a model to continue training from, otherwise load the best validated model and continue training from that. 
-#. Pass model training progress to Weigths & Biases logger (for more detail see **Weights & Biases_XXX**)
+#. Pass model training progress to Weigths & Biases logger (for more detail see :ref:`files/workflow_models:Logging your model's training`)
 #. Setup ``torch.Trainer`` using parameters defined in the config file and above. 
 #. Fit model. 
 
@@ -149,11 +164,11 @@ The re-training script ``main_supervised_skeletons_finetune.py`` is as follows:
 .. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 
 Classification
-**************
+--------------
 The scripts for classification are in ``scripts/classification``, and depend on several custom functions defined in ``mzbsuite/classification`` and ``mzbsuite/utils.py``. 
 
 Classification inference
-========================
+________________________
 The script ``main_classification_inference.py`` allows to identify organisms from image clips using trained models. 
 
 :mod:`scripts.classification.main_classification_inference` 
@@ -171,7 +186,7 @@ The script ``main_classification_inference.py`` allows to identify organisms fro
 #. If inference was carried out on a validation set ``val_set``, save confusion matrix as image at ``out_dir/confusion_matrix`` as well a classification report at ``out_dir/classification_report.txt``. 
 
 Preparing training data
-=======================
+_______________________
 The script ``main_prepare_learning_sets.py`` takes the image clips and aggregates them by the taxonomic rank specified by the user, so that classes for model training and inference correspond to that rank. The CSV taxonomy file location and taxonomic rank of interest are specified in :ref:`files/configuration:Configuration`. 
 For example, if image clips are annotated at species, genus and family level, and the specified rank is family, then the script will collapse all genera and species to family rank. All annotations not be at the specified taxonomic rank or lower (``kingdom > phylum > class > subclass > order > suborder > family > genus > species``) will be discarded. 
 
@@ -194,7 +209,7 @@ For example, if image clips are annotated at species, genus and family level, an
 #. If a class named ``mixed`` exist in the curated data, copy all images thereby to test model performance. 
 
 Re-train models
-===============
+_______________
 The script ``main_classification_finetune.py`` allows to (re)train a model for classification of macrozoobenthos images, using configuration file arguments: ``input_dir`` of images to be used for training; ``save_model`` where the model should be saved (once every 50 steps and end of training); ``config_file`` path to the file with training hyperparameters (see :ref:`files/configuration:Configuration`). 
 
 :mod:`scripts.classification.main_classification_finetune` 
@@ -205,6 +220,6 @@ The script ``main_classification_finetune.py`` allows to (re)train a model for c
 #. Define best and last model callbacks using the ``pytorch_lightning.callbacks.ModelCheckpoint``. 
 #. Define model from hyperparameters specified in configuration file. 
 #. Check if there is a model previously trained, otherwise load best model (evaluated on validation set). 
-#. Define run name and logger callback (currently only Weights & Biases supported, see **Weights & Biases_XXX**). 
+#. Define run name and logger callback (see :ref:`files/workflow_models:Logging your model's training`). 
 #. Setup ``torch.Trainer`` using parameters defined in the config file.
 #. Fit model. 
