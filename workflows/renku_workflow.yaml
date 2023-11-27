@@ -11,26 +11,86 @@
 # To learn much more about what you can do with the Renku Workflow File, see our docs:
 # https://renku.readthedocs.io/en/stable/topic-guides/workflows/workflow-file.html
 
-name: mzb-wflow
-root: /data/shared/mzb-workflow
+name: mzb_example_workflow
+root: /home/jovyan/work/mzb-workflow
 steps:
-  raw-image-to-clips:
+  segmentation:
     command: python $my-script $input-data $output-data $save_mask
     inputs:
       - my-script:
           path: scripts/image_parsing/main_raw_to_clips.py 
       - input-data:
-          path: $root /data/raw/project_portable_flume
+          path: $root /data/mzb_example_data/raw_img/
     outputs:
       - output-data:
-          path: $root /data/results/project_portable_flume/blobs/
+          path: $root /data/mzb_example_data/derived/blobs/
     parameters:
-      - save_mask: 
+      - full_image_masks: 
           prefix: --save_full_mask_dir
-          value: =$root /data/results/project_portable_flume/full_image_masks
+          value: $root /data/mzb_example_data/derived/full_image_masks
       - config_file:
           prefix: --config_file
-          value: $root /configs/configuration_flume_datasets.yaml
+          value: $root /configs/mzb_example_config.yaml
+  
+  classification:
+    command: python $my-script $input-data $output-data $save_mask
+    inputs:
+      - my-script:
+          path: scripts/classification/main_classification_inference.py 
+      - input-data:
+          path: $root /data/mzb_example_data/training_dataset/trn_set/
+    outputs:
+      - output-data:
+          path: $root /results/mzb_example/classification/trn_set/
+    parameters:
+      - input_model: 
+          prefix: --input_model
+          value: $root /models/mzb-classification-models/convnext-small-v0
+      - config_file:
+          prefix: --config_file
+          value: $root /configs/mzb_example_config.yaml
+
+  skeletonize-unsupervised:
+    command: python $my-script $input-data $output-data $save_mask
+    inputs:
+      - my-script:
+          path: scripts/skeletons/main_unsupervised_skeleton_estimation.py
+      - input-data:
+          path: $root /data/mzb_example_data/derived/blobs/
+    outputs:
+      - output-data:
+          path: $root /results/mzb_example/skeletons/unsupervised_skeletons/
+    parameters:
+      - save_masks: 
+          prefix: --save_masks
+          value: $root /data/mzb_example_data/derived/skeletons/unsupervised_skeletons/
+      - config_file:
+          prefix: --config_file
+          value: $root /configs/mzb_example_config.yaml
+
+  skeletonize-supervised:
+    command: python $my-script $input-data $output-data $save_mask
+    inputs:
+      - my-script:
+          path: scripts/skeletons/main_supervised_skeleton_inference.py
+      - input-data:
+          path: $root /data/mzb_example_data/derived/blobs/
+    outputs:
+      - output-data:
+          path: $root /results/mzb_example/skeletons/supervised_skeletons/
+    parameters:
+      - input_model: 
+          prefix: --input_model
+          value: $root /models/mzb-skeleton-models/mit-b2-v0
+      - input_type: 
+          prefix: --input_type
+          value: "external"
+      - save_masks: 
+          prefix: --save_masks
+          value: $root /data/mzb_example_data/derived/skeletons/supervised_skeletons/
+      - config_file:
+          prefix: --config_file
+          value: $root /configs/mzb_example_config.yaml
 
   # === Adding more steps ===
   # You can add as many steps as you want to your workflow by copy and pasting the step template above
