@@ -10,7 +10,7 @@ MODEL_S="mit-b2-v0"
 python scripts/image_parsing/main_raw_to_clips.py \
     --input_dir=${ROOT_DIR}/data/mzb_example_data/raw_img/ \
     --output_dir=${ROOT_DIR}/data/mzb_example_data/derived/blobs/ \
-    --save_full_mask_dir=${ROOT_DIR}/data/mzb_example_data/derived/full_image_masks_test \
+    --save_full_mask_dir=${ROOT_DIR}/data/mzb_example_data/derived/full_image_masks \
     --config_file=${ROOT_DIR}/configs/configuration_flume_datasets.yaml \
     -v
 
