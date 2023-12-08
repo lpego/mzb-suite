@@ -52,6 +52,7 @@ python ${ROOT_DIR}/scripts/classification/main_classification_inference.py \
 # ## --------------------------------------------------------------------------------
 # python ${ROOT_DIR}/scripts/classification/main_classification_inference.py \
 #     --input_dir=${ROOT_DIR}/data/YOUR_IMAGE_SET_HERE/ \
+#     --taxonomy_file=${ROOT_DIR}/data/mzb_example_data/MZB_taxonomy.csv \
 #     --input_model=${ROOT_DIR}/models/mzb-classification-models/${MODEL}_aggregated \
 #     --output_dir=${ROOT_DIR}/results/mzb_example_data/classification/${MODEL}_aggregated_external/ \
 #     --config_file=${ROOT_DIR}/configs/mzb_example_config.yaml \

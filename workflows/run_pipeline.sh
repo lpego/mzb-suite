@@ -20,6 +20,7 @@ LSET_FOLD=${ROOT_DIR}/data/learning_sets/project_portable_flume/aggregated_learn
 # classification models are stored in ${ROOT_DIR}/models/mzb-class/
 # python scripts/classification/main_classification_inference.py \
 #     --config_file=${ROOT_DIR}/configs/configuration_flume_datasets.yaml \
+#     --taxonomy_file=${ROOT_DIR}/data/mzb_example_data/MZB_taxonomy.csv \
 #     --input_dir=${ROOT_DIR}/data/learning_sets/project_portable_flume/aggregated_learning_sets/val_set \
 #     --input_model=${ROOT_DIR}/models/mzb-class/convnext-small \
 #     --output_dir=${ROOT_DIR}/results/classification/project_portable_flume/ \
@@ -30,6 +31,7 @@ LSET_FOLD=${ROOT_DIR}/data/learning_sets/project_portable_flume/aggregated_learn
 ### Ex. run on all the clips available to get full predictions
 ## python scripts/classification/main_classification_inference.py \
 ##     --config_file=${ROOT_DIR}/configs/configuration_flume_datasets.yaml \
+##    --taxonomy_file=${ROOT_DIR}/data/mzb_example_data/MZB_taxonomy.csv \ 
 ##     --input_dir=${ROOT_DIR}/data/derived/project_portable_flume/blobs/ \
 ##     --input_model=${ROOT_DIR}/models/mzb-class/bm2ccwxc \
 ##     --output_dir=${ROOT_DIR}/results/classification/project_portable_flume/ \

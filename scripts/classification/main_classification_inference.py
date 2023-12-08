@@ -27,6 +27,7 @@ def main(args, cfg):
         Namespace containing the arguments passed to the script. Notably:
 
             - input_dir: path to the directory containing the images to be classified
+            - taxonomy_file: path to the csv file containing the taxonomy of the classes
             - input_model: path to the directory containing the model to be used for inference
             - output_dir: path to the directory where the results will be saved
             - config_file: path to the config file with train / inference parameters
@@ -89,8 +90,8 @@ def main(args, cfg):
         model=model, dataloaders=[dataloader]  # , return_predictions=True
     )
 
-    if cfg.lset_taxonomy:
-        mzb_taxonomy = pd.read_csv(Path(cfg.lset_taxonomy))
+    if args.taxonomy_file:
+        mzb_taxonomy = pd.read_csv(Path(args.taxonomy_file))
         mzb_taxonomy = mzb_taxonomy.drop(columns=["Unnamed: 0"])
         mzb_taxonomy = mzb_taxonomy.ffill(axis=1)
         # watch out this sorted is important for the class names to be in the right order
@@ -179,6 +180,12 @@ if __name__ == "__main__":
         type=str,
         required=True,
         help="path to config file with per-script args",
+    )
+    parser.add_argument(
+        "--taxonomy_file",
+        type=str,
+        required=False,
+        help="path to csv with taxonomy of classes",
     )
     parser.add_argument(
         "--input_dir",

@@ -25,7 +25,8 @@ impa_save_clips_plus_features: True
 ## and such into specific subfolders
 lset_class_cut: order
 lset_val_size: 0.1
-lset_taxonomy: /home/jovyan/work/mzb-workflow/data/MZB_taxonomy.csv
+# moved to args of function
+# lset_taxonomy: /home/jovyan/work/mzb-workflow/data/MZB_taxonomy.csv
 
 ## Finetuning / training config for classifier
 trcl_learning_rate: 0.001
