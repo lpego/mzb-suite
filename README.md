@@ -65,7 +65,7 @@ LEAVE BLANK FOR PREPRINT OR PAPER
 ### General
 - [ ] Move taxonomy file location onto running parameters from configuration file
 - [ ] Clean unused workflow `sh` files and comments within them
-- [ ] `worflows/full_pipeline_custom.sh` has no execute permission in repo
+- [x] `worflows/full_pipeline_custom.sh` has no execute permission in repo
 - [ ] Reduce images in example dataset
 - [ ] Set up push mirror GitLab → GitHub (without LFS files)
 - [ ] Renku workflows for the different modules (or add `renku run` ... in front of command in `sh` scripts)
@@ -75,9 +75,9 @@ LEAVE BLANK FOR PREPRINT OR PAPER
 - [ ] Add the Dübendorf data use case to check consistency for multiple projects
 
 ### JupyterLab via Renku
-- [ ] JupyterLab screws up all the filepaths… Working dir is home/jovyan/work
+- [x] JupyterLab screws up all the filepaths… Working dir is home/jovyan/work
 - [ ] Notebooks not picking up correct conda env in JupyterLab... 
-- [ ] Cannot run .sh script in the console directly if in cwd??? 
+- [x] Cannot run .sh script in the console directly if in cwd??? 
 - [ ] Notebooks don’t pick up conda env… 
 - [ ] Finding and changing filepaths in Jupyter notebooks is difficult for users… 
 
@@ -86,8 +86,8 @@ LEAVE BLANK FOR PREPRINT OR PAPER
 	- [x] Configure ReadTheDocs integration
 	- [ ] Configure automated docs build in GitHub Pages from mirror repo
 	- [ ] See if you can pull the commit name and reconstruct the docker image name on renku dynamically in the documentation (source/files/installing.rst)... 
-	- [ ] Otherwise just grab a recent one that build correctly and stick with that
-- [ ] Add "Quickstart" section with tutorial in the documentation
+	- [x] Otherwise just grab a recent one that build correctly and stick with that
+- [x] Add "Quickstart" section with tutorial in the documentation
 - [ ] in the documentation, `docs/source/files/workflow_models.rst`, add section called "Supervised Skeleton Prediction" and explain model architectures used for supevised skeleton prediction (this should also fix Sphinx build warnings for missing refs).
 - [x] Merge ToDo in `README.md` and Evernote. 
 
