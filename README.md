@@ -103,7 +103,7 @@ LEAVE BLANK FOR PREPRINT OR PAPER
 	- [ ] `classification_finetune.ipynb` last cell (actually retraining the model) might not be compatible with an interactive environment...
 
 ### Figures to make for paper
-- [ ] Class (im)balance for flume MZB samples 
+- [x] Class (im)balance for flume MZB samples (classification and skeletons) 
 - [x] Accuracy for classification model  - `results/project_portable_flume/class_convnext-small-v0_validation_set`
 - [x] Accuracy for supervised skeletonization model (length and head width) - `results/project_portable_flume/skseg_mit-b2-v1_validation_set`
 - [ ] Accuracy for unsupervised skeletonization (length) 
