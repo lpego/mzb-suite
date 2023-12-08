@@ -36,11 +36,7 @@ image_build:
     docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA_7
     echo -e "\n\n\n The Docker image can be located at: \n" $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA_7 "\n\n\n"
 
-<<<<<<< HEAD
 # ### RenkuLab's deployment of GitLab *does not* support GitLab Pages... 
-=======
-# ### NOTE: RenkuLab's deployment of GitLab *does not* support GitLab Pages... 
->>>>>>> 7f578398db47be6ed7c479b3a4a4da3b255875f4
 # ### Below is an incomplete attempt at building and deploying Sphinx documentation to GitLab Pages. 
 
 # ### GitLab Pages CI/CD integration, from https://nbsphinx.readthedocs.io/en/latest/usage.html 
