@@ -4,13 +4,12 @@ ROOT_DIR="/data/shared/mzb-workflow"
 MODEL="efficientnet-b2-v0"
 LSET_FOLD=${ROOT_DIR}/data/learning_sets/project_portable_flume/aggregated_learning_sets_test
 
-echo
-python scripts/image_parsing/main_raw_to_clips.py \
-    --input_dir=${ROOT_DIR}/data/raw/project_portable_flume \
-    --output_dir=${ROOT_DIR}/data/derived/project_portable_flume/blobs_tr/ \
-    --save_full_mask_dir=${ROOT_DIR}/data/derived/project_portable_flume/full_image_masks_test \
-    --config_file=${ROOT_DIR}/configs/configuration_flume_datasets.yaml
-    # -v
+# python scripts/image_parsing/main_raw_to_clips.py \
+#     --input_dir=${ROOT_DIR}/data/raw/project_portable_flume \
+#     --output_dir=${ROOT_DIR}/data/derived/project_portable_flume/blobs_tr/ \
+#     --save_full_mask_dir=${ROOT_DIR}/data/derived/project_portable_flume/full_image_masks_test \
+#     --config_file=${ROOT_DIR}/configs/mzb_example_config.yaml
+#     # -v
 
 ## CHECK: _mask_properties.csv file in the output directory, does not get filled correctly  
 

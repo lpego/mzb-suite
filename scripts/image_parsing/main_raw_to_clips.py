@@ -57,12 +57,11 @@ def main(args, cfg):
     if args.verbose:
         print(f"parsing {len(files_proc)} files")
 
-    # make sure that this will be general enough
-    ### WE REALLY NEED TO CHANGE THIS!
-    if "project_portable_flume" in str(main_root):
+    # Ignore the content of this bounding box
+    if cfg.impa_clip_areas is not None:
         location_cutout = [int(a) for a in cfg.impa_clip_areas]
 
-    # define quick normalization function
+    # define normalization function
     norm = lambda x: (x - np.min(x)) / (np.max(x) - np.min(x))
 
     iterator = tqdm(files_proc, total=len(files_proc))
@@ -123,8 +122,11 @@ def main(args, cfg):
 
         # cut out area related to measurement/color calibration widget
         ### WE REALLY NEED TO CHANGE THIS!
-        if "project_portable_flume" in str(main_root):
-            thresh[location_cutout[0] :, location_cutout[1] :] = 0
+        if cfg.impa_clip_areas is not None:
+            thresh[
+                location_cutout[0] : location_cutout[2],
+                location_cutout[1] : location_cutout[3],
+            ] = 0
 
         # get labels of connected components
         labels = measure.label(thresh, connectivity=2, background=0)
