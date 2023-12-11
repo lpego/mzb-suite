@@ -29,11 +29,11 @@ lset_val_size: 0.1
 # lset_taxonomy: /home/jovyan/work/mzb-workflow/data/MZB_taxonomy.csv
 
 ## Finetuning / training config for classifier
-trcl_learning_rate: 0.001
-trcl_batch_size: 16
+trcl_learning_rate: 0.0001
+trcl_batch_size: 8
 trcl_weight_decay: 0
 trcl_step_size_decay: 5
-trcl_number_epochs: 10 # 75
+trcl_number_epochs: 75 # 75
 # trcl_gpu_ids: -1 
 trcl_save_topk: 1
 trcl_num_classes: 8

@@ -2,13 +2,16 @@
 
 ## This workflow sets up and runs the finetuning of the classification model
 ## The root path specified here in ROOT_DIR is for working with notebooks on virtual sessions on Renkulab, your path may differ! 
-ROOT_DIR="/home/jovyan/work/mzb-workflow"
-MODEL="efficientnet-b2-v0"
-LSET_FOLD=${ROOT_DIR}/data/mzb_example_data/aggregated_set
+# ROOT_DIR="/home/jovyan/work/mzb-workflow"
+ROOT_DIR="/data/shared/mzb-workflow/"
+MODEL="convnext_small_v0_prerelease"
+# LSET_FOLD="${ROOT_DIR}/data/mzb_example_data/aggregated_learning_set"
+LSET_FOLD="${ROOT_DIR}/data/learning_sets/project_portable_flume/aggregated_learning_sets"
 
 ## This runs only if the target aggregate learning sets folder doesn't exist yet, 
 ## and then creates it based on the specified taxonomic rank and taxonomy file. 
 ## --------------------------------------------------------------------------------
+
 if [ -d "${LSET_FOLD}" ];
 then
     echo "Directory ${LSET_FOLD} exists." 
@@ -33,20 +36,20 @@ fi
 ## This is run to finetune the classification model based on the new aggreagted learning sets; it will return a new model.
 ## --------------------------------------------------------------------------------
 python ${ROOT_DIR}/scripts/classification/main_classification_finetune.py \
-    --input_dir=${ROOT_DIR}/data/mzb_example_data/aggregated_set/trn_set/ \
-    --save_model=${ROOT_DIR}/models/mzb-classification-models/${MODEL}_aggregated \
+    --input_dir=${LSET_FOLD} \
+    --save_model=${ROOT_DIR}/models/mzb-classification-models/${MODEL} \
     --config_file=${ROOT_DIR}/configs/mzb_example_config.yaml \
-    # -v
 
 ## This uses the newly trained model to classify new images; 
 ## specifically, this runs on the validation set to get the accuracy of the model
 ## --------------------------------------------------------------------------------
 python ${ROOT_DIR}/scripts/classification/main_classification_inference.py \
-    --input_dir=${ROOT_DIR}/data/mzb_example_data/aggregated_set/val_set/ \
-    --input_model=${ROOT_DIR}/models/mzb-classification-models/${MODEL}_aggregated \
-    --output_dir=${ROOT_DIR}/results/mzb_example_data/classification/${MODEL}_aggregated/ \
+    --input_dir=${LSET_FOLD}/val_set \
+    --input_model=${ROOT_DIR}/models/mzb-classification-models/${MODEL} \
+    --output_dir=${ROOT_DIR}/results/project_portable_flume/classification/${MODEL}_temp/ \
     --config_file=${ROOT_DIR}/configs/mzb_example_config.yaml \
-    # -v
+    --taxonomy_file=${ROOT_DIR}/data/mzb_example_data/MZB_taxonomy.csv \
+
 
 # ## And this can be adapted to your own external set of iamges, a custom folder structure with images from different sources
 # ## --------------------------------------------------------------------------------

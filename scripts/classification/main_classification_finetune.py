@@ -82,7 +82,7 @@ def main(args, cfg):
     )
 
     # Check if there is a model to load, if there is, load it and train from there
-    if args.save_model.is_dir():
+    if args.save_model.exists() and args.save_model.is_dir():
         if args.verbose:
             print(f"Loading model from {args.save_model}")
         try:
@@ -93,6 +93,7 @@ def main(args, cfg):
                 args.save_model.glob("best-val-epoch=*-step=*-val_loss=*.*.ckpt")
             )[-1]
 
+        print(f"Loading model from {fmodel}")
         model = model.load_from_checkpoint(fmodel)
 
     # Define logger and name of run
@@ -120,7 +121,6 @@ def main(args, cfg):
         strategy=DDPStrategy(
             find_unused_parameters=False
         ),  # TODO: check how to use in notebook
-        precision=16,
         callbacks=cbacks,
         logger=logger,
         log_every_n_steps=1
@@ -142,7 +142,7 @@ if __name__ == "__main__":
         "--input_dir",
         type=str,
         required=True,
-        help="path with images for training",
+        help="path to learning sets (trn and val)",
     )
     parser.add_argument(
         "--save_model",

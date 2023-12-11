@@ -1,7 +1,7 @@
 #!/bin/bash 
 
 ROOT_DIR="/data/shared/mzb-workflow"
-MODEL="efficientnet-b2-v0"
+MODEL="convnext_small_v0_test"
 LSET_FOLD=${ROOT_DIR}/data/learning_sets/project_portable_flume/aggregated_learning_sets_test
 
 # python scripts/image_parsing/main_raw_to_clips.py \
@@ -21,7 +21,7 @@ LSET_FOLD=${ROOT_DIR}/data/learning_sets/project_portable_flume/aggregated_learn
 # python scripts/classification/main_classification_inference.py \
 #     --config_file=${ROOT_DIR}/configs/configuration_flume_datasets.yaml \
 #     --taxonomy_file=${ROOT_DIR}/data/mzb_example_data/MZB_taxonomy.csv \
-#     --input_dir=${ROOT_DIR}/data/learning_sets/project_portable_flume/aggregated_learning_sets/val_set \
+#     --input_dir=${ROOT_DIR}/data/learning_sets/project_portable_flume/aggregated_learning_sets/ \
 #     --input_model=${ROOT_DIR}/models/mzb-class/convnext-small \
 #     --output_dir=${ROOT_DIR}/results/classification/project_portable_flume/ \
 #     -v

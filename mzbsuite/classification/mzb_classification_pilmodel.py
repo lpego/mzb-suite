@@ -173,6 +173,7 @@ class MZBModel(pl.LightningModule):
 
         self.log(f"{print_log}_loss", loss, prog_bar=True, sync_dist=True)
         self.log(f"{print_log}_acc", self.accuracy, prog_bar=True, sync_dist=True)
+
         return loss
 
     def test_step(self, batch, batch_idx, print_log: str = "tst"):
@@ -204,7 +205,6 @@ class MZBModel(pl.LightningModule):
 
     #     return [optimizer], [lr_scheduler]
 
-    # figure out how Plateau scheduler could work when val fits are too good.
     def configure_optimizers(self):
         """
         optimiser config plus lr scheduler callback
@@ -222,7 +222,7 @@ class MZBModel(pl.LightningModule):
                     optimizer,
                     mode="min",
                     patience=self.step_size_decay,
-                    cooldown=1,
+                    cooldown=5,
                     factor=0.1,
                 ),
                 "monitor": "val_loss",
@@ -250,6 +250,7 @@ class MZBModel(pl.LightningModule):
         trn_d = MZBLoader(
             dir_dict_trn, learning_set="trn", ls_inds=[], transforms=self.transform_tr
         )
+        print(f"Training set size: {len(trn_d)}")
 
         # number of draws from the weighted random samples matches the 2 * (n_positive // batch_size)
         return DataLoader(
@@ -260,6 +261,7 @@ class MZBModel(pl.LightningModule):
             num_workers=self.num_workers_loader,
         )
 
+        # TODO: for posterity, the weighted random sampler. Not really needed in this setting though
         if not shuffle:
             return DataLoader(
                 trn_d,
@@ -317,6 +319,7 @@ class MZBModel(pl.LightningModule):
             dir_dict_val, learning_set="val", ls_inds=[], transforms=self.transform_ts
         )
 
+        print(f"Validation set size: {len(val_d)}")
         # number of draws from the weighted random samples matches the 2 * (n_positive // batch_size)
         return DataLoader(
             val_d,
