@@ -85,6 +85,9 @@ Make sure the package is installed (see :ref:`files/installing:Install libraries
 
 Models
 ------
+
+Classification models
+_____________________
 So far, these Deep Learning (DL) architectures are available for classification: 
 
 - ``vgg``: VGG 16
@@ -99,15 +102,20 @@ So far, these Deep Learning (DL) architectures are available for classification:
 
 The models are pre-trained on ImageNet and can be downloaded from the `PyTorch model zoo <https://pytorch.org/serve/model_zoo.html>`_. We use ``torchvision.models`` to load the models, and we pass ``weights={ModelName}_Weigths.IMAGENET1K_V1`` for the pre-trained weights. 
 
+Supervised skeletonization models
+_________________________________
+For the supervised skeletonization module, we implement only one transformer-based architecture in two versions: 
+
+- ``mit-b2-v0``: MiT B2 
+- ``mit-b2-v1``: MiT B2 
+
+See the model `original paper <https://arxiv.org/abs/2105.15203>`_ for more details. 
+
 .. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Adding a new model
 __________________
 In ``mzbsuite/utils.py`` you can either add a case to the function ``read_pretrained_model(architecture, n_class)`` or add a function returning a pytorch model. In general, the layers of these classifiers are all frozen and only the last fully connected layers are trained on the annotated data. This seemed to work in most of our cases, but can be changed in a simple way in the function. 
-
-.. admonition:: \ \ 
-
-    **TODO:** add models for supervised skeletonization
 
 .. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
