@@ -180,7 +180,7 @@ The script ``main_classification_inference.py`` allows to identify organisms fro
 #. Initialise custom class ``MZBModel``(imported from ``mzbsuite.classification.mzb_classification_pilmodel``) and load checkpoint's weights. 
 #. Setup ``pytorch_lightning.Trainer`` to use GPU is a CUDA-enabled device is available, or use CPU if not. 
 #. Run the model in evaluation mode and save the predictions to variable. 
-#. If a taxonomy file is provided (see :ref:`files.configuration:Configuration`), sort by the specified cutoff level, save to ``class_names`` variable. 
+#. If a taxonomy file is provided (see :ref:`files.configuration:The taxonomy file`), sort by the specified cutoff level, save to ``class_names`` variable. 
 #. Concatenate prediction outputs in arrays for entropy score ``y```, class predicted ``p`` and ground truth ``gt`` if available. 
 #. Write these arrays to CSV at ``out_dir/predictions.csv``, including the filename, ground truth and prediction sorted by the specified taxonomic rank. 
 #. If inference was carried out on a validation set ``val_set``, save confusion matrix as image at ``out_dir/confusion_matrix`` as well a classification report at ``out_dir/classification_report.txt``. 
