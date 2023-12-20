@@ -1,25 +1,20 @@
 Configuration
 =============
 
-All **project parameters** (i.e. pertaining to a specific dataset) are contained in a configuration file, located in ``/configs/{configuration_file}.yaml``. This file, together with input/output directories and other running parameters specified directly via CLI (i.e. Command Line Interface) or via shell script (see also :doc:`Workflows and Models <workflow_models>`), passes the necessary parameters to the scripts. 
+All **project parameters** (i.e. pertaining to a specific dataset) are contained in a configuration file, located in ``/configs/{configuration_file}.yaml``. This file, together with input/output directories and other running parameters specified directly via CLI (i.e. Command Line Interface) or via shell script (see also :doc:`Workflows and Models <workflow_models>`), pass the necessary parameters to the scripts. 
 
 The idea here is that the user can specify all necessary parameters for each project in this configuration file, so that one batch of images acquired in the same way (i.e. one project) always corresponds to one configuration file. 
 
-We provide a complete configuration file for the example project, *Portable Flume*, that can be used as a template for user's own configuration file for their projects. 
+We also provide a complete configuration file for the example project, *Portable Flume*, that can be used as a template for user's own configuration file for their projects. 
 
 Parameters explanation
 ----------------------
 
 This list is structured as follows: 
 
-    .. code-block:: yaml 
-        
-        parameter_name: [admissible_value_1, admissible_value_2] 
-    
-Description of parameter, suggested values and rationale. 
+ - ``parameter_name``: ``[admissible_value_1, admissible_value_2]`` Description of parameter, suggested values and rationale. 
 
-
-.. admonition:: \ \ 
+.. hint:: \ \ 
 
     Parameters appear in the same order as in the configuration file template for clarity, however the order of parameters makes no difference for the functioning of the pipelines. 
 
@@ -173,7 +168,7 @@ Below a complete example of a configuration file for the example project *Portab
     ## and such into specific subfolers
     lset_class_cut: order
     lset_val_size: 0.1
-    lset_taxonomy: /data/shared/mzb-workflow/data/MZB_taxonomy.csv
+    # lset_taxonomy: /data/shared/mzb-workflow/data/MZB_taxonomy.csv
 
     ## Finetuning / training config for classifier
     trcl_learning_rate: 0.001
@@ -223,9 +218,9 @@ Below a complete example of a configuration file for the example project *Portab
 
 The taxonomy file
 -----------------
-This file contains information about the taxonomy of each class (e.g. species, genus, or other taxa) in the dataset. The first column should be named ``query`` and should contain the name of the class; all the other columns should correspond to a taxonomic rank, and should contain the pertinent taxon for that class. 
+This file contains information about the taxonomy of each class (e.g. species, genus, or other taxa) in the dataset. Its location is specified in the running parameters declared in the bash scripts, see :ref:`files/workflow_models:Workflow files`. 
 
-This should be saved as CSV file in an appropriate location (for instance, ``/data/MZB_taxonomy.csv``), structured like so: 
+The first column of the taxonomy file should be named ``query`` and should contain the name of the class (i.e.: "class" here refers to the category of the object, in this case the organism identity, not to a specific phylogentic rank); all the other columns should correspond to a taxonomic rank, and should contain the pertinent taxon for that class. This should be saved as CSV file in an appropriate location (for instance, ``/data/MZB_taxonomy.csv``), structured like so: 
 
 +---------------+---------+------------+---------+-----------+---------------+----------+---------------+----------+
 | query         | kingdom | phylum     | class   | subclass  | order         | suborder | family        | genus    |
@@ -239,8 +234,8 @@ This should be saved as CSV file in an appropriate location (for instance, ``/da
 
 Such a taxonomy file can be easily generated from a list of classes using utilities like the R package `taxize <https://github.com/ropensci/taxize>`_ or others. 
 
-Please note that the taxonomic rank selection can be different (for instance, it could be ``class, family, genus, species``), the only constrain is that the requested taxonomic cutoff rank (parameter `lset_class_cut``) must also exist in the taxonomy file. If for some classes the requested taxonomic cutoff has no value or is NA (due to the fact that that level is not available or the query is at a higher taxonomic rank), then that class is dropped. 
+Please note that the taxonomic rank selection can be different (for instance, it could be ``class, family, genus, species``), the only constrain is that the requested taxonomic cutoff rank (parameter `lset_class_cut``) must also exist in the taxonomy file. If for some classes the requested taxonomic cutoff has no value or is NA (due to the fact that that level is not available, or the query is at a higher taxonomic rank), then that class is dropped and all its instances will not be considered for model training. 
 
-So, if our taxonomy file looks like the table above, if we requested taxonomic cutoff ``order``, we would obtain 2 classes (Ephemeroptera, line 1+2; Plecoptera, line 3); if we requested taxonomic cutoff ``family``, we would obtain 2 classes (Hpetageniidae, line 2; Perlodidae, line 3); if we requested taxonomic cutoff ``suborder``, we would obtain 1 class (Setisura, line 2). 
+For example, if our taxonomy file looks like the table above, if we requested taxonomic cutoff ``order``, we would obtain 2 classes (Ephemeroptera, line 1+2; Plecoptera, line 3); if we requested taxonomic cutoff ``family``, we would obtain 2 classes (Heptageniidae, line 2; Perlodidae, line 3); if we requested taxonomic cutoff ``suborder``, we would obtain 1 class (Setisura, line 2). 
 
 Please also see :ref:`files/scripts/processing_scripts:Preparing training data` for details on the function that prepares the traning data using the taxonomy file. 
