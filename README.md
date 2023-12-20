@@ -60,7 +60,7 @@ LEAVE BLANK FOR PREPRINT OR PAPER
 - [ ] Add original image file name as a separate column in all outputs `csv`
 - [ ] Add options to provide multiple px/mm conversion rates, one for each image (i.e. parse `csv` file as dictionary to pass as arguments)
 - [ ] Add module for evaluations, and for generating plots
-- [x] Change scale exclusion parameter in `configs` & documentation so that you select square where scale is to exclude, instead of selecting the pixels to keep in the image
+- [x] Change scale exclusion parameter in `configs` & documentation so that you select square where scale is to exclude, instead of selecting the pixels to keep in the image. *changed config file and docs*
 
 ### General
 - [x] Move taxonomy file location onto running parameters from configuration file
@@ -68,7 +68,7 @@ LEAVE BLANK FOR PREPRINT OR PAPER
 - [x] `worflows/full_pipeline_custom.sh` has no execute permission in repo
 - [ ] Reduce images in example dataset
 - [ ] Set up push mirror GitLab → GitHub (without LFS files)
-- [ ] Renku workflows for the different modules (or add `renku run` ... in front of command in `sh` scripts) --> not sure about this one (yet)
+- [ ] Renku workflows for the different modules (or add `renku run` ... in front of command in `sh` scripts) → not sure about this one (yet)
 
 ### Functionality and data
 - [ ] Double check that excluding the millimetre/colour scale in images works properly 
@@ -85,7 +85,7 @@ LEAVE BLANK FOR PREPRINT OR PAPER
 - [x] Put docs on ReadTheDocs and/or GitHub Pages
 	- [x] Configure ReadTheDocs integration
 	- [ ] Configure automated docs build in GitHub Pages from mirror repo
-	- [ ] See if you can pull the commit name and reconstruct the docker image name on renku dynamically in the documentation (source/files/installing.rst)... 
+	- [ ] ~~ See if you can pull the commit name and reconstruct the docker image name on renku dynamically in the documentation (source/files/installing.rst)...~~ 
 	- [x] Otherwise just grab a recent one that build correctly and stick with that
 - [x] Add "Quickstart" section with tutorial in the documentation
 - [ ] in the documentation, `docs/source/files/workflow_models.rst`, add section called "Supervised Skeleton Prediction" and explain model architectures used for supevised skeleton prediction (this should also fix Sphinx build warnings for missing refs).
