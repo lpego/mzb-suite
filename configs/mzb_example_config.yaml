@@ -8,7 +8,7 @@ model_logger: wandb
 
 # Image parsing specific 
 impa_image_format: jpg
-impa_clip_areas: [2750, 4900, -1, -1] # x1, y1, x2, y2. Ignore areas inside this (currently bottom right corner) (-1 means until the end)
+impa_clip_areas: [4500, 2500, -1, -1] # x1, y1, x2, y2. Ignore areas inside this (-1 means until the end)
 impa_area_threshold: 5000 # ignore areas smaller than this
 impa_gaussian_blur: [21, 21]
 impa_gaussian_blur_passes: 3
