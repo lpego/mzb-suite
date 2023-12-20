@@ -68,7 +68,7 @@ LEAVE BLANK FOR PREPRINT OR PAPER
 - [x] `worflows/full_pipeline_custom.sh` has no execute permission in repo
 - [ ] Reduce images in example dataset
 - [ ] Set up push mirror GitLab → GitHub (without LFS files)
-- [ ] Renku workflows for the different modules (or add `renku run` ... in front of command in `sh` scripts) → not sure about this one (yet)
+- [ ] ~~Renku workflows for the different modules (or add `renku run` ... in front of command in `sh` scripts) → not sure about this one (yet)~~
 
 ### Functionality and data
 - [x] Double check that excluding the millimetre/colour scale in images works properly *in cv2, x and y are flipped compared to most other implementations!*
@@ -85,7 +85,7 @@ LEAVE BLANK FOR PREPRINT OR PAPER
 - [x] Put docs on ReadTheDocs and/or GitHub Pages
 	- [x] Configure ReadTheDocs integration
 	- [ ] Configure automated docs build in GitHub Pages from mirror repo
-	- [ ] ~~ See if you can pull the commit name and reconstruct the docker image name on renku dynamically in the documentation (source/files/installing.rst)...~~ 
+	- [ ] ~~See if you can pull the commit name and reconstruct the docker image name on renku dynamically in the documentation (source/files/installing.rst)...~~ 
 	- [x] Otherwise just grab a recent one that build correctly and stick with that
 - [x] Add "Quickstart" section with tutorial in the documentation
 - [ ] in the documentation, `docs/source/files/workflow_models.rst`, add section called "Supervised Skeleton Prediction" and explain model architectures used for supevised skeleton prediction (this should also fix Sphinx build warnings for missing refs).
