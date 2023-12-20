@@ -1,20 +1,19 @@
 Workflow and Models
 ===================
-Here we illustrate the project's workflows and provide information about the models. 
-We also show the usage of Renku workflows. 
+Here we illustrate how to use the project's workflows and provide information about the models. 
 
 .. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Working with the project
 ------------------------
-The two main input components are the ``images`` and the configuration ``YAML`` file, which are taken together and can then be precessed in two ways: either by using the provided shell ``.sh`` files in ``workflows/`` which is turn call the various Python scripts, or by providing the necessary running parameters  to the Python ``.py`` scripts directly. 
+The two main input components are the ``images`` (stored in ``data/``) and the configuration ``YAML`` file (stored in ``configs/``), which are taken together and can then be precessed in two ways: either by using the provided bash scripts (``.sh``) in ``workflows/`` which is turn call the various Python scripts, or by providing the necessary parameters to the Python ``.py`` scripts directly. 
 
 .. image:: ../../assets/Repo_flow_v1.3.png
 
-We need to specify two sets of parameters: 
+There are two sets of parameters: 
 
-    - **Running parameters:** these are basically the input and output folders for the raw data, as well as the derived data and results and model names. They are specified either in the workflows shell ``.sh`` files or passed directly to the Python ``.py`` scripts, see :ref:`files/workflow_models:Workflow files`. 
-    - **Project parameters:** these are specific to each set of data, from image resolution and format to px/mm conversion rates and so on. They are specified in the configuration ``YAML`` file, stored in ``configs/``, see :ref:`files/configuration:Configuration`. 
+    - **Running parameters:** these are basically the input and output folders location for the raw data, as well as the derived data and results and model names. They are specified either in the workflows bash scripts (``.sh``) or can passed directly to the Python ``.py`` scripts as arguments, see :ref:`files/workflow_models:Workflow files`. 
+    - **Project parameters:** these are specific to each dataset, and contain project-specific parameters like image resolution, format, px/mm conversion rates and so on. These parameters are specified in the configuration ``YAML`` file, stored in ``configs/``, see :ref:`files/configuration:Configuration`. 
 
 .. note:: 
     **TODO**: currently, notebooks are not written in a way that easily accepts different running parameters for interactive sessions, but this could be done. 
@@ -27,16 +26,15 @@ In the ``workflows/`` folder, there are files written in bash (``.sh``) that can
 
 To run any of these scripts, in a terminal simply type the name (or path to) the ``.sh`` script and press Enter. 
 
-    .. note:: 
-        **TODO**: transfer those bash scripts to renku workflows, so that the renku can track the dependencies and the inputs and outputs of each step, and generate the graph of the workflow.
+    .. .. note:: 
+    ..     **TODO**: transfer those bash scripts to renku workflows, so that the renku can track the dependencies and the inputs and outputs of each step, and generate the graph of the workflow.
 
-Simple **running parameters** in these files (e.g. input and output folders), together with the project parameters in the configuration file, govern the execution of the scripts. 
+The **running parameters** (e.g. input and output folders) are declared in these files, and, together with the project parameters in the configuration file, they govern the execution of the Python scripts. 
 
 For example: 
 
 .. code-block:: bash
 
-    ### WARNING: *do not* copy-paste this code directly in the terminal!
     ROOT_DIR="/home/jovyan/work/mzb-workflow"
     MODEL_C="convnext-small-v0"
     MODEL_S="mit-b2-v0"
@@ -47,6 +45,8 @@ For example:
         --save_full_mask_dir=${ROOT_DIR}/data/mzb_example_data/derived/full_image_masks_test \
         --config_file=${ROOT_DIR}/configs/configuration_flume_datasets.yaml \
         -v
+
+⚠️ WARNING: this code is *not* intended to be copy-pasted in the terminal! 
 
 The extract above from ``workflows/full_pipeline_custom.sh`` will run the script ``scripts/image_parsing/main_raw_to_clips.py``, passing it various global parameters: 
 
@@ -62,7 +62,7 @@ Then, the command ``python`` is invoked followed by the script to be executed, a
  - ``--config_file`` the location of the project configuration file (for more details see :ref:`files/configuration:Configuration`)
  - ``-v`` flag for verbose, printing out more details
 
-Not all global parameters are used in the extract above, however they are necessary for other calls in the same scripts; please also note that different scripts will require different input parameters, whereas the parameters contained in the configuration file are tied to the project and independent from the scripts. 
+Not all parameters decelared are used in the extract above, however they are necessary for other calls in the same scripts; please also note that different scripts will require different input parameters, whereas the parameters contained in the configuration file are tied to the project and independent from the scripts. 
 
 .. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -79,7 +79,7 @@ Please note that the correct ``conda`` must be active for running the scripts. T
 Import as module
 ________________
 Finally, users can import this repo as a package and make use of its functions in their own scripts. 
-Make sure the package is installed (see :ref:`files/installing:Install libraries locally` in case of doubt), and simply use ``import mzbsuite`` in your script. 
+Make sure the package is installed (see :ref:`files/installing:Install libraries locally` in case of doubt), and simply use ``import mzbsuite`` in your scripts. 
 
 .. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
