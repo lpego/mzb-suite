@@ -1,12 +1,16 @@
 #!/bin/bash 
 
+# ## ------------------------------------------------------------------------------------ ##
 ## Definition of running parameters. 
-## The root path specified here in ROOT_DIR is for working with notebooks on virtual sessions on Renkulab, your path may differ! 
+## The path specified in ROOT_DIR is for virtual sessions on Renkulab, yours  may differ! 
 ROOT_DIR="/home/jovyan/work/mzb-workflow"
-MODEL_C="convnext-small-v0"
-MODEL_S="mit-b2-v0"
+MODEL_C="convnext-small-v0" # classification model
+MODEL_S="mit-b2-v0" # skeletonization model
 
-## ------------------------------------------------------
+# ## SEGMENTATION ##
+# ## ------------------------------------------------------------------------------------ ##
+## This extracts single organisms as clips from full-pane images; 
+## to tweak the results, see the configuration file parameters. 
 python ${ROOT_DIR}/scripts/image_parsing/main_raw_to_clips.py \
     --input_dir=${ROOT_DIR}/data/mzb_example_data/raw_img/ \
     --output_dir=${ROOT_DIR}/data/mzb_example_data/derived/blobs/ \
@@ -14,22 +18,24 @@ python ${ROOT_DIR}/scripts/image_parsing/main_raw_to_clips.py \
     --config_file=${ROOT_DIR}/configs/mzb_example_config.yaml \
     -v
 
-## This is run to classify organisms into taxonimic categories and will return a csv with the results (filename, predicted class, probability of prediction) 
-## if run on eg. on a validaton / test set, it will also produce accuracy metrics. 
-## Make sure to pass this module only similarly generated clips as in the the first step (main_raw_to_clips.py); 
-## classification models are stored in ${ROOT_DIR}/models/mzb-class/
-## ------------------------------------------------------------------------------------------
+# ## CLASSIFICATION ##
+# ## ------------------------------------------------------------------------------------ ##
+## This classifies organisms into taxonomic categories and returns a csv with the results; 
+## if run on e.g. a validaton / test set, it will also produce accuracy metrics. 
+## Make sure to pass this module only clips generated with main_raw_to_clips.py
 python ${ROOT_DIR}/scripts/classification/main_classification_inference.py \
     --input_dir=${ROOT_DIR}/data/mzb_example_data/training_dataset/trn_set/ \
     --input_model=${ROOT_DIR}/models/mzb-classification-models/${MODEL_C} \
+    --taxonomy_file=${ROOT_DIR}/data/mzb_example_data/MZB_taxonomy.csv \
     --output_dir=${ROOT_DIR}/results/mzb_example/classification/trn_set/ \
     --config_file=${ROOT_DIR}/configs/mzb_example_config.yaml \
     -v
 
-## This part runs the unsupervised skeletonization and measurement. It will read all the mask clips created in the first step
-## and will return a csv with the results (filename, skeleton, etc). 
-## This unsupervised pipeline can only approximate length of the insect, and not the width of the head.
-## ------------------------------------------------------------------------------------------
+# ## SKELETONIZATION ## 
+# ## ------------------------------------------------------------------------------------ ##
+## This runs the unsupervised skeletonization and measurement. It will read all the mask 
+## clips created in the first step and will return a csv with the results. 
+## This unsupervised pipeline can only approximate body length, not head width.
 python ${ROOT_DIR}/scripts/skeletons/main_unsupervised_skeleton_estimation.py \
     --input_dir=${ROOT_DIR}/data/mzb_example_data/derived/blobs/ \
     --output_dir=${ROOT_DIR}/results/mzb_example/skeletons/unsupervised_skeletons/ \
@@ -38,9 +44,9 @@ python ${ROOT_DIR}/scripts/skeletons/main_unsupervised_skeleton_estimation.py \
     --list_of_files=None \
     -v
 
+# ## ------------------------------------------------------------------------------------ ##
 ## This runs a supervised DL model to predict body length and head width skeletons; 
 ## it stores the masks as images, and saves measurements into a csv file. 
-## ---------------------------------------------------------------------------------------------------
 python ${ROOT_DIR}/scripts/skeletons/main_supervised_skeleton_inference.py \
     --input_dir=${ROOT_DIR}/data/mzb_example_data/derived/blobs/ \
     --input_type="external" \
