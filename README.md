@@ -71,7 +71,7 @@ LEAVE BLANK FOR PREPRINT OR PAPER
 - [ ] Renku workflows for the different modules (or add `renku run` ... in front of command in `sh` scripts) → not sure about this one (yet)
 
 ### Functionality and data
-- [ ] Double check that excluding the millimetre/colour scale in images works properly 
+- [x] Double check that excluding the millimetre/colour scale in images works properly *in cv2, x and y are flipped compared to most other implementations!*
 - [ ] Add the Dübendorf data use case to check consistency for multiple projects
 
 ### JupyterLab via Renku

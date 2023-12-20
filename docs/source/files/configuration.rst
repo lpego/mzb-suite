@@ -40,7 +40,12 @@ The second block of parameters is specific to image segmentation. If the segment
     .. # Image parsing specific
 
  - ``impa_image_format``: ``[jpg, png, ...]`` what format are the original images in? Should be caps insensitive and support common formats like ``jpg``, ``png`` and others. 
- - ``impa_clip_areas``: ``[int, int, int, int]`` it's common to place a reference scale and/or colour grid in images; here you can define the area where the scale is positioned and *exclude* it. This is specified as coordinates (``[x1, y1, x2, y2]``, in pixels, where ``x1, y1`` is the top-left corner and ``x2, y2`` is the bottom right corner), so that the regions that fall inside of this box are cropped out; for example, ``[4500, 2500, -1, -1]``, where ``-1`` indicates the end of the image. If you  don't want to exclude any area, set this value as ``None``. 
+ - ``impa_clip_areas``: ``[int, int, int, int]`` it's common to place a reference scale and/or colour grid in images; here you can define the area where the scale is positioned and *exclude* it. This is specified as coordinates (``[x1, y1, x2, y2]``, in pixels, where ``x1, y1`` is the top-left corner and ``x2, y2`` is the bottom right corner), so that the regions that fall inside of this box are cropped out; for example, ``[2700, 4700, -1, -1]``, where ``-1`` indicates the end of the image. If you  don't want to exclude any area, set this value as ``None``. 
+
+    .. hint:: \ \ 
+
+        In ``cv2``, coordinates are opposite in respect to many other implementations, so that x is columns, and y is rows. If you are estimating the area to clip with an external program, for example `Microsoft Paint <https://apps.microsoft.com/detail/9PCFS5B6T72H?hl=en-US&gl=US>`_ or `GIMP <https://www.gimp.org/>`_, you probably need to flip x and y to obtain the expected result! 
+
  - ``impa_area_threshold``: this is the minimum size (in pixels) that will be considered to be an organism; anything below this threshold will be discarded. When in doubt, start with a low threshold and increase until most noise is removed. 
  - ``impa_gaussian_blur``: ``[int, int]`` the size fo the kernel that will be used to smooth the image before processing; you can think of this as the "radius" of the blur: the larger the radius, the stronger the smoothing effect, but also more loss of details in the image. This should not be changed much except for very noisy images and/or with comparatively large organisms compared to the full size of the image. 
  - ``impa_gaussian_blur_passes``: ``[int]`` How many times the gaussian filter should be applied in sequence. 
