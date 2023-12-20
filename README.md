@@ -57,22 +57,24 @@ LEAVE BLANK FOR PREPRINT OR PAPER
 ## ToDo list
 
 ### Feature requests
-- [ ] Add original image file name as a separate column in all outputs `csv`
+- [ ] Add original image file name as a separate column in all `csv` outputs 
 - [ ] Add options to provide multiple px/mm conversion rates, one for each image (i.e. parse `csv` file as dictionary to pass as arguments)
 - [ ] Add module for evaluations, and for generating plots
 - [x] Change scale exclusion parameter in `configs` & documentation so that you select square where scale is to exclude, instead of selecting the pixels to keep in the image. *changed config file and docs*
 
 ### General
 - [x] Move taxonomy file location onto running parameters from configuration file
-- [ ] Clean unused workflow `sh` files and comments within them
+- [x] Clean unused workflow `sh` files and comments within them
 - [x] `worflows/full_pipeline_custom.sh` has no execute permission in repo
-- [ ] Reduce images in example dataset
+- [x] Reduce images in example dataset
 - [ ] Set up push mirror GitLab → GitHub (without LFS files)
 - [ ] ~~Renku workflows for the different modules (or add `renku run` ... in front of command in `sh` scripts) → not sure about this one (yet)~~
 
 ### Functionality and data
 - [x] Double check that excluding the millimetre/colour scale in images works properly *in cv2, x and y are flipped compared to most other implementations!*
-- [ ] Add the Dübendorf data use case to check consistency for multiple projects
+- [ ] Add the Dübendorf data use case to check consistency for multiple projects? 
+- [ ] Make example dataset for supervised skeletonization model finetuning
+- [ ] Update `workflows/run_finetune_skeletonization.sh` accordingly
 
 ### JupyterLab via Renku
 - [x] JupyterLab screws up all the filepaths… Working dir is home/jovyan/work
