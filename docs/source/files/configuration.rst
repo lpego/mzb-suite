@@ -27,8 +27,8 @@ This first block contains some general parameters:
  - ``glob_random_seed``: ``[int]`` this is just a arbitrary number used by model trainers, important for reproducibility. 
  - ``glob_root_folder``: ``[string]`` this is the root folder of the project, it could be for example ``/home/user/my_project/``. 
  - ``glob_blobs_folder``: ``[string]`` this is the location where you want the clips of the segmented organisms to be saved; we strongly recommend putting this inside of the main data folder, for example ``/data/shared/mzb-workflow/data/derived/blobs/``. 
- - ``glob_local_format``: ``[jpg, pdf, ...]`` what format do you want the plotting outputs to be saved in; acceptable values are: ``pdf``, ``jpg``, ``png`` and other common formats (see `matplotlib <https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.savefig.html>`_ documentation for details).
- - ``model_logger``: ``[wandb, tensorboard]`` which data logger is used to track model training progress; for the moment, ``wandb`` (`Weights & Biases <https://wandb.ai/site>`_) and ``tensorboard`` (`TensorBoard <https://www.tensorflow.org/tensorboard>`_) are supported. Note that W&B requires an account and to be setup by the user, see :ref:`files/workflow_models:Logging your model's training`. 
+ - ``glob_local_format``: ``[jpg, pdf, ...]`` what format do you want the plotting outputs to be saved in; acceptable values are: ``pdf``, ``jpg``, ``png`` and other common formats (see `matplotlib <https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.savefig.html>`__ documentation for details).
+ - ``model_logger``: ``[wandb, tensorboard]`` which data logger is used to track model training progress; for the moment, ``wandb`` (`Weights & Biases <https://wandb.ai/site>`__) and ``tensorboard`` (`TensorBoard <https://www.tensorflow.org/tensorboard>`__) are supported. Note that W&B requires an account and to be setup by the user, see :ref:`files/workflow_models:Logging your model's training`. 
 
 The second block of parameters is specific to image segmentation. If the segmentation results are not satisfactory (i.e. organisms incompletely clipped, debris or other noise segmented as organisms, etc), changing these values might produce better results: 
 
@@ -39,7 +39,7 @@ The second block of parameters is specific to image segmentation. If the segment
 
     .. hint:: \ \ 
 
-        In ``cv2``, coordinates are opposite in respect to many other implementations, so that x is columns, and y is rows. If you are estimating the area to clip with an external program, for example `Microsoft Paint <https://apps.microsoft.com/detail/9PCFS5B6T72H?hl=en-US&gl=US>`_ or `GIMP <https://www.gimp.org/>`_, you probably need to flip x and y to obtain the expected result! 
+        In ``cv2``, coordinates are opposite in respect to many other implementations, so that x is columns, and y is rows. If you are estimating the area to clip with an external program, for example `Microsoft Paint <https://apps.microsoft.com/detail/9PCFS5B6T72H?hl=en-US&gl=US>`__ or `GIMP <https://www.gimp.org/>`__, you probably need to flip x and y to obtain the expected result! 
 
  - ``impa_area_threshold``: this is the minimum size (in pixels) that will be considered to be an organism; anything below this threshold will be discarded. When in doubt, start with a low threshold and increase until most noise is removed. 
  - ``impa_gaussian_blur``: ``[int, int]`` the size fo the kernel that will be used to smooth the image before processing; you can think of this as the "radius" of the blur: the larger the radius, the stronger the smoothing effect, but also more loss of details in the image. This should not be changed much except for very noisy images and/or with comparatively large organisms compared to the full size of the image. 
@@ -112,7 +112,7 @@ This block contains further convenience parameters for inference using trained s
 
  - ``infe_model_ckpt``: ``[last, best]`` Which model should be used? The ``last`` model is the newest training iteration, and ``best`` is the model that performed best on the validation set (available only if a validation set is specified). 
  - ``infe_num_classes``: ``[int]`` How many classes should the inference be carried out on? It should be the same number of classes the model has been trained on. In our example it was ``8``. 
- - ``infe_image_glob``: ``[string]`` What suffix and/or extension should be attached to output images? This should be placed in double quotes ``""`` and can be a capture pattern (also called regular expression, see `glob documentation <https://docs.python.org/3/library/glob.html>`_). In our case, we append a suffix and extension at the end of the original image name (using the wildcard ``*``): ``"*_rgb.jpg"``.  
+ - ``infe_image_glob``: ``[string]`` What suffix and/or extension should be attached to output images? This should be placed in double quotes ``""`` and can be a capture pattern (also called regular expression, see `glob documentation <https://docs.python.org/3/library/glob.html>`__). In our case, we append a suffix and extension at the end of the original image name (using the wildcard ``*``): ``"*_rgb.jpg"``.  
 
 These parameters are related to the unsupervised skeletonization: 
 
@@ -232,7 +232,7 @@ The first column of the taxonomy file should be named ``query`` and should conta
 | isoperla      | Metazoa | Arthropoda | Insecta | Pterygota | Plecoptera    | NA       | Perlodidae    | Isoperla |
 +---------------+---------+------------+---------+-----------+---------------+----------+---------------+----------+
 
-Such a taxonomy file can be easily generated from a list of classes using utilities like the R package `taxize <https://github.com/ropensci/taxize>`_ or others. 
+Such a taxonomy file can be easily generated from a list of classes using utilities like the R package `taxize <https://github.com/ropensci/taxize>`__ or others. 
 
 Please note that the taxonomic rank selection can be different (for instance, it could be ``class, family, genus, species``), the only constrain is that the requested taxonomic cutoff rank (parameter `lset_class_cut``) must also exist in the taxonomy file. If for some classes the requested taxonomic cutoff has no value or is NA (due to the fact that that level is not available, or the query is at a higher taxonomic rank), then that class is dropped and all its instances will not be considered for model training. 
 

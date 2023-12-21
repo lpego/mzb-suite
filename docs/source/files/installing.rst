@@ -13,8 +13,8 @@ Online session on RenkuLab
 ---------------------------
 To try out ``mzbsuite``, the quickest way to is to spin a virtual session on Renkulab: 
 
-#. Go to `<https://renkulab.io/>`_ and create an account (or log in if you already have one). 
-#. Once you're logged in, go to `<https://renkulab.io/projects/biodetect/mzb-workflow>`_ 
+#. Go to `<https://renkulab.io/>`__ and create an account (or log in if you already have one). 
+#. Once you're logged in, go to `<https://renkulab.io/projects/biodetect/mzb-workflow>`__ 
 #. Start the virtual session: 
 
     #. in the project overview you should see a green play button
@@ -38,7 +38,7 @@ Docker container
 ----------------
 If you want to run the pipeline on yur own data and local computer resources but you are not too familiar with managing python environments, we recommend installing via Docker. 
 
-#. First, install the `Docker Engine <https://docs.docker.com/get-docker/>`_ 
+#. First, install the `Docker Engine <https://docs.docker.com/get-docker/>`__ 
 
     .. admonition:: \ \ 
 
@@ -50,7 +50,7 @@ If you want to run the pipeline on yur own data and local computer resources but
 
     .. hint:: 
 
-        If you don't know how to open a terminal, instructions for `Windows <https://superuser.com/a/340051>`_ and `Mac <https://support.apple.com/guide/terminal/open-new-terminal-windows-and-tabs-trmlb20c7888/mac>`_. 
+        If you don't know how to open a terminal, instructions for `Windows <https://superuser.com/a/340051>`__ and `Mac <https://support.apple.com/guide/terminal/open-new-terminal-windows-and-tabs-trmlb20c7888/mac>`__. 
 
 #. Download and launch the project's Docker image by running the following lines in a terminal window: 
 
@@ -86,15 +86,15 @@ If you want to run the pipeline on yur own data and local computer resources but
 The procedure is the same when starting the Docker image the following times, except it will not download it again therefore should be much faster launching it. 
 
     .. hint:: 
-        If you would rather use an IDE, we recommend `Visual Studio Code <https://code.visualstudio.com/>`_; to access the Docker container read about `VS Code Docker extension <https://code.visualstudio.com/docs/containers/overview>`_ and `working with containers <https://code.visualstudio.com/docs/devcontainers/containers>`_. 
+        If you would rather use an IDE, we recommend `Visual Studio Code <https://code.visualstudio.com/>`__; to access the Docker container read about `VS Code Docker extension <https://code.visualstudio.com/docs/containers/overview>`__ and `working with containers <https://code.visualstudio.com/docs/devcontainers/containers>`__. 
 
 Using the most up to date image
 _______________________________
-The Docker image linked above in ``imageName`` is a manually pinned image that we tested and we know works. It might not contain the most most up to date versions of scripts if we pushed changes to the repo recently. If you want to pull the most updated Docker image, please follow instructions `<here https://renku.readthedocs.io/en/stable/how-to-guides/own_machine/reusing-docker-images.html>`_. 
+The Docker image linked above in ``imageName`` is a manually pinned image that we tested and we know works. It might not contain the most most up to date versions of scripts if we pushed changes to the repo recently. If you want to pull the most updated Docker image, please follow instructions `<here https://renku.readthedocs.io/en/stable/how-to-guides/own_machine/reusing-docker-images.html>`__. 
 
 .. admonition:: \ \ 
 
-    Make sure that the Docker image is correctly built before pulling it; you can check build status `here <https://gitlab.renkulab.io/biodetect/mzb-workflow/-/pipelines>`_. 
+    Make sure that the Docker image is correctly built before pulling it; you can check build status `here <https://gitlab.renkulab.io/biodetect/mzb-workflow/-/pipelines>`__. 
 
 .. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -102,11 +102,11 @@ Install libraries locally
 -------------------------
 
 If you prefer to install the project directly in your local environment or just want to use the functions in your own scripts, you can download the project's  repository. 
-The project is currently hosted on the `Swiss Data Science Center <https://datascience.ch>`_ GitLab server, you can find the repository here: 
+The project is currently hosted on the `Swiss Data Science Center <https://datascience.ch>`__ GitLab server, you can find the repository here: 
 
     .. rst-class:: center
 
-    `<https://gitlab.renkulab.io/biodetect/mzb-workflow>`_. 
+    `<https://gitlab.renkulab.io/biodetect/mzb-workflow>`__. 
 
 To download the project, you simply need to clone it into a location of your choice: 
 
@@ -116,12 +116,12 @@ To download the project, you simply need to clone it into a location of your cho
 
 .. admonition:: \ \ 
    
-   If you don't have Git installed, you can follow instructions `here <https://git-scm.com/downloads>`_. We recommend using Git because it allows to easily update the package and tracking any changes you make. 
+   If you don't have Git installed, you can follow instructions `here <https://git-scm.com/downloads>`__. We recommend using Git because it allows to easily update the package and tracking any changes you make. 
 
 This will create a folder called ``mzb-workflow`` in the current working directory. 
 
 .. hint:: \ \ 
-   If you don't want to use Git, you can directly download an archive of the `repository <https://renkulab.io/gitlab/biodetect/mzb-workflow>`_ from GitLab and extract it manually. 
+   If you don't want to use Git, you can directly download an archive of the `repository <https://renkulab.io/gitlab/biodetect/mzb-workflow>`__ from GitLab and extract it manually. 
 
 You can then install the necessary packages using the conda package manager and the ``environment.yml`` file: 
 
@@ -132,7 +132,7 @@ You can then install the necessary packages using the conda package manager and 
 
 .. hint:: \ \ 
    If you don't have the ``conda`` command available, you need to install it.    
-   We strongly recommend using Mamba, find installation instruction `here <https://mamba-framework.readthedocs.io/en/latest/installation_guide.html>`_; but if you prefer you can also install `Anaconda <https://www.anaconda.com/download>`_.
+   We strongly recommend using Mamba, find installation instruction `here <https://mamba-framework.readthedocs.io/en/latest/installation_guide.html>`__; but if you prefer you can also install `Anaconda <https://www.anaconda.com/download>`__.
 
 .. _pip_install_mzbsuite:
 

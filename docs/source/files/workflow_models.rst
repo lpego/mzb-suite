@@ -52,7 +52,7 @@ The extract above from ``workflows/full_pipeline_custom.sh`` will run the script
 
  - ``ROOT_DIR`` is the the root directory fo the project; this is important to anchor all the relative path references that modules make; 
  - ``MODEL_C`` is the name of the DL model to be used for classification, see list of models :ref:`files/workflow_models:Models`; 
-  - ``MODEL_S`` is the name of the DL model to be used for skeletonization. 
+ - ``MODEL_S`` is the name of the DL model to be used for skeletonization. 
 
 Then, the command ``python`` is invoked followed by the script to be executed, and the parameters required by that script, in this case: 
 
@@ -70,7 +70,7 @@ Interactive session
 ___________________
 Instead of running the scripts using the workflow illustrated above, users can run directly the Python files in an interactive session (e.g. Jupyter notebook). Note that in this case the running parameters must be supplied as variables either in the interactive session or directly in the script. 
 
-To launch a script in interactive session simply open it in a Jupyter notebook and set ``__name__ = '__main__'`` in your session. The code can then be run block-by-block and will print results to terminal; you can read more on ``__main__`` functions `here <https://docs.python.org/3/library/__main__.html>`_. 
+To launch a script in interactive session simply open it in a Jupyter notebook and set ``__name__ = '__main__'`` in your session. The code can then be run block-by-block and will print results to terminal; you can read more on ``__main__`` functions `here <https://docs.python.org/3/library/__main__.html>`__. 
 
 Please note that the correct ``conda`` must be active for running the scripts. The full python environment is provided in ``environment.yml`` (see :ref:`files/installing:Install libraries locally`). 
 
@@ -100,7 +100,7 @@ So far, these Deep Learning (DL) architectures are available for classification:
 - ``vit16``: Vision Transformer 16 
 - ``convnext-small``: ConvNext Small
 
-The models are pre-trained on ImageNet and can be downloaded from the `PyTorch model zoo <https://pytorch.org/serve/model_zoo.html>`_. We use ``torchvision.models`` to load the models, and we pass ``weights={ModelName}_Weigths.IMAGENET1K_V1`` for the pre-trained weights. 
+The models are pre-trained on ImageNet and can be downloaded from the `PyTorch model zoo <https://pytorch.org/serve/model_zoo.html>`__. We use ``torchvision.models`` to load the models, and we pass ``weights={ModelName}_Weigths.IMAGENET1K_V1`` for the pre-trained weights. 
 
 Supervised skeletonization models
 _________________________________
@@ -109,7 +109,7 @@ For the supervised skeletonization module, we implement only one transformer-bas
 - ``mit-b2-v0``: MiT B2 
 - ``mit-b2-v1``: MiT B2 
 
-See the model `original paper <https://arxiv.org/abs/2105.15203>`_ for more details. 
+See the model `original paper <https://arxiv.org/abs/2105.15203>`__ for more details. 
 
 .. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -123,5 +123,5 @@ Logging your model's training
 _____________________________
 To be able to tell whether a model is learning properly and/or is overfitting, it's necessary to log its progress while training. We support two loggers for this: 
 
- - For `Weights & Biases <https://docs.wandb.ai/>`_, you will need to create (free) account and install the necessary dependencies; refer to the documentation `here <https://wandb.ai/site/experiment-tracking>`_. After installing all requirements, run ``wandb login`` and provide your credentials when prompted.
- - For `TensorBoard <https://www.tensorflow.org/tensorboard>`_, please follow the installation instructions `here <https://www.tensorflow.org/tensorboard/get_started>`_. You will also need to specify which logger to use in the ``model_logger`` parameter in the configuration file (see :ref:`files/configuration:Configuration`). 
+ - For `Weights & Biases <https://docs.wandb.ai/>`__, you will need to create (free) account and install the necessary dependencies; refer to the documentation `here <https://wandb.ai/site/experiment-tracking>`__. After installing all requirements, run ``wandb login`` and provide your credentials when prompted.
+ - For `TensorBoard <https://www.tensorflow.org/tensorboard>`__, please follow the installation instructions `here <https://www.tensorflow.org/tensorboard/get_started>`__. You will also need to specify which logger to use in the ``model_logger`` parameter in the configuration file (see :ref:`files/configuration:Configuration`). 
