@@ -2,7 +2,7 @@
 
 # ## ------------------------------------------------------------------------------------ ##
 ## Definition of running parameters. 
-## The path specified in ROOT_DIR is for virtual sessions on Renkulab, yours  may differ! 
+## The path specified in ROOT_DIR is for virtual sessions on Renkulab, yours may differ! 
 ROOT_DIR="/home/jovyan/work/mzb-workflow"
 MODEL_C="convnext-small-v0" # classification model
 MODEL_S="mit-b2-v0" # skeletonization model

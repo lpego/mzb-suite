@@ -2,12 +2,12 @@
 
 # ## ------------------------------------------------------------------------------------ ##
 ## This workflow sets up and runs the finetuning of the classification model
-## The path specified in ROOT_DIR is for virtual sessions on Renkulab, yours  may differ! 
+## The path specified in ROOT_DIR is for virtual sessions on Renkulab, yours may differ! 
 # ROOT_DIR="/home/jovyan/work/mzb-workflow"
-ROOT_DIR="/data/shared/mzb-workflow/"
+ROOT_DIR="/home/jovyan/work/mzb-workflow"
 MODEL="convnext_small_v0_prerelease"
 # LSET_FOLD="${ROOT_DIR}/data/mzb_example_data/aggregated_learning_set"
-LSET_FOLD="${ROOT_DIR}/data/learning_sets/project_portable_flume/aggregated_learning_sets"
+LSET_FOLD="${ROOT_DIR}/data/mzb_example_data/training_dataset/"
 
 # ## ------------------------------------------------------------------------------------ ##
 ## This runs only if the target aggregate learning sets folder doesn't exist yet, 
@@ -46,7 +46,7 @@ python ${ROOT_DIR}/scripts/classification/main_classification_finetune.py \
 python ${ROOT_DIR}/scripts/classification/main_classification_inference.py \
     --input_dir=${LSET_FOLD}/val_set \
     --input_model=${ROOT_DIR}/models/mzb-classification-models/${MODEL} \
-    --output_dir=${ROOT_DIR}/results/project_portable_flume/classification/${MODEL}_temp/ \
+    --output_dir=${ROOT_DIR}/results/mzb_example_data/classification/${MODEL}_temp/ \
     --config_file=${ROOT_DIR}/configs/mzb_example_config.yaml \
     --taxonomy_file=${ROOT_DIR}/data/mzb_example_data/MZB_taxonomy.csv \
 
