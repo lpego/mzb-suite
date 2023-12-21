@@ -90,7 +90,7 @@ LEAVE BLANK FOR PREPRINT OR PAPER
 	- [ ] ~~See if you can pull the commit name and reconstruct the docker image name on renku dynamically in the documentation (source/files/installing.rst)...~~ 
 	- [x] Otherwise just grab a recent one that build correctly and stick with that
 - [x] Add "Quickstart" section with tutorial in the documentation
-- [ ] in the documentation, `docs/source/files/workflow_models.rst`, add section called "Supervised Skeleton Prediction" and explain model architectures used for supevised skeleton prediction (this should also fix Sphinx build warnings for missing refs).
+- [x] in the documentation, `docs/source/files/workflow_models.rst`, add section called "Supervised Skeleton Prediction" and explain model architectures used for supevised skeleton prediction (this should also fix Sphinx build warnings for missing refs).
 - [x] Merge ToDo in `README.md` and Evernote. 
 
 ### Notebooks 
