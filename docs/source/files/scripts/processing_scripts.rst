@@ -3,7 +3,7 @@ Processing scripts
 
 All the code in ``scripts/`` (except ``diverse_preprocessing``, see :ref:`files/scripts/diverse_preprocessing:Other scripts`) is encapsulated in a ``main`` function, with a short statement towards the end of the code: 
 
-.. code-block:: 
+.. code-block:: python
 
     if __name__ == "__main__": 
         {code}
