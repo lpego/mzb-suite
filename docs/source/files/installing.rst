@@ -112,7 +112,7 @@ To download the project, you simply need to clone it into a location of your cho
 
 .. code-block:: bash
 
-    git clone git@renkulab.io:biodetect/mzb-workflow.git
+    git clone https://gitlab.renkulab.io/biodetect/mzb-workflow.git
 
 .. admonition:: \ \ 
    
