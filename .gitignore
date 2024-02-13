@@ -5,6 +5,7 @@
 ### Manually added directories generated during tutorials/notebooks
 .vscode
 data/derived
+data/mzb_example_data/derived
 results
 
 ### Emacs ###
