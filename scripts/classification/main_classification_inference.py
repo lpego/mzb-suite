@@ -2,6 +2,7 @@ import argparse
 import os
 import sys
 from datetime import datetime
+import pathlib
 from pathlib import Path
 
 import numpy as np
@@ -14,7 +15,7 @@ from mzbsuite.classification.mzb_classification_pilmodel import MZBModel
 from mzbsuite.utils import cfg_to_arguments, find_checkpoints
 
 # Set the thread layer used by MKL
-os.environ["MKL_THREADING_LAYER"] = "GNU"
+# os.environ["MKL_THREADING_LAYER"] = "GNU"
 
 
 def main(args, cfg):
@@ -54,8 +55,19 @@ def main(args, cfg):
     model = MZBModel(
         pretrained_network=cfg.trcl_model_pretrarch,
     )
-
-    model = model.load_from_checkpoint(checkpoint_path=mod_path, map_location="cpu")
+    
+    ### resolving Path in Windows
+    if (sys.platform == "win32"):
+        temp = pathlib.PosixPath
+        pathlib.PosixPath = pathlib.WindowsPath
+    else: 
+        temp = pathlib.PosixPath
+    
+    model.model = model.load_from_checkpoint(
+        checkpoint_path=mod_path, map_location=torch.device("cpu")
+    )
+        
+    # model = model.load_from_checkpoint(checkpoint_path=str(mod_path.resolve()), map_location="cpu")
     # torch.device("gpu")
     #   if torch.cuda.is_available()
     #  else torch.device("cpu"),
@@ -171,6 +183,8 @@ def main(args, cfg):
         )
         with open(out_dir / "classification_report.txt", "w") as f:
             f.write(rep_txt)
+    
+    pathlib.PosixPath = temp ### restore original pathlib function
 
 
 if __name__ == "__main__":
