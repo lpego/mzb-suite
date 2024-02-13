@@ -61,8 +61,13 @@ def main(args, cfg):
     mod_path = dirs[0]
 
     model = MZBModel_skels()
+    if sys.platform == "win32": 
+        temp = str(pathlib.WindowsPath(mod_path))
+    else: 
+        temp = mod_path
+        
     model.model = model.load_from_checkpoint(
-        checkpoint_path=mod_path, map_location=torch.device("cpu")
+        checkpoint_path=temp, map_location=torch.device("cpu")
     )
 
     model.data_dir = Path(args.input_dir)
