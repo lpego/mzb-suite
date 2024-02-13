@@ -239,7 +239,7 @@ class MZBModel(pl.LightningModule):
         """
         files = [
             folds
-            for folds in sorted(list((self.data_dir / "trn_set").glob("*")))
+            for folds in sorted(list(Path(self.data_dir, "trn_set").glob("*")))
             if "zz_" not in folds.name
         ]
 
@@ -301,13 +301,13 @@ class MZBModel(pl.LightningModule):
         if "val_set" in self.data_dir.name:
             files = [
                 folds
-                for folds in sorted(list((self.data_dir).glob("*")))
+                for folds in sorted(list(Path(self.data_dir).glob("*")))
                 if "zz_" not in folds.name
             ]
         else:
             files = [
                 folds
-                for folds in sorted(list((self.data_dir / "val_set").glob("*")))
+                for folds in sorted(list(Path(self.data_dir / "val_set").glob("*")))
                 if "zz_" not in folds.name
             ]
 
