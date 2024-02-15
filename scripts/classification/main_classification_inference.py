@@ -14,8 +14,8 @@ import torch
 from mzbsuite.classification.mzb_classification_pilmodel import MZBModel
 from mzbsuite.utils import cfg_to_arguments, find_checkpoints
 
-# Set the thread layer used by MKL
-# os.environ["MKL_THREADING_LAYER"] = "GNU"
+### Set the thread layer used by MKL
+os.environ["MKL_THREADING_LAYER"] = "GNU"
 
 
 def main(args, cfg):
@@ -66,14 +66,15 @@ def main(args, cfg):
     model.model = model.load_from_checkpoint(
         checkpoint_path=mod_path, map_location=torch.device("cpu")
     )
-        
+    
+    # ### Incomplete check for GPU, otherwise default to CPU
     # model = model.load_from_checkpoint(checkpoint_path=str(mod_path.resolve()), map_location="cpu")
     # torch.device("gpu")
-    #   if torch.cuda.is_available()
-    #  else torch.device("cpu"),
-    # )
+    # if torch.cuda.is_available(): 
+    #     ### 
+    #     else torch.device("cpu")
 
-    model.to("cpu")
+    model.to("cpu") ### for now send to CPU directly
     model.data_dir = Path(args.input_dir)
     model.num_classes = cfg.infe_num_classes
     model.num_workers_loader = 4
@@ -97,13 +98,6 @@ def main(args, cfg):
         enable_checkpointing=False,
         logger=False,
     )
-    
-    ### debugging zero length dataloader
-    print("~~~~~~ DEBUG INFO BELOW ~~~~~~")
-    print(model)
-    print(dataloader.dataset)
-    print("Path to images are: ", dataloader.dataset.img_paths)
-    print("~~~~~~ END DEBUG INFO ~~~~~~")
 
     outs = trainer.predict(
         model=model, dataloaders=[dataloader]  # , return_predictions=True
