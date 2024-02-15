@@ -71,7 +71,7 @@ def main(args, cfg):
         temp = pathlib.PosixPath
         
     model.model = model.load_from_checkpoint(
-        checkpoint_path=temp, map_location=torch.device("cpu")
+        checkpoint_path=mod_path, map_location=torch.device("cpu")
     )
 
     model.data_dir = Path(args.input_dir)
