@@ -6,6 +6,7 @@ import cv2
 
 from datetime import datetime
 from pathlib import Path
+import pathlib
 from PIL import Image
 from matplotlib import pyplot as plt
 from PIL import Image
@@ -61,10 +62,13 @@ def main(args, cfg):
     mod_path = dirs[0]
 
     model = MZBModel_skels()
-    if sys.platform == "win32": 
-        temp = str(pathlib.WindowsPath(mod_path))
+    
+    ### resolving Path in Windows
+    if (sys.platform == "win32"):
+        temp = pathlib.PosixPath
+        pathlib.PosixPath = pathlib.WindowsPath
     else: 
-        temp = mod_path
+        temp = pathlib.PosixPath
         
     model.model = model.load_from_checkpoint(
         checkpoint_path=temp, map_location=torch.device("cpu")
@@ -227,6 +231,8 @@ def main(args, cfg):
     out_dir.mkdir(exist_ok=True, parents=True)
 
     preds_size.to_csv(out_dir / f"size_skel_supervised_model.csv", index=False)
+    
+    pathlib.PosixPath = temp ### restore original pathlib function
 
 
 if __name__ == "__main__":

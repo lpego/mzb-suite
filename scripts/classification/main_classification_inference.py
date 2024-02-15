@@ -97,6 +97,13 @@ def main(args, cfg):
         enable_checkpointing=False,
         logger=False,
     )
+    
+    ### debugging zero length dataloader
+    print("~~~~~~ DEBUG INFO BELOW ~~~~~~")
+    print(model)
+    print(dataloader.dataset)
+    print("Path to images are: ", dataloader.dataset.img_paths)
+    print("~~~~~~ END DEBUG INFO ~~~~~~")
 
     outs = trainer.predict(
         model=model, dataloaders=[dataloader]  # , return_predictions=True
@@ -185,7 +192,6 @@ def main(args, cfg):
             f.write(rep_txt)
     
     pathlib.PosixPath = temp ### restore original pathlib function
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
