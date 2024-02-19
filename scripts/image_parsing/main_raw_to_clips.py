@@ -50,7 +50,7 @@ def main(args, cfg):
     # get list of files to process
     files_proc = list(main_root.glob(f"**/*.{cfg.impa_image_format}"))
     # make sure weird capitalization doesn't cause issues
-    files_proc.extend(list(main_root.glob(f"**/*.{cfg.impa_image_format.upper()}")))
+    # files_proc.extend(list(main_root.glob(f"**/*.{cfg.impa_image_format.upper()}")))
     files_proc = [a for a in files_proc if "mask" not in str(a)]
     files_proc.sort()
 
