@@ -67,12 +67,18 @@ def main(args, cfg):
     if (sys.platform == "win32"):
         temp = pathlib.PosixPath
         pathlib.PosixPath = pathlib.WindowsPath
+    
+    ### Check for GPU, otherwise default to CPU
+    if torch.cuda.is_available(): 
+        model.model = model.load_from_checkpoint(
+            checkpoint_path=mod_path, map_location=torch.device("cuda")
+            )
+        model.to("cuda") 
     else: 
-        temp = pathlib.PosixPath
-        
-    model.model = model.load_from_checkpoint(
-        checkpoint_path=mod_path, map_location=torch.device("cpu")
-    )
+        model.model = model.load_from_checkpoint(
+            checkpoint_path=mod_path, map_location=torch.device("cpu")
+            )
+        model.to("cpu")
 
     model.data_dir = Path(args.input_dir)
     model.im_folder = model.data_dir / "images"
