@@ -8,6 +8,8 @@ data/derived
 data/mzb_example_data/derived
 results
 models/hub
+docs/html
+docs/_static
 
 ### Emacs ###
 # -*- mode: gitignore; -*-
