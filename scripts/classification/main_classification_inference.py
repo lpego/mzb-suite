@@ -41,7 +41,7 @@ def main(args, cfg):
     None. Saves the results in the specified folder.
     """
 
-    torch.hub.set_dir("./models/hub/")
+    torch.hub.set_dir("././models/hub/")
 
     dirs = find_checkpoints(
         Path(args.input_model).parents[0],
@@ -50,7 +50,6 @@ def main(args, cfg):
     )
 
     mod_path = dirs[0]
-    # print(mod_path)
 
     model = MZBModel(
         pretrained_network=cfg.trcl_model_pretrarch,
@@ -60,21 +59,19 @@ def main(args, cfg):
     if (sys.platform == "win32"):
         temp = pathlib.PosixPath
         pathlib.PosixPath = pathlib.WindowsPath
+    
+    ### Check for GPU, otherwise default to CPU
+    if torch.cuda.is_available(): 
+        model.model = model.load_from_checkpoint(
+            checkpoint_path=mod_path, map_location=torch.device("cuda")
+            )
+        model.to("cuda") 
     else: 
-        temp = pathlib.PosixPath
-    
-    model.model = model.load_from_checkpoint(
-        checkpoint_path=mod_path, map_location=torch.device("cpu")
-    )
-    
-    # ### Incomplete check for GPU, otherwise default to CPU
-    # model = model.load_from_checkpoint(checkpoint_path=str(mod_path.resolve()), map_location="cpu")
-    # torch.device("gpu")
-    # if torch.cuda.is_available(): 
-    #     ### 
-    #     else torch.device("cpu")
+        model.model = model.load_from_checkpoint(
+            checkpoint_path=mod_path, map_location=torch.device("cpu")
+            )
+        model.to("cpu")
 
-    model.to("cpu") ### for now send to CPU directly
     model.data_dir = Path(args.input_dir)
     model.num_classes = cfg.infe_num_classes
     model.num_workers_loader = 4
