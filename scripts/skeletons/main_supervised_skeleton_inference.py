@@ -51,7 +51,7 @@ def main(args, cfg):
     None. Saves the results in the specified folder.
     """
 
-    torch.hub.set_dir("./models/hub/")
+    torch.hub.set_dir("././models/hub/")
 
     dirs = find_checkpoints(
         Path(args.input_model).parents[0],
