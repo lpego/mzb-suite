@@ -10,7 +10,7 @@ model_logger: wandb
 impa_image_format: jpg
 impa_clip_areas: [2700, 4700, -1, -1] # x1, y1, x2, y2. Ignore areas inside this (-1 means until the end)
 impa_area_threshold: 5000 # ignore areas smaller than this
-impa_gaussian_blur: [21, 21]
+impa_gaussian_blur: [100, 100]
 impa_gaussian_blur_passes: 3
 impa_adaptive_threshold_block_size: 351
 impa_mask_postprocess_kernel: [11, 11]

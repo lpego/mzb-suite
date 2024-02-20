@@ -121,7 +121,6 @@ def main(args, cfg):
         thresh = ndimage.binary_fill_holes(thresh)
 
         # cut out area related to measurement/color calibration widget
-        ### WE REALLY NEED TO CHANGE THIS!
         if cfg.impa_clip_areas is not None:
             thresh[
                 location_cutout[0] : location_cutout[2],
