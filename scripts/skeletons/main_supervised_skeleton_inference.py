@@ -6,6 +6,7 @@ import cv2
 
 from datetime import datetime
 from pathlib import Path
+import pathlib
 from PIL import Image
 from matplotlib import pyplot as plt
 from PIL import Image
@@ -50,7 +51,7 @@ def main(args, cfg):
     None. Saves the results in the specified folder.
     """
 
-    torch.hub.set_dir("./models/hub/")
+    torch.hub.set_dir("././models/hub/")
 
     dirs = find_checkpoints(
         Path(args.input_model).parents[0],
@@ -61,9 +62,23 @@ def main(args, cfg):
     mod_path = dirs[0]
 
     model = MZBModel_skels()
-    model.model = model.load_from_checkpoint(
-        checkpoint_path=mod_path, map_location=torch.device("cpu")
-    )
+    
+    ### resolving Path in Windows
+    if (sys.platform == "win32"):
+        temp = pathlib.PosixPath
+        pathlib.PosixPath = pathlib.WindowsPath
+    
+    ### Check for GPU, otherwise default to CPU
+    if torch.cuda.is_available(): 
+        model.model = model.load_from_checkpoint(
+            checkpoint_path=mod_path, map_location=torch.device("cuda")
+            )
+        model.to("cuda") 
+    else: 
+        model.model = model.load_from_checkpoint(
+            checkpoint_path=mod_path, map_location=torch.device("cpu")
+            )
+        model.to("cpu")
 
     model.data_dir = Path(args.input_dir)
     model.im_folder = model.data_dir / "images"
@@ -222,6 +237,8 @@ def main(args, cfg):
     out_dir.mkdir(exist_ok=True, parents=True)
 
     preds_size.to_csv(out_dir / f"size_skel_supervised_model.csv", index=False)
+    
+    pathlib.PosixPath = temp ### restore original pathlib function
 
 
 if __name__ == "__main__":

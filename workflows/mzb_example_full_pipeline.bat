@@ -24,10 +24,10 @@ python %ROOT_DIR%\scripts\image_parsing\main_raw_to_clips.py^
 @REM ## if run on e.g. a validaton \ test set, it will also produce accuracy metrics. 
 @REM ## Make sure to pass this module only clips generated with main_raw_to_clips.py
 python %ROOT_DIR%\scripts\classification\main_classification_inference.py^
- --input_dir %ROOT_DIR%\data\mzb_example_data\training_dataset\trn_set\^
+ --input_dir %ROOT_DIR%\data\mzb_example_data\training_dataset\test_set\^
  --input_model %ROOT_DIR%\models\mzb-classification-models\%MODEL_C%^
  --taxonomy_file %ROOT_DIR%\data\mzb_example_data\MZB_taxonomy.csv^
- --output_dir %ROOT_DIR%\results\mzb_example\classification\trn_set\^
+ --output_dir %ROOT_DIR%\results\mzb_example\classification\test_set\^
  --config_file %ROOT_DIR%\configs\mzb_example_config.yaml^
  -v
 

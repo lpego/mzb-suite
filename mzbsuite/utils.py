@@ -292,9 +292,9 @@ def find_checkpoints(dirs=Path("lightning_logs"), version=None, log="val"):
     """
 
     if version:
-        ch_sf = list(dirs.glob(f"{version}/checkpoints/*.ckpt"))
+        ch_sf = list(Path(dirs).glob(f"{version}/checkpoints/*.ckpt"))
     else:  # pick last
-        ch_sp = [a.parents[1] for a in dirs.glob("**/*.ckpt")]
+        ch_sp = [a.parents[1] for a in Path(dirs).glob("**/*.ckpt")]
         ch_sp.sort()
         ch_sf = list(ch_sp[-1].glob("**/*.ckpt"))
 
