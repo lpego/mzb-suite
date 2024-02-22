@@ -5,7 +5,7 @@
 # What is mzb-suite? 
 `mzb-suite` is an image processing pipeline for lab images of macrozoobenthos (MZB), partially automating data extraction from images.  
 
-![Overview of mzb-suite](docs/assets/MZB_pipeline_v2.1.png)
+![Overview of mzb-suite](docs/assets/MZB_pipeline_v3.png)
 
 ## What can it be used for? 
 - Segment individual MZB organisms in images, both raw and manually annotated ones. 
@@ -22,16 +22,18 @@ Anyone that wants to process images of MZB acquired in a lab setting, with fixed
 
 # Get started
 <!-- LINKS -->
-The documentation is on [ReadTheDocs](https://mzb-workflow.readthedocs.io/en/latest/) 
+Please see the [documentation](https://mzb-workflow.readthedocs.io/en/latest/), it explains everything relating to the package. You can jump to directly to sections here: 
 <!-- and [GitHub Pages](https://lpego.github.io/mab-workflow/).  -->
 
-1. Installation 
+1. [Installation](https://mzb-workflow.readthedocs.io/en/latest/files/installing.html)
 
-2. Workflow and Models
+2. [Workflow and Models](https://mzb-workflow.readthedocs.io/en/latest/files/workflow_models.html)
 
-3. Examples
+3. [Examples](https://mzb-workflow.readthedocs.io/en/latest/files/examples/read_example.html)
 
-4. Processing scripts
+4. [Processing scripts](https://mzb-workflow.readthedocs.io/en/latest/files/scripts/processing_scripts.html#)
+
+5. [mzbsuite module reference](https://mzb-workflow.readthedocs.io/en/latest/files/modules/mzbsuite.html)
 
 -------------------------------------------
 
@@ -47,6 +49,8 @@ LEAVE BLANK FOR PREPRINT OR PAPER
 ------------------------------------------- -->
 
 ## Changelog 
+
+**v0.2.2** Added Windows native command prompt support. 
 
 **v0.2.1** Adding CI to GitHub and GitHub Pages for serving docs. 
 
