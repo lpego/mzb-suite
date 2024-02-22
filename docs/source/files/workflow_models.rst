@@ -8,7 +8,7 @@ Working with the project
 ------------------------
 The two main input components are the ``images`` (stored in ``data/``) and the configuration ``YAML`` file (stored in ``configs/``), which are taken together and can then be precessed in two ways: either by using the provided bash scripts (``.sh``) in ``workflows/`` which is turn call the various Python scripts, or by providing the necessary parameters to the Python ``.py`` scripts directly. 
 
-.. image:: ../../assets/Repo_flow_v1.3.png
+.. image:: ../../assets/Repo_flow_v1.4.png
 
 There are two sets of parameters: 
 
