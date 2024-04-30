@@ -8,11 +8,11 @@ Working with the project
 ------------------------
 The two main input components are the ``images`` (stored in ``data/``) and the configuration ``YAML`` file (stored in ``configs/``), which are taken together and can then be precessed in two ways: either by using the provided bash scripts (``.sh``) in ``workflows/`` which is turn call the various Python scripts, or by providing the necessary parameters to the Python ``.py`` scripts directly. 
 
-.. image:: ../../assets/Repo_flow_v1.3.png
+.. image:: ../../assets/Repo_flow_v1.4.png
 
 There are two sets of parameters: 
 
-    - **Running parameters:** these are basically the input and output folders location for the raw data, as well as the derived data and results and model names. They are specified either in the workflows bash scripts (``.sh``) or can passed directly to the Python ``.py`` scripts as arguments, see :ref:`files/workflow_models:Workflow files`. 
+    - **Running parameters:** these are basically the input and output folders location for the raw data, as well as the derived data and results and model names. They are specified either in the workflows  scripts (``.sh`` or ``.bat``) or can passed directly to the Python ``.py`` scripts as arguments, see :ref:`files/workflow_models:Workflow files`. 
     - **Project parameters:** these are specific to each dataset, and contain project-specific parameters like image resolution, format, px/mm conversion rates and so on. These parameters are specified in the configuration ``YAML`` file, stored in ``configs/``, see :ref:`files/configuration:Configuration`. 
 
 .. note:: 
@@ -22,9 +22,12 @@ There are two sets of parameters:
 
 Workflow files
 ______________
-In the ``workflows/`` folder, there are files written in bash (``.sh``) that can be used to run one or more modules in a pipeline. These files are nothing else that a chain of python calls the flow of the processing pipeline. 
+In the ``workflows/`` folder, there are files written in bash (``.sh``) or batch (``.bat``) that can be used to run one or more modules in a pipeline. These files are nothing else that a chain of python calls the flow of the processing pipeline. 
 
-To run any of these scripts, in a terminal simply type the name (or path to) the ``.sh`` script and press Enter. 
+    .. hint:: 
+        If you are running on Linux or Mac OS, run the bash scripts (``.sh``), if you are running on Windows, use the batch scripts (``.bat``)! 
+
+To run any of these scripts, in a terminal simply type the name (or path to) the ``.sh`` or ``.bat``  script and press Enter. 
 
     .. .. note:: 
     ..     **TODO**: transfer those bash scripts to renku workflows, so that the renku can track the dependencies and the inputs and outputs of each step, and generate the graph of the workflow.

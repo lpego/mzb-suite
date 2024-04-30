@@ -12,7 +12,7 @@ def read(fname):
 
 setup(
     name="mzbsuite",
-    version="0.0.1",
+    version="0.2.2",
     author="Michele Volpi, Luca Pegoraro",
     author_email="mivolpi@ethz.ch",
     description=(

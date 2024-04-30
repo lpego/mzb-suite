@@ -4,10 +4,9 @@ The collaboration was between the Swiss Federal Office for Forest, Snow and Land
 
 Authors of the dataset and software: 
 
-- Luga Pegoraro (WSL): 
-- Michele Volpi (SDSC): 
-- Danina Schmidt (EAWAG) acquired the data and studied the camera setupds and acquistion process.
-- Nico Baetz: ()
-- ...
-- Blake Matthews (EAWAG)
-- Catherine Graham (WSL)
+- Luca Pegoraro (WSL): Co-authored scripts, wrote all documentation and curated deployment. 
+- Michele Volpi (SDSC): Authored the main funcitonality of the package, and trained the ML models. 
+- Danina Schmidt (EAWAG): acquired the image data, studied the camera setups and acquistion process, made all the taxonomic and lengths annotations. 
+- Nico Baetz, Chrisitne Weber (EAWAG): contributed MZB samples, provided feedback. 
+- Catherine Graham (WSL): Acquired funding and provided feedback throughout the project. 
+- Blake Matthews (EAWAG): Acquired funding and provided feedback throughout the project. 

@@ -112,7 +112,7 @@ To download the project, you simply need to clone it into a location of your cho
 
 .. code-block:: bash
 
-    git clone https://gitlab.renkulab.io/biodetect/mzb-workflow.git
+    git clone git@renkulab.io:biodetect/mzb-workflow.git
 
 .. admonition:: \ \ 
    
@@ -128,7 +128,7 @@ You can then install the necessary packages using the conda package manager and 
 .. code-block:: bash
 
     cd mzb-workflow    # chdir mzb-workflow in Windows
-    conda env create -f environment.yml
+    mamba env create -f environment.yml    # or use conda env create -f environment.yml
 
 .. hint:: \ \ 
    If you don't have the ``conda`` command available, you need to install it.    
