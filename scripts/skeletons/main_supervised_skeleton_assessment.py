@@ -11,14 +11,19 @@ from pathlib import Path
 
 from mzbsuite.utils import cfg_to_arguments, regression_report
 
+try:
+    __IPYTHON__
+except:
+    prefix = ""  # or "../"
+    PLOTS = False
+else:
+    prefix = "../../"  # or "../"
+    PLOTS = True
+
 # Set global configuration options
 plt.rcParams["axes.grid"] = True
 plt.rcParams["grid.linestyle"] = "--"
 plt.rcParams["grid.alpha"] = 0.7
-
-root = Path(".").resolve().parents[1]
-root
-
 
 # %%
 def main(args, cfg):
@@ -34,6 +39,7 @@ def main(args, cfg):
             - args.input_dir: path to the directory with the model predictions
             - args.manual_annotations: path to the manual annotations
             - args.model_annotations: path to the model predictions
+            - args.output_dir: path to the directory where plots accuracy report should be saved
 
     cfg: argparse.Namespace
         configuration options.
@@ -55,6 +61,9 @@ def main(args, cfg):
 
     # Read model predictions for skeletons
     auto_annotations = pd.read_csv(args.model_annotations, index_col="clip_name")
+    
+    # Make results directory if not already present
+    args.output_dir.mkdir(parents=True, exist_ok=True)
 
     # merge annotations and predictions
     merged_annotations = manual_annotations.merge(
@@ -68,18 +77,34 @@ def main(args, cfg):
         merged_annotations["head_length"] - merged_annotations["nn_pred_head"]
     )
 
+    # if PLOTS: 
+    # rng = np.arange(50)
+    # rnd = np.random.randint(0, 10, size=(3, rng.size))
+    # yrs = 1950 + rng
+
+    # fig, ax = plt.subplots(figsize=(5, 3))
+    # ax.stackplot(yrs, rng + rnd, labels=['Eastasia', 'Eurasia', 'Oceania'])
+    # ax.set_title('Combined debt growth over time')
+    # ax.legend(loc='upper left')
+    # ax.set_ylabel('Total debt')
+    # ax.set_xlim(xmin=yrs[0], xmax=yrs[-1])
+    # fig.tight_layout()
+    # plt.show()
+   
     plt.figure()
     merged_annotations.groupby("species").mean()[
         ["body_length", "error_body_skel"]
     ].plot(kind="bar", rot=90)
-    plt.savefig(args.input_dir / f"body_length_error.{cfg.glob_local_format}")
-
+    plt.title("body_length_error")
+    plt.savefig(args.output_dir / f"body_length_error.{cfg.glob_local_format}")
+    
     plt.figure()
     merged_annotations.groupby("species").mean()[
         ["head_length", "error_head_skel"]
     ].plot(kind="bar", rot=90)
-    plt.savefig(args.input_dir / f"head_width_error.{cfg.glob_local_format}")
-
+    plt.title("head_width_error")
+    plt.savefig(args.output_dir / f"head_width_error.{cfg.glob_local_format}")
+    
     # Scatterplot for errors of body length and colored by species
     plt.figure()
     for sp in merged_annotations["species"].unique():
@@ -96,7 +121,8 @@ def main(args, cfg):
     plt.legend()
     plt.xlabel("True body length (mm)")
     plt.ylabel("Predicted body lenght (mm)")
-    plt.savefig(args.input_dir / f"body_length_error_scatter.{cfg.glob_local_format}")
+    plt.title("body_length_error_scatter")
+    plt.savefig(args.output_dir / f"body_length_error_scatter.{cfg.glob_local_format}")
 
     # Scatterplot for errors of head width and colored by species
     plt.figure()
@@ -116,7 +142,8 @@ def main(args, cfg):
     plt.legend()
     plt.xlabel("True head width (mm)")
     plt.ylabel("Predicted head width (mm)")
-    plt.savefig(args.input_dir / f"head_width_error_scatter.{cfg.glob_local_format}")
+    plt.title("head_width_error_scatter")
+    plt.savefig(args.output_dir / f"head_width_error_scatter.{cfg.glob_local_format}")
 
     # Relative errors in %
     merged_annotations["rel_error_body_skel"] = (
@@ -138,7 +165,8 @@ def main(args, cfg):
     )
     plt.ylabel("Relative error (%)")
     plt.xlabel("Species")
-    plt.savefig(args.input_dir / f"body_length_rel_error.{cfg.glob_local_format}")
+    plt.title("body_length_rel_error")
+    plt.savefig(args.output_dir / f"body_length_rel_error.{cfg.glob_local_format}")
 
     plt.figure()
     merged_annotations.groupby("species").mean()[["rel_error_head_skel"]].plot(
@@ -146,7 +174,11 @@ def main(args, cfg):
     )
     plt.ylabel("Relative error (%)")
     plt.xlabel("Species")
-    plt.savefig(args.input_dir / f"head_width_rel_error.{cfg.glob_local_format}")
+    plt.title("head_width_rel_error")
+    plt.savefig(args.output_dir / f"head_width_rel_error.{cfg.glob_local_format}")
+    
+    if PLOTS: 
+        plt.show()
 
     plt.close("all")
 
@@ -169,7 +201,7 @@ def main(args, cfg):
         + report_head
     )
     # Write to text file the reports
-    with open(args.input_dir / "estimation_report.txt", "w") as f:
+    with open(args.output_dir / "estimation_report.txt", "w") as f:
         for l1, l2 in prn_str:
             if not l2:
                 f.write(f"{l1}\n")
@@ -178,22 +210,21 @@ def main(args, cfg):
 
     return None
 
-
 # %%
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
     parser.add_argument("--config_file", type=str, required=True)
     parser.add_argument("--model_annotations", type=str, required=True)
     parser.add_argument("--manual_annotations", type=str, required=True)
+    parser.add_argument("--output_dir", type=str, required=True)
     parser.add_argument("--verbose", "-v", action="store_true", default=False)
     args = parser.parse_args()
 
     args.manual_annotations = Path(args.manual_annotations)
     args.model_annotations = Path(args.model_annotations)
     args.input_dir = Path(args.model_annotations).parents[0]
-    # args.output_dir = Path(args.output_dir)
+    args.output_dir = Path(args.output_dir)
 
     with open(args.config_file, "r") as f:
         cfg = yaml.load(f, Loader=yaml.FullLoader)
