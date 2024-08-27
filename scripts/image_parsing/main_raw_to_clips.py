@@ -1,6 +1,6 @@
 # %%
 import argparse
-import sys
+import sys, os
 from pathlib import Path
 
 import cv2
@@ -11,9 +11,18 @@ from matplotlib import pyplot as plt
 from scipy import ndimage
 from skimage import feature, measure, morphology, segmentation
 from tqdm import tqdm
+from IPython.display import display, clear_output
 
 from mzbsuite.utils import cfg_to_arguments, noneparse
 
+try:
+    __IPYTHON__
+except:
+    prefix = ""  # or "../"
+    PLOTS = False
+else:
+    prefix = "../../"  # or "../"
+    PLOTS = True
 
 def main(args, cfg):
     """
@@ -38,7 +47,6 @@ def main(args, cfg):
     None. Everything is saved to disk.
     """
 
-    PLOTS = False
     # define paths
     main_root = Path(args.input_dir)
     outdir = Path(args.output_dir)
@@ -130,14 +138,18 @@ def main(args, cfg):
         # get labels of connected components
         labels = measure.label(thresh, connectivity=2, background=0)
 
-        if PLOTS:
-            f, a = plt.subplots(1, 4, figsize=(21, 9))
-            a[0].imshow(thresh)
-            a[1].imshow(ad_thresh)
-            a[2].imshow(img)
-            a[3].imshow(labels)
-            plt.show()
-            plt.savefig("test.png")
+        if PLOTS: 
+            full_image_thresh_fig, full_image_thresh_ax = plt.subplots(1, 4, figsize=(21, 9))
+            full_image_thresh_ax[0].imshow(thresh)
+            full_image_thresh_ax[0].title.set_text('global threshold')
+            full_image_thresh_ax[1].imshow(ad_thresh)
+            full_image_thresh_ax[1].title.set_text('adaptive threshold')
+            full_image_thresh_ax[2].imshow(img)
+            full_image_thresh_ax[2].title.set_text('original rgb')
+            full_image_thresh_ax[3].imshow(labels)
+            full_image_thresh_ax[3].title.set_text('labels')
+            plt.show()              
+            # plt.savefig("test.png")
 
         # Save the labels as a jpg for the full image
         if args.save_full_mask_dir is not None:
@@ -160,6 +172,9 @@ def main(args, cfg):
         c = 1
         # loop through identified regions and get some properties
         for label in range(len(rprop)):  # np.unique(labels):
+            
+            clear_output(wait=True) # this clears notebook cell output, including progress bar
+            
             reg_pro = rprop[label]
 
             # skip background
@@ -191,16 +206,20 @@ def main(args, cfg):
                 h + 2 * cfg.impa_bounding_box_buffer,
             )
 
-            if PLOTS:
-                f, a = plt.subplots(1, 1, figsize=(10, 6))
-                a.imshow(img[:, :, [0, 1, 2]], aspect="auto")
+            if PLOTS:            
+                clip_crop_fig, clip_crop_ax = plt.subplots(1, 1, figsize=(10, 6))
+                clip_crop_ax.imshow(img[:, :, [0, 1, 2]], aspect="auto")
                 rect = plt.Rectangle(
                     (x_e, y_e), w_e, h_e, fc="none", ec="black", linewidth=2
                 )
-                a.add_patch(rect)
+                clip_crop_ax.add_patch(rect)
+                
+                # clear_output(wait = True)
+                display(full_image_thresh_fig)
+                
                 plt.show()
-                plt.savefig(f"test_mask{c}.png")
-                exit()
+                # plt.savefig(f"test_mask{c}.png")
+                # exit()
 
             # get the crop of the image and the mask
             crop = img[y_e : y_e + h_e, x_e : x_e + w_e, [2, 1, 0]]
@@ -249,22 +268,26 @@ def main(args, cfg):
             mask = mask + current_mask * c
 
             if PLOTS:
-                f, a = plt.subplots(1, 4, figsize=(10, 6))
-                a[0].imshow(crop)
-                a[1].imshow(reg_pro.image)  # crop_mask)
-                a[2].imshow(
+                clip_fig, clip_ax = plt.subplots(1, 4, figsize=(10, 6))
+                clip_ax[0].imshow(crop)
+                clip_ax[0].title.set_text('crop')
+                clip_ax[1].imshow(reg_pro.image)  # crop_mask)
+                clip_ax[1].title.set_text('binary mask')
+                clip_ax[2].imshow(
                     (
                         crop * np.transpose(np.tile(crop_mask, (3, 1, 1)), (1, 2, 0))
                     ).astype(np.uint8)
                 )
+                clip_ax[2].title.set_text('mask HSV')
                 im_t_crop_m = crop_im_t.reshape(-1, 1)[
                     crop_mask.reshape(
                         -1,
                     ).astype(bool),
                     :,
                 ]
-                a[3].hist(im_t_crop_m, bins=50)
-
+                clip_ax[3].hist(im_t_crop_m, bins=50)
+                clip_ax[3].title.set_text('colour histogram')
+                # plt.pause(1)
                 plt.show()
 
             sub_df = {}
@@ -289,11 +312,8 @@ def main(args, cfg):
             mask_props.append(sub_df)
             c += 1
 
-    if not PLOTS:
-        if mask_props:
-            mask_props = pd.concat(mask_props).reset_index().drop(columns=["index"])
-            mask_props.to_csv(outdir / "_mask_properties.csv")
-
+    mask_props = pd.concat(mask_props).reset_index().drop(columns=["index"])
+    mask_props.to_csv(outdir / "_mask_properties.csv")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -319,7 +339,7 @@ if __name__ == "__main__":
         default=None,
         help="path to directory where to save labeled full masks",
     )
-    parser.add_argument("--verbose", "-v", action="store_true", help="print more info")
+    parser.add_argument("--verbose", "-v", action="store_true", help="print more info", default=False)
     args = parser.parse_args()
 
     print(args.config_file)
