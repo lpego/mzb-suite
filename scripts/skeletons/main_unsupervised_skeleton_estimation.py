@@ -26,6 +26,14 @@ from mzbsuite.skeletons.mzb_skeletons_helpers import (
 
 from mzbsuite.utils import cfg_to_arguments, noneparse
 
+try:
+    __IPYTHON__
+except:
+    prefix = ""  # or "../"
+    PLOTS = False
+else:
+    prefix = "../../"  # or "../"
+    PLOTS = True
 
 def main(args, cfg):
     """
@@ -50,7 +58,6 @@ def main(args, cfg):
     -------
     None. All is saved to disk at specified locations.
     """
-    PLOTS = False
 
     if args.save_masks is not None:
         args.save_masks = Path(f"{args.save_masks}")
@@ -134,7 +141,7 @@ def main(args, cfg):
         # keep only the largest region of the eroded mask
         mask = regs == np.argmax([p.area for p in props if p.label > 0]) + 1
 
-        # compute general skeleton by thinning the maks
+        # compute general skeleton by thinning the masks
         skeleton = thin(mask, max_num_iter=None)
 
         # get coordinates of point that intersect or are ends of the skeleton segments
@@ -186,6 +193,7 @@ def main(args, cfg):
                 a[0].imshow(rgb_fi)
                 a[1].imshow(rgb_ma)
                 plt.title(f"Area: {np.sum(mask_)}")
+                plt.show()
 
         else:
             # remove nodes that are too close (less than 3px) and treat them as only one node
@@ -257,7 +265,7 @@ def main(args, cfg):
                 if sorted(sk) not in skel_cand:
                     skel_cand.append(sorted(sk))
 
-            # measure path lenghts and keep max one, that is the skel for you
+            # measure path lengths and keep max one, that is the skel for you
             sk_l = []
             for sk in skel_cand:
                 cus = 0
@@ -335,7 +343,7 @@ if __name__ == "__main__":
     sys.exit(main(args, cfg))
 
 # %% some visualizations for debugging
-if 0:
+if PLOTS:
     rgb_ = cv2.imread(str(fo)[:-8] + "rgb.png")[:, :, [2, 1, 0]].astype(np.uint8)
     rgb_fi = paint_image(rgb_, skeleton, color=[255, 0, 0])
     rgb_ma = paint_image(rgb_, mask, color=[255, 0, 255])
