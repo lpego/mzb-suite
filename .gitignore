@@ -9,6 +9,8 @@ models/hub
 docs/html
 docs/_static
 ### ignore all data except the examples
+data/*
+data/*/*
 data/*/*/*
 !data/mzb_example_data
 data/mzb_example_data/derived
