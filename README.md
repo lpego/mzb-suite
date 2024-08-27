@@ -86,7 +86,7 @@ LEAVE BLANK FOR PREPRINT OR PAPER
 - [x] Cannot run .sh script in the console directly if in cwd??? 
 - [x] Notebooks don’t pick up conda env… 
 - [ ] Cannot load correct kernel (with `mzbsuite`) in Jupyter notebooks from Renku interactive session... 
-- [ ] Finding and changing filepaths in Jupyter notebooks is difficult for users… 
+- [ ] ~~Finding and changing filepaths in Jupyter notebooks is difficult for users…~~
 
 ### Documentation
 - [x] Put docs on ReadTheDocs and/or GitHub Pages
@@ -100,13 +100,14 @@ LEAVE BLANK FOR PREPRINT OR PAPER
 
 ### Notebooks 
 - [ ] model retraining not working in notebook interactive environment... 
-- [ ] compress long code blocks? 
+- [x] compress long code blocks? 
 - [ ] direct links to documentation within markdown cells in notebooks 
-- [ ] make notebook for supervised skeletons finetuning 
+- [x] make notebook for supervised skeletons finetuning 
+	- [ ] conflict with Jupyter notebook environment...
 - [ ] Fix notebooks outputs: 
-	- [ ] `segmentation.ipynb` replace plots in-place while running instead of generating new ones. 
+	- [x] `segmentation.ipynb` replace plots in-place while running instead of generating new ones. 
 	- [ ] `skeletonizatn_unsupervised.ipynb` replace plots in-place while running instead of generating new ones. 
-	- [ ] `skeletonization_supervised_inference.ipynb` returns empty predictions in notebook... 
+	- [x] `skeletonization_supervised_inference.ipynb` returns empty predictions in notebook... 
 	- [ ] `classification_finetune.ipynb` last cell (actually retraining the model) might not be compatible with an interactive environment...
 
 ### Figures to make for paper
@@ -115,7 +116,6 @@ LEAVE BLANK FOR PREPRINT OR PAPER
 - [x] Accuracy for supervised skeletonization model (length and head width) - `results/project_portable_flume/skseg_mit-b2-v1_validation_set`
 - [ ] Accuracy for unsupervised skeletonization (length) 
 
-   
 --- 
    
 **OLD COMPLETED TODO ITEMS - v0.1.0** - _Not in any priority_ 
