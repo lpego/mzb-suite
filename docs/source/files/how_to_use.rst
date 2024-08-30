@@ -1,5 +1,5 @@
-Workflow and Models
-===================
+How to use
+==========
 Here we illustrate how to use the project's workflows and provide information about the models. 
 
 .. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -14,9 +14,6 @@ There are two sets of parameters:
 
     - **Running parameters:** these are basically the input and output folders location for the raw data, as well as the derived data and results and model names. They are specified either in the workflows  scripts (``.sh`` or ``.bat``) or can passed directly to the Python ``.py`` scripts as arguments, see :ref:`files/workflow_models:Workflow files`. 
     - **Project parameters:** these are specific to each dataset, and contain project-specific parameters like image resolution, format, px/mm conversion rates and so on. These parameters are specified in the configuration ``YAML`` file, stored in ``configs/``, see :ref:`files/configuration:Configuration`. 
-
-.. note:: 
-    **TODO**: currently, notebooks are not written in a way that easily accepts different running parameters for interactive sessions, but this could be done. 
 
 .. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -38,7 +35,7 @@ For example:
 
 .. code-block:: bash
 
-    ROOT_DIR="/home/jovyan/work/mzb-workflow"
+    ROOT_DIR="example/path/to/your/root_dir"
     MODEL_C="convnext-small-v0"
     MODEL_S="mit-b2-v0"
 
@@ -49,12 +46,12 @@ For example:
         --config_file=${ROOT_DIR}/configs/configuration_flume_datasets.yaml \
         -v
 
-⚠️ WARNING: this code is *not* intended to be copy-pasted in the terminal! 
+⚠️ WARNING: this code will *not* work if copy-pasted in the terminal! 
 
 The extract above from ``workflows/full_pipeline_custom.sh`` will run the script ``scripts/image_parsing/main_raw_to_clips.py``, passing it various global parameters: 
 
  - ``ROOT_DIR`` is the the root directory fo the project; this is important to anchor all the relative path references that modules make; 
- - ``MODEL_C`` is the name of the DL model to be used for classification, see list of models :ref:`files/workflow_models:Models`; 
+ - ``MODEL_C`` is the name of the DL model to be used for classification, see list of models :ref:`files/project_structure:Models`; 
  - ``MODEL_S`` is the name of the DL model to be used for skeletonization. 
 
 Then, the command ``python`` is invoked followed by the script to be executed, and the parameters required by that script, in this case: 
@@ -65,7 +62,7 @@ Then, the command ``python`` is invoked followed by the script to be executed, a
  - ``--config_file`` the location of the project configuration file (for more details see :ref:`files/configuration:Configuration`)
  - ``-v`` flag for verbose, printing out more details
 
-Not all parameters decelared are used in the extract above, however they are necessary for other calls in the same scripts; please also note that different scripts will require different input parameters, whereas the parameters contained in the configuration file are tied to the project and independent from the scripts. 
+Not all parameters declared are used in the extract above, however they are necessary for other calls in the same scripts; please also note that different scripts will require different input parameters, whereas the parameters contained in the configuration file are tied to the project and independent from the scripts. 
 
 .. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -84,47 +81,3 @@ ________________
 Finally, users can import this repo as a package and make use of its functions in their own scripts. 
 Make sure the package is installed (see :ref:`files/installing:Install libraries locally` in case of doubt), and simply use ``import mzbsuite`` in your scripts. 
 
-.. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Models
-------
-
-Classification models
-_____________________
-So far, these Deep Learning (DL) architectures are available for classification: 
-
-- ``vgg``: VGG 16
-- ``resnet18``: ResNet 18 layers
-- ``resnet50``: ResNet 50 layers
-- ``densenet161``: DenseNet 161 layers
-- ``mobilenet``: MobileNet V2 
-- ``efficientnet-b2``: EfficientNet B2
-- ``efficientnet-b1``: EfficientNet B1
-- ``vit16``: Vision Transformer 16 
-- ``convnext-small``: ConvNext Small
-
-The models are pre-trained on ImageNet and can be downloaded from the `PyTorch model zoo <https://pytorch.org/serve/model_zoo.html>`__. We use ``torchvision.models`` to load the models, and we pass ``weights={ModelName}_Weigths.IMAGENET1K_V1`` for the pre-trained weights. 
-
-Supervised skeletonization models
-_________________________________
-For the supervised skeletonization module, we implement only one transformer-based architecture in two versions: 
-
-- ``mit-b2-v0``: MiT B2 
-- ``mit-b2-v1``: MiT B2 
-
-See the model `original paper <https://arxiv.org/abs/2105.15203>`__ for more details. 
-
-.. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Adding a new model
-__________________
-In ``mzbsuite/utils.py`` you can either add a case to the function ``read_pretrained_model(architecture, n_class)`` or add a function returning a pytorch model. In general, the layers of these classifiers are all frozen and only the last fully connected layers are trained on the annotated data. This seemed to work in most of our cases, but can be changed in a simple way in the function. 
-
-.. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Logging your model's training
-_____________________________
-To be able to tell whether a model is learning properly and/or is overfitting, it's necessary to log its progress while training. We support two loggers for this: 
-
- - For `Weights & Biases <https://docs.wandb.ai/>`__, you will need to create (free) account and install the necessary dependencies; refer to the documentation `here <https://wandb.ai/site/experiment-tracking>`__. After installing all requirements, run ``wandb login`` and provide your credentials when prompted.
- - For `TensorBoard <https://www.tensorflow.org/tensorboard>`__, please follow the installation instructions `here <https://www.tensorflow.org/tensorboard/get_started>`__. You will also need to specify which logger to use in the ``model_logger`` parameter in the configuration file (see :ref:`files/configuration:Configuration`). 
