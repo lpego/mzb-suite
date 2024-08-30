@@ -1,7 +1,7 @@
 Configuration
 =============
 
-All **project parameters** (i.e. pertaining to a specific dataset) are contained in a configuration file, located in ``/configs/{configuration_file}.yaml``. This file, together with input/output directories and other running parameters specified directly via CLI (i.e. Command Line Interface) or via shell script (see also :doc:`Workflows and Models <workflow_models>`), pass the necessary parameters to the scripts. 
+All **project parameters** (i.e. pertaining to a specific dataset) are contained in a configuration file, located in ``/configs/{configuration_file}.yaml``. This file, together with input/output directories and other running parameters specified directly via CLI (i.e. Command Line Interface) or via shell script (see also :doc:`how_to_use`), pass the necessary parameters to the scripts. 
 
 The idea here is that the user can specify all necessary parameters for each project in this configuration file, so that one batch of images acquired in the same way (i.e. one project) always corresponds to one configuration file. 
 
@@ -28,7 +28,7 @@ This first block contains some general parameters:
  - ``glob_root_folder``: ``[string]`` this is the root folder of the project, it could be for example ``/home/user/my_project/``. 
  - ``glob_blobs_folder``: ``[string]`` this is the location where you want the clips of the segmented organisms to be saved; we strongly recommend putting this inside of the main data folder, for example ``/data/shared/mzb-workflow/data/derived/blobs/``. 
  - ``glob_local_format``: ``[jpg, pdf, ...]`` what format do you want the plotting outputs to be saved in; acceptable values are: ``pdf``, ``jpg``, ``png`` and other common formats (see `matplotlib <https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.savefig.html>`__ documentation for details).
- - ``model_logger``: ``[wandb, tensorboard]`` which data logger is used to track model training progress; for the moment, ``wandb`` (`Weights & Biases <https://wandb.ai/site>`__) and ``tensorboard`` (`TensorBoard <https://www.tensorflow.org/tensorboard>`__) are supported. Note that W&B requires an account and to be setup by the user, see :ref:`files/workflow_models:Logging your model's training`. 
+ - ``model_logger``: ``[wandb, tensorboard]`` which data logger is used to track model training progress; for the moment, ``wandb`` (`Weights & Biases <https://wandb.ai/site>`__) and ``tensorboard`` (`TensorBoard <https://www.tensorflow.org/tensorboard>`__) are supported. Note that W&B requires an account and to be setup by the user, see :ref:`files/how_to_use:Logging your model's training`. 
 
 The second block of parameters is specific to image segmentation. If the segmentation results are not satisfactory (i.e. organisms incompletely clipped, debris or other noise segmented as organisms, etc), changing these values might produce better results: 
 
@@ -78,7 +78,7 @@ The following parameters relate to model training of the classification model. T
  
  - ``trcl_save_topk``: ``[int]`` How many models should be saved among the best? You can specify if you want to retain the best 1-2-5 etc best models after training; this can be beneficial for evaluating overfitting and convergence. Suggested value: ``1``. 
  - ``trcl_num_classes``: ``[int]`` How many classes should the model be trained for? This needs to be defined by the user, and it corresponds to how many taxa are at the specified taxonomic rank. In our example we had ``8``. 
- - ``trcl_model_pretrarch``: ``[convnext-small, resenet50, efficientnet-b2, convnext-small, densenet161, mobilenet]`` Which model architecture should be used for training; the supported architectures are detailed in :ref:`files/workflow_models:Models`. 
+ - ``trcl_model_pretrarch``: ``[convnext-small, resenet50, efficientnet-b2, convnext-small, densenet161, mobilenet]`` Which model architecture should be used for training; the supported architectures are detailed in :ref:`files/project_structure:Models`. 
  - ``trcl_num_workers``: ``[int]`` How many processes (i.e. workers) do you want the dataloader to spawn? A good rule of thumb is to use the same number of workers as number of threads of your CPU. In our example the value is ``16``. 
  - ``trcl_wandb_project_name``: ``[string]`` Name of the Weights & Biases tracker for your project; you should change this to something meaningful for your project; in our case it was ``mzb-classifiers``. 
 
@@ -98,7 +98,7 @@ This next block contains parameters for the supervised skeleton prediction model
 
  - ``trsk_save_topk``: ``[int]`` How many models should be saved among the best? You can specify if you want to retain the best 1-2-5 etc best models after training; this can be beneficial for evaluating overfitting and convergence. Suggested value: ``1``. 
  - ``trsk_num_classes``: ``[int]`` Since this is a binary classifier (i.e. pixels are either part of the predicted skeleton or they are not), this should be ``2``. In case of annotations referring to multiple features this can be changed according to the number of features. 
- - ``trsk_model_pretrarch``: ``[mit_b2, mit-b2, efficientnet-b2]`` Which model architecture should be used for training; the supported architectures are detailed in :ref:`files/workflow_models:Models`. 
+ - ``trsk_model_pretrarch``: ``[mit_b2, mit-b2, efficientnet-b2]`` Which model architecture should be used for training; the supported architectures are detailed in :ref:`files/project_structure:Models`. 
  - ``trsk_num_workers``: ``[int]`` How many processes (i.e. workers) do you want the dataloader to spawn? A good rule of thumb is to use the same number of workers as number of threads of your CPU. In our example the value is ``16``. 
  - ``trsk_wandb_project_name``: ``[string]`` Name of the Weights & Biases tracker for your project; you should change this to something meaningful for your project; in our case it was ``mzb-skeletons``. 
 
@@ -218,7 +218,7 @@ Below a complete example of a configuration file for the example project *Portab
 
 The taxonomy file
 -----------------
-This file contains information about the taxonomy of each class (e.g. species, genus, or other taxa) in the dataset. Its location is specified in the running parameters declared in the bash scripts, see :ref:`files/workflow_models:Workflow files`. 
+This file contains information about the taxonomy of each class (e.g. species, genus, or other taxa) in the dataset. Its location is specified in the running parameters declared in the bash scripts, see :ref:`files/how_to_use:Workflow files`. 
 
 The first column of the taxonomy file should be named ``query`` and should contain the name of the class (i.e.: "class" here refers to the category of the object, in this case the organism identity, not to a specific phylogentic rank); all the other columns should correspond to a taxonomic rank, and should contain the pertinent taxon for that class. This should be saved as CSV file in an appropriate location (for instance, ``/data/MZB_taxonomy.csv``), structured like so: 
 

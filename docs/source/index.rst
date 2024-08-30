@@ -14,11 +14,13 @@ Welcome to the ``mzb-suite`` documentation! Here we introduce the package functi
 Quickstart
 ==========
 
-To try out ``mzb-suite``, the quickest way to is to spin a virtual session on RenkuLab, follow instructions on :ref:`files/installing:Online session on RenkuLab`. 
+To try out ``mzb-suite``, the quickest way to is to spin a virtual session on RenkuLab, follow instructions for :ref:`files/installing:Online session on RenkuLab` (only recommended for demo purposes). 
 
-If you are not familiar with the JupyterLab interface, have a look at :ref:`files/examples/read_example:Working with notebooks`. 
+.. If you are not familiar with the JupyterLab interface of the virtual session, have a look at :ref:`files/examples/read_example:Working with notebooks`. 
 
-To launch the example workflow and inspect the results, see :ref:`files/workflow_models:Workflow files`. 
+.. In the Jupyter interface, to launch the example workflow and inspect the results, see :ref:`files/how_to_use:Workflow files`. 
+
+If you want to install locally (recommended for day to day use), follow the instruction using :ref:`files/installing:Docker container` (recommended for novice users) or :ref:`files/installing:Install libraries locally` (advanced users). 
 
 .. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -26,21 +28,24 @@ The MZB project
 ===============
 
 :doc:`files/installing`
-    How to install the project and ``mzb-suite`` package on your machine.
+    How to install ``mzb-suite`` online or on your machine.
+
+:doc:`files/how_to_use`
+    How to work with the project, details about the workflows and its modules.
 
 :doc:`files/project_structure`
-    What does what in the project repository.
-
-:doc:`files/workflow_models`
-    How to work with the project, details about the workflows and models used.
+    What does what in the project repository, and details about models used.
 
 :doc:`files/configuration`
     Explanation fo the configuration file and recommended parameter values. 
 
 .. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Examples
-========
+Gallery
+=======
+
+:doc:`files/examples/demo`
+    Demonstration of ``mzb-suite`` features. 
 
 :doc:`files/examples/read_example`
     How to change paths to files in notebooks
@@ -81,8 +86,8 @@ Processing scripts
     :hidden:
 
     files/installing
+    files/how_to_use
     files/project_structure
-    files/workflow_models
     files/configuration
 
 .. toctree::

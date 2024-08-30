@@ -3,9 +3,9 @@ Installation
 
 There are a few ways to work with the project: 
 
-    #. Run it in an `Online session on RenkuLab`_ (easiest setup, but limited computing power)
-    #. Run it on your local machine using the `Docker container`_ (medium setup, can use your computer resources)
-    #. `Install libraries locally`_ directly on your computer (longest setup, troubleshooting potentially needed, but affords maximum flexibility)
+    #. Run it in an `Online session on RenkuLab`_ (easiest setup, but limited computing power and non-permanent storage!)
+    #. Run it on your local machine using a `Docker container`_ (recommended for novice users)
+    #. `Install libraries locally`_ directly on your computer (advanced users, troubleshooting potentially needed)
 
 .. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -28,9 +28,17 @@ To try out ``mzbsuite``, the quickest way to is to spin a virtual session on Ren
 .. image:: ../../assets/Renkulab_virtual_session.gif
 
 Once the session has started you should drop directly into the JupyterLab interface. 
-From there you can work through the notebooks in :ref:`Examples`. 
+From there you can run the example workflow by simply typing: 
 
-We don't recommend this method for for long term use, as the online session are shut down for maintenance, so data not exported will be lost. 
+    .. code-block:: bash
+
+        workflows/mzb_example_full_pipeline.sh
+
+You can also upload your own images and test `mzb-suite` on them! Simply create a new folder under ``/data`` and change the input / output directories in the ``workflows/mzb_example_full_pipeline.sh`` script accordingly (see :ref:`files/how_to_use:Workflow files` for more details). 
+
+    .. admonition:: \ \ 
+        
+        We don't recommend Renku online sessions for long term use, because they have limited computing power and storage and can be shut down (i.e. for maintenance), therefore all data not exported will be lost! 
 
 .. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -42,7 +50,9 @@ If you want to run the pipeline on yur own data and local computer resources but
 
     .. admonition:: \ \ 
 
-        Admin privileges may be needed to install Docker Engine.  
+        Admin privileges may be needed to install Docker Engine. 
+
+        On some systems, it might be necessary to enable virtualization in the BIOS. This depends on the specifics of your system
 
 #. After the installation, launch the Docker app and wait until it's *fully* started. 
 
@@ -101,8 +111,8 @@ The Docker image linked above in ``imageName`` is a manually pinned image that w
 Install libraries locally
 -------------------------
 
-If you prefer to install the project directly in your local environment or just want to use the functions in your own scripts, you can download the project's  repository. 
-The project is currently hosted on the `Swiss Data Science Center <https://datascience.ch>`__ GitLab server, you can find the repository here: 
+If you prefer to install the project directly in your local environment or just want to use the functions in your own scripts, you can download the repo and install it as a Python package. 
+The project is hosted on the `Swiss Data Science Center <https://datascience.ch>`__ GitLab server, you can find the repository here: 
 
     .. rst-class:: center
 
@@ -123,7 +133,7 @@ This will create a folder called ``mzb-workflow`` in the current working directo
 .. hint:: \ \ 
    If you don't want to use Git, you can directly download an archive of the `repository <https://renkulab.io/gitlab/biodetect/mzb-workflow>`__ from GitLab and extract it manually. 
 
-You can then install the necessary packages using the conda package manager and the ``environment.yml`` file: 
+You can then install the necessary packages using the mamba package manager and the ``environment.yml`` file: 
 
 .. code-block:: bash
 
@@ -131,7 +141,7 @@ You can then install the necessary packages using the conda package manager and 
     mamba env create -f environment.yml    # or use conda env create -f environment.yml
 
 .. hint:: \ \ 
-   If you don't have the ``conda`` command available, you need to install it.    
+   If you don't have the ``conda`` command available, you need to install it. Check "Add to PATH" during installation so you can access the command from any terminal. 
    We strongly recommend using Mamba, find installation instruction `here <https://mamba-framework.readthedocs.io/en/latest/installation_guide.html>`__; but if you prefer you can also install `Anaconda <https://www.anaconda.com/download>`__.
 
 .. _pip_install_mzbsuite:
@@ -154,4 +164,4 @@ the ``-e`` flag will install the package in editable mode, so that you can make 
 
    and check that ``mzbsuite`` appears in the  list. 
 
-If there are no errors then you're all set up and can start using the modules! 
+If there are no errors then you're all set up and can start using the package! 
