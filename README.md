@@ -50,6 +50,8 @@ LEAVE BLANK FOR PREPRINT OR PAPER
 
 ## Changelog 
 
+**v0.2.3** Restructuring notebooks & documentation.  
+
 **v0.2.2** Added Windows native command prompt support. 
 
 **v0.2.1** Adding CI to GitHub and GitHub Pages for serving docs. 
