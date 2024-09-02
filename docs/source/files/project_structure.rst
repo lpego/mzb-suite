@@ -20,7 +20,7 @@ Below we describe what the various directories in the project repository are use
     ..     **TODO** Some CSV with derived measures and features are momentarily stored there but might not always be needed. We can maybe generate those conditionally by addition option in ``configs/global_configuration.yaml``.
 
 - ``mzbsuite/``: contains the functions for each module; these are called in the scripts provided but can also be called from users' own scripts by importing the ``mzbsuite`` package. 
-- ``scripts/``: contains the scripts to run the different modules. Each module has its own folder, and each script is named after the module it implements. These modules can be run in isolation (i.e. each one can be run independently from the others from the command line). See :ref:`files/examples/Workflow files`, and also :ref:`files/workflow_models:Models` for details on the arguments these scripts take. 
+- ``scripts/``: contains the scripts to run the different modules. Each module has its own folder, and each script is named after the module it implements. These modules can be run in isolation (i.e. each one can be run independently from the others from the command line). See :ref:`files/how_to_use:Working with the project`, and also :doc:`scripts/processing_scripts` for details on the arguments these scripts take. 
 
     .. .. note:: 
     ..     **TODO** Need to make so that renku workflow can track main inputs and outputs without making it too complex. 
@@ -32,7 +32,7 @@ Below we describe what the various directories in the project repository are use
     ..     **TODO** Maybe good idea to create copies of this config, with per-experiment naming, or create a branch of the repo, etc. Make sure to version those also, with good commit names. 
 
 - ``results/``: is created by default upon running the scripts or workflows, and is meant to contain the outputs of the different modules. Each module has its own folder, and each script is named after the module it implements. 
-- ``workflows/``: contains the workflows bash scripts (`.sh`), that allow to run one or multiple modules with shared parameters (e.g. on the same dataset). Running parameters are also declared in this bash scripts; refer to :ref:`files/examples/Workflow files` for a more detailed explanation. 
+- ``workflows/``: contains the workflows bash scripts (`.sh`), that allow to run one or multiple modules with shared parameters (e.g. on the same dataset). Running parameters are also declared in this bash scripts; refer to :ref:`files/how_to_use:Workflow scripts` for a more detailed explanation. 
 
 The file ``environment.yml`` contains all the minimal dependencies for the project, and should install the functions in ``mzbsuite`` as well. However, if this does not work, the ``mzbsuite`` package can be installed separately using the ``setup.py`` file in the ``mzbsuite`` folder, via ``pip`` (see :ref:`here <pip_install_mzbsuite>`)
 
@@ -85,12 +85,3 @@ See the model `original paper <https://arxiv.org/abs/2105.15203>`__ for more det
 Adding a new model
 __________________
 In ``mzbsuite/utils.py`` you can either add a case to the function ``read_pretrained_model(architecture, n_class)`` or add a function returning a pytorch model. In general, the layers of these classifiers are all frozen and only the last fully connected layers are trained on the annotated data. This seemed to work in most of our cases, but can be changed in a simple way in the function. 
-
-.. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Logging your model's training
-_____________________________
-To be able to tell whether a model is learning properly and/or is overfitting, it's necessary to log its progress while training. We support two loggers for this: 
-
- - For `Weights & Biases <https://docs.wandb.ai/>`__, you will need to create (free) account and install the necessary dependencies; refer to the documentation `here <https://wandb.ai/site/experiment-tracking>`__. After installing all requirements, run ``wandb login`` and provide your credentials when prompted.
- - For `TensorBoard <https://www.tensorflow.org/tensorboard>`__, please follow the installation instructions `here <https://www.tensorflow.org/tensorboard/get_started>`__. You will also need to specify which logger to use in the ``model_logger`` parameter in the configuration file (see :ref:`files/configuration:Configuration`). 
