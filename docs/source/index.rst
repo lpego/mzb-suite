@@ -52,22 +52,22 @@ Gallery
 :doc:`files/examples/demo`
     Demonstration of ``mzb-suite`` features. 
 
-.. :doc:`files/examples/read_example`
+.. :doc:`_collections/files/examples/read_example`
 ..     How to change paths to files in notebooks
 
-:doc:`files/examples/segmentation`
+:doc:`_collections/files/examples/segmentation`
     Example of extracting clips from large images
 
-:doc:`files/examples/classification_inference`
+:doc:`_collections/files/examples/classification_inference`
     Example of automatically identifying taxa from organisms clips
 
-.. :doc:`files/examples/classification_finetune`
+.. :doc:`_collections/files/examples/classification_finetune`
 ..     Example of retraining classification model
 
-:doc:`files/examples/skeletonization_unsupervised`
+:doc:`_collections/files/examples/skeletonization_unsupervised`
     Example of extracting body length from organism clips
 
-:doc:`files/examples/skeletonization_supervised_inference`
+:doc:`_collections/files/examples/skeletonization_supervised_inference`
     Example of extracting body length and head width from organism clips
 
 .. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -110,11 +110,11 @@ API reference
     :hidden:
 
     files/examples/demo
-    files/examples/segmentation
-    files/examples/classification_inference
-    .. files/examples/classification_finetune
-    files/examples/skeletonization_unsupervised
-    files/examples/skeletonization_supervised_inference
+    _collections/files/examples/segmentation
+    _collections/files/examples/classification_inference
+    _collections/files/examples/classification_finetune
+    _collections/files/examples/skeletonization_unsupervised
+    _collections/files/examples/skeletonization_supervised_inference
 
 .. toctree::
     :caption: Scripts
