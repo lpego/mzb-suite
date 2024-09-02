@@ -1,9 +1,9 @@
 Configuration
 =============
 
-All **project parameters** (i.e. pertaining to a specific dataset) are contained in a configuration file, located in ``/configs/{configuration_file}.yaml``. This file, together with input/output directories and other running parameters specified directly via CLI (i.e. Command Line Interface) or via shell script (see also :doc:`files/how_to_use`), pass the necessary parameters to the scripts. 
+All **project parameters** (i.e. pertaining to a specific dataset) are contained in a configuration file, located in ``/configs/{configuration_file}.yaml``. This file, together with input/output directories and other running parameters specified directly via CLI (i.e. Command Line Interface) or via shell script (see also :ref:`files/how_to_use:Workflow scripts`), pass the necessary parameters to the scripts. 
 
-The idea here is that the user can specify all necessary parameters for each project in this configuration file, so that one batch of images acquired in the same way (i.e. one project) always corresponds to one configuration file. See :ref:`files/best_practices` for project organisation tips. 
+The idea here is that the user can specify all necessary parameters for each project in this configuration file, so that one batch of images acquired in the same way (i.e. one project) always corresponds to one configuration file. See :ref:`files/best_practices:Keep your workspace organised` for project organisation tips. 
 
 We also provide a complete configuration file ``configs/mzb_example_config.yaml`` for the example project ``data/mzb_example_data``, that can be used as a template for user's own configuration file for their projects (we recommend making a copy of it for each new project!). 
 
