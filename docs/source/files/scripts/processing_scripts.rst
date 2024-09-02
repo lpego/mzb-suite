@@ -8,7 +8,7 @@ All the code in ``scripts/`` (except ``diverse_preprocessing``, see :ref:`files/
     if __name__ == "__main__": 
         {code}
 
-This idiom allows the code to be run when called as a script (for example, when we call it using a ``.sh`` file or run it in interactive session, see :ref:`files/workflow_models:Working with the project`), but also allows it to be imported as a module and therefore call its functions in your own scripts directly. 
+This idiom allows the code to be run when called as a script (for example, when we call it using a ``.sh`` file or run it in interactive session, see :ref:`files/how_to_use:Working with the project`), but also allows it to be imported as a module and therefore call its functions in your own scripts directly. 
 
 You can read more about ``__main__`` functions in this `tutorial <https://realpython.com/if-name-main-python/>`__. 
 
@@ -155,7 +155,7 @@ The re-training script ``main_supervised_skeletons_finetune.py`` is as follows:
 #. Setup progress bar and keep track of logging date with custom class ``mzbsuite.utils.SaveLogCallback``. 
 #. Use the custom class ``mzbsuite.skeletons.mzb_skeletons_pilmodel.MZBModel_skels`` to pass config file arguments to model. 
 #. Check if there is a model to continue training from, otherwise load the best validated model and continue training from that. 
-#. Pass model training progress to Weigths & Biases logger (for more detail see :ref:`files/workflow_models:Logging your model's training`)
+#. Pass model training progress to Weigths & Biases logger (for more detail see :ref:`files/best_practices:Logging your model's training`)
 #. Setup ``torch.Trainer`` using parameters defined in the config file and above. 
 #. Fit model. 
 
@@ -220,6 +220,6 @@ The script ``main_classification_finetune.py`` allows to (re)train a model for c
 #. Define best and last model callbacks using the ``pytorch_lightning.callbacks.ModelCheckpoint``. 
 #. Define model from hyperparameters specified in configuration file. 
 #. Check if there is a model previously trained, otherwise load best model (evaluated on validation set). 
-#. Define run name and logger callback (see :ref:`files/workflow_models:Logging your model's training`). 
+#. Define run name and logger callback (see :ref:`files/best_practices:Logging your model's training`). 
 #. Setup ``torch.Trainer`` using parameters defined in the config file.
 #. Fit model. 
