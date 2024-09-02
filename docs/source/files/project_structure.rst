@@ -26,6 +26,7 @@ Below we describe what the various directories in the project repository are use
     ..     **TODO** Need to make so that renku workflow can track main inputs and outputs without making it too complex. 
 
 - ``models/``: contains the pretrained models used in the different modules. By default, new models are first downloaded from Pytorch model zoo, and the finetuned models are then saved in this folder. A few pre-trained models are provided. 
+- ``notebooks/``: contains the Jupyter notebooks used to generate visualisations and run the pipelines; see :ref:`files/how_to_use:Visualisations with Jupyter notebooks`. 
 - ``configs/``: contains the project configuration file, ``config.yaml``, which contains all the parameters for the different modules. This file contains all the settings and hyperparameters for image processing and moel training, and it can be modified by the user to change the behavior of the scripts. The configuration files is always a required input to the scripts. 
 
     .. .. note:: 
