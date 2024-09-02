@@ -52,6 +52,7 @@ extensions = [
     "sphinx.ext.autosectionlabel", 
     "sphinx.ext.napoleon", 
     "nbsphinx",
+    "sphinxcontrib.collections",
 ]
 
 # Automatic labels for sections etc, prefixed for each file for each file
@@ -60,28 +61,11 @@ autosectionlabel_prefix_document = True
 
 # Napoleon is for formatting NumPy and Google style docstring
 
+
 # -- Jupyter notebooks ---------------------------------------------------
 # Jupyter notebooks are handled by nbsphinx
 nbsphinx_allow_errors = True # this allows errors in .ipynb file executions
 nbsphinx_execute = 'never' # don't execute notebooks at each build
-
-# # Workaround to keep notebooks outside of Sphinx root dir
-# # from https://github.com/spatialaudio/nbsphinx/issues/170#issuecomment-373497587
-# print("Copy external notebooks into docs/_examples")
-
-# def all_but_ipynb(dir, contents):
-#     result = []
-#     for c in contents:
-#         if os.path.isfile(os.path.join(dir,c)) and (not c.endswith(".ipynb")):
-#             result += [c]
-#     return result
-
-# project_root = "D:\\mzb-workflow"
-
-# shutil.rmtree(os.path.join(project_root, "docs\\source\\files\\examples"), ignore_errors=True)
-# shutil.copytree(os.path.join(project_root, "notebooks"),
-#                 os.path.join(project_root, "docs\\source\\files\\examples"),
-#                 ignore=all_but_ipynb)
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
@@ -120,4 +104,19 @@ html_theme_options = {
     "navigation_depth": 3,
     "includehidden": True,
     "titles_only": False,
+}
+
+
+# -- Sphinx Collections --------------------------------------------------
+# https://github.com/useblocks/sphinx-collections 
+# To keep .ipynb notebooks outside of Sphinx's root dir but still include them in documentation
+# Seems that source path is relative to where you launch the sphinx-build command??? 
+collections = {
+    'my_files': {
+        'driver': 'copy_folder',
+        'source': '../notebooks/',
+        'target': 'files/examples/',
+        'ignore': [],
+        'final_clean': True, 
+    }
 }
