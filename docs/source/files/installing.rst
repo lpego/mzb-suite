@@ -34,7 +34,7 @@ From there you can run the example workflow by simply typing:
 
         workflows/mzb_example_full_pipeline.sh
 
-You can also upload your own images and test `mzb-suite` on them! Simply create a new folder under ``/data`` and change the input / output directories in the ``workflows/mzb_example_full_pipeline.sh`` script accordingly (see :ref:`files/how_to_use:Workflow files` for more details). 
+You can also upload your own images and test `mzb-suite` on them! Simply create a new folder under ``/data`` and change the input / output directories in the ``workflows/mzb_example_full_pipeline.sh`` script accordingly (see :ref:`files/how_to_use:Workflow scripts` for more details). 
 
     .. admonition:: \ \ 
         
@@ -92,13 +92,13 @@ If you want to run the pipeline on yur own data and local computer resources but
 
 #. We highly recommend using an IDE like `Visual Studio Code <https://code.visualstudio.com/>`__ to access the Docker container. 
     
-    #. Once you have VS Code installed (follow link above), you can install the `VS Code Docker extension <https://code.visualstudio.com/docs/containers/overview>`__. 
-    #. If your container is already started, you can attach VS Code to it by opening the Docker extension side panel and right-clicking the container, then select "Attach VS Code to runnning container". 
-    #. You will be dropped in the container's terminal and will have access to the volume (i.e. the local folder on your computer with the data) mounted on it. 
+    - Once you have VS Code installed (follow link above), you can install the `VS Code Docker extension <https://code.visualstudio.com/docs/containers/overview>`__. 
+    - If your container is already started, you can attach VS Code to it by opening the Docker extension side panel and right-clicking the container, then select "Attach VS Code to runnning container". 
+    - You will be dropped in the container's terminal and will have access to the volume (i.e. the local folder on your computer with the data) mounted on it. 
 
 #. Alternatively, you can also directly copy-paste the URL address starting with ``http://127.0.0.1`` into your browser (e.g. Firefox, Chrome), hit Enter, and you should drop into a JupyterLab interface. 
 
-The procedure is the same when starting the Docker image the following times, except it will not download it again therefore should be much faster launching it. 
+The procedure is the same when starting the Docker image the following times, except it will not download it again therefore should be much faster launching it. Please not that the ``base`` environment (activated by default) in the Docker container already contains all required dependencies, so you don't need to activate it using ``mamba``. 
 
 The animation below shows the procedure to launch the container from Docker Desktop, and attach VS Code to it (requires the image to already have been downloaded). 
 
@@ -109,9 +109,10 @@ The animation below shows the procedure to launch the container from Docker Desk
 
 .. hint:: 
     If you have a CUDA-capable GPU, using its resources in Docker requires additional configuration, see `NVidia container toolkit <https://github.com/NVIDIA/nvidia-container-toolkit>`__. 
+
 Using the most up-to-date Docker image
 ______________________________________
-The Docker image provided above saved as variable ``imageName`` is a manually pinned image that we tested and we know works. It might not contain the most most up to date versions of scripts, especially if we pushed changes to the repo recently. If you want to pull the most updated Docker image, please follow instructions `<here https://renku.readthedocs.io/en/stable/how-to-guides/own_machine/reusing-docker-images.html>`__. 
+The Docker image provided above saved as variable ``imageName`` is a manually pinned image that we tested and we know works. It might not contain the most most up to date versions of scripts, especially if we pushed changes to the repo recently. If you want to pull the most updated Docker image, please follow instructions `here <https://renku.readthedocs.io/en/stable/how-to-guides/own_machine/reusing-docker-images.html>`__. 
 
 .. admonition:: \ \ 
 
