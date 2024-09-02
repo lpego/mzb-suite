@@ -41,6 +41,9 @@ The MZB project
 :doc:`files/configuration`
     Explanation fo the configuration file and recommended parameter values. 
 
+:doc:`files/best_practices`
+    Some tips on how to organise your project to make your life easier. 
+
 .. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Gallery
@@ -49,8 +52,8 @@ Gallery
 :doc:`files/examples/demo`
     Demonstration of ``mzb-suite`` features. 
 
-:doc:`files/examples/read_example`
-    How to change paths to files in notebooks
+.. :doc:`files/examples/read_example`
+..     How to change paths to files in notebooks
 
 :doc:`files/examples/segmentation`
     Example of extracting clips from large images
@@ -58,8 +61,8 @@ Gallery
 :doc:`files/examples/classification_inference`
     Example of automatically identifying taxa from organisms clips
 
-:doc:`files/examples/classification_finetune`
-    Example of retraining classification model
+.. :doc:`files/examples/classification_finetune`
+..     Example of retraining classification model
 
 :doc:`files/examples/skeletonization_unsupervised`
     Example of extracting body length from organism clips
@@ -69,14 +72,22 @@ Gallery
 
 .. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Processing scripts
-==================
+Scripts
+=======
 
 :doc:`files/scripts/processing_scripts`
     Detailed explanation for processing functions
 
 :doc:`files/scripts/diverse_preprocessing`
     Details of other convenience scripts
+
+.. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+API reference
+=============
+
+:doc:`files/modules/mzbsuite`
+    Documentation on functions and parameters
 
 .. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -91,21 +102,22 @@ Processing scripts
     files/how_to_use
     files/project_structure
     files/configuration
+    files/best_practices
 
 .. toctree::
-    :caption: Examples
+    :caption: Gallery
     :maxdepth: 1
     :hidden:
 
-    files/examples/read_example
+    files/examples/demo
     files/examples/segmentation
+    files/examples/classification_inference
+    .. files/examples/classification_finetune
     files/examples/skeletonization_unsupervised
     files/examples/skeletonization_supervised_inference
-    files/examples/classification_inference
-    files/examples/classification_finetune
 
 .. toctree::
-    :caption: Processing scripts
+    :caption: Scripts
     :maxdepth: 1
     :hidden:
 
@@ -113,7 +125,7 @@ Processing scripts
     files/scripts/diverse_preprocessing
 
 .. toctree::
-    :caption: mzbsuite Module
+    :caption: API reference
     :maxdepth: 1 
     :hidden:
 
