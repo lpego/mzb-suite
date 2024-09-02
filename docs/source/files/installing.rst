@@ -51,8 +51,7 @@ If you want to run the pipeline on yur own data and local computer resources but
     .. admonition:: \ \ 
 
         Admin privileges may be needed to install Docker Engine. 
-
-        On some systems, it might be necessary to enable virtualization in the BIOS. This depends on the specifics of your system
+        Additionally, on some systems, it might be necessary to enable virtualization in the BIOS. How to do this depends on the specifics of your system: look online for a guide specific for your computer manufacturer / model. 
 
 #. After the installation, launch the Docker app and wait until it's *fully* started. 
 
@@ -91,16 +90,28 @@ If you want to run the pipeline on yur own data and local computer resources but
             http://a62c488a6f4c:8888/lab?token=2fb162adc7251f04e37cb8d6f1f55db2fbdbc7d2e1d9e1e8
             http://127.0.0.1:8888/lab?token=2fb162adc7251f04e37cb8d6f1f55db2fbdbc7d2e1d9e1e8
 
-#. Copy-paste the URL address starting with ``http://127.0.0.1`` into your browser (e.g. Firefox, Chrome), hit Enter, and you should drop into the JupyterLab interface. 
+#. We highly recommend using an IDE like `Visual Studio Code <https://code.visualstudio.com/>`__ to access the Docker container. 
+    
+    #. Once you have VS Code installed (follow link above), you can install the `VS Code Docker extension <https://code.visualstudio.com/docs/containers/overview>`__. 
+    #. If your container is already started, you can attach VS Code to it by opening the Docker extension side panel and right-clicking the container, then select "Attach VS Code to runnning container". 
+    #. You will be dropped in the container's terminal and will have access to the volume (i.e. the local folder on your computer with the data) mounted on it. 
+
+#. Alternatively, you can also directly copy-paste the URL address starting with ``http://127.0.0.1`` into your browser (e.g. Firefox, Chrome), hit Enter, and you should drop into a JupyterLab interface. 
 
 The procedure is the same when starting the Docker image the following times, except it will not download it again therefore should be much faster launching it. 
 
-    .. hint:: 
-        If you would rather use an IDE, we recommend `Visual Studio Code <https://code.visualstudio.com/>`__; to access the Docker container read about `VS Code Docker extension <https://code.visualstudio.com/docs/containers/overview>`__ and `working with containers <https://code.visualstudio.com/docs/devcontainers/containers>`__. 
+The animation below shows the procedure to launch the container from Docker Desktop, and attach VS Code to it (requires the image to already have been downloaded). 
 
-Using the most up to date image
-_______________________________
-The Docker image linked above in ``imageName`` is a manually pinned image that we tested and we know works. It might not contain the most most up to date versions of scripts if we pushed changes to the repo recently. If you want to pull the most updated Docker image, please follow instructions `<here https://renku.readthedocs.io/en/stable/how-to-guides/own_machine/reusing-docker-images.html>`__. 
+.. image:: ../../assets/VSCode_AttachVSCtoContainer.gif
+
+.. hint:: 
+    Read more about Docker containers in `VS Code Docker extension <https://code.visualstudio.com/docs/containers/overview>`__ and `working with containers <https://code.visualstudio.com/docs/devcontainers/containers>`__. 
+
+.. hint:: 
+    If you have a CUDA-capable GPU, using its resources in Docker requires additional configuration, see `NVidia container toolkit <https://github.com/NVIDIA/nvidia-container-toolkit>`__. 
+Using the most up-to-date Docker image
+______________________________________
+The Docker image provided above saved as variable ``imageName`` is a manually pinned image that we tested and we know works. It might not contain the most most up to date versions of scripts, especially if we pushed changes to the repo recently. If you want to pull the most updated Docker image, please follow instructions `<here https://renku.readthedocs.io/en/stable/how-to-guides/own_machine/reusing-docker-images.html>`__. 
 
 .. admonition:: \ \ 
 
@@ -110,7 +121,6 @@ The Docker image linked above in ``imageName`` is a manually pinned image that w
 
 Install libraries locally
 -------------------------
-
 If you prefer to install the project directly in your local environment or just want to use the functions in your own scripts, you can download the repo and install it as a Python package. 
 The project is hosted on the `Swiss Data Science Center <https://datascience.ch>`__ GitLab server, you can find the repository here: 
 
@@ -160,8 +170,14 @@ the ``-e`` flag will install the package in editable mode, so that you can make 
 
    .. code-block:: bash
     
-    conda list -n mzbsuite
+    mamba list -n mzbsuite
 
    and check that ``mzbsuite`` appears in the  list. 
 
 If there are no errors then you're all set up and can start using the package! 
+
+Remember that you always have to activate the environment before running mzb-suite, like so: 
+
+.. code-block:: bash
+
+    mamba activate mzbsuite

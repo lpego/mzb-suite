@@ -22,6 +22,8 @@ To try out ``mzb-suite``, the quickest way to is to spin a virtual session on Re
 
 If you want to install locally (recommended for day to day use), follow the instruction using :ref:`files/installing:Docker container` (recommended for novice users) or :ref:`files/installing:Install libraries locally` (advanced users). 
 
+To see how you can run the project scrips head over to :doc:`files/how_to_use`. 
+
 .. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The MZB project
@@ -53,17 +55,17 @@ Gallery
 :doc:`files/examples/segmentation`
     Example of extracting clips from large images
 
-:doc:`files/examples/skeletonization_unsupervised`
-    Example of extracting body length from organism clips
-
-:doc:`files/examples/skeletonization_supervised_inference`
-    Example of extracting body length and head width from organism clips
-
 :doc:`files/examples/classification_inference`
     Example of automatically identifying taxa from organisms clips
 
 :doc:`files/examples/classification_finetune`
     Example of retraining classification model
+
+:doc:`files/examples/skeletonization_unsupervised`
+    Example of extracting body length from organism clips
+
+:doc:`files/examples/skeletonization_supervised_inference`
+    Example of extracting body length and head width from organism clips
 
 .. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
