@@ -114,7 +114,7 @@ html_theme_options = {
 collections = {
     'my_files': {
         'driver': 'copy_folder',
-        'source': '../../notebooks/',
+        'source': '../../../notebooks/',
         'target': 'files/examples/',
         'ignore': [],
         'final_clean': True, 
