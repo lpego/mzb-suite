@@ -114,7 +114,7 @@ html_theme_options = {
 collections = {
     'my_files': {
         'driver': 'copy_folder',
-        'source': '../../../notebooks/',
+        'source': '/home/docs/checkouts/readthedocs.org/user_builds/mzb-workflow//notebooks/',
         'target': 'files/examples/',
         'ignore': [],
         'final_clean': True, 
