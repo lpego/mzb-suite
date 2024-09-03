@@ -107,16 +107,16 @@ html_theme_options = {
 }
 
 
-# -- Sphinx Collections --------------------------------------------------
-# https://github.com/useblocks/sphinx-collections 
-# To keep .ipynb notebooks outside of Sphinx's root dir but still include them in documentation
-# Seems that source path is relative to where you launch the sphinx-build command??? 
-collections = {
-    'my_files': {
-        'driver': 'copy_folder',
-        'source': '/notebooks/',
-        'target': 'files/examples/',
-        'ignore': [],
-        'final_clean': True, 
-    }
-}
+# # -- Sphinx Collections --------------------------------------------------
+# # https://github.com/useblocks/sphinx-collections 
+# # To keep .ipynb notebooks outside of Sphinx's root dir but still include them in documentation
+# # Seems that source path is relative to where you launch the sphinx-build command??? 
+# collections = {
+#     'my_files': {
+#         'driver': 'copy_folder',
+#         'source': '/notebooks/',
+#         'target': 'files/examples/',
+#         'ignore': [],
+#         'final_clean': True, 
+#     }
+# }
