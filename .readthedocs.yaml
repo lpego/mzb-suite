@@ -29,6 +29,8 @@ build:
       - ./git-lfs checkout
     pre_build:
       - echo "Copying notebooks into docs dir..."
+      - pwd
+      - ls
       - cp -r mzb-workflow/notebooks/ mzb-workflow/docs/source/_collections/files/examples/
     post_build: 
       - rm -r mzb-workflow/docs/source/_collections/files/examples/
