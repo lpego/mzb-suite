@@ -28,9 +28,10 @@ build:
       # Make local files to have the real content on them
       - ./git-lfs checkout
     pre-build:
-      - cp -r mzb-workflow/notebooks/ mzb-workflow/docs/source/_collections/files/examples/
-    post-build: 
-      - rm -r mzb-workflow/docs/source/_collections/files/examples/
+      - echo "Copying notebooks into docs dir..."
+      # - cp -r mzb-workflow/notebooks/ mzb-workflow/docs/source/_collections/files/examples/
+    # post-build: 
+    #   - rm -r mzb-workflow/docs/source/_collections/files/examples/
 
 # Build documentation in the "docs/" directory with Sphinx
 sphinx:
