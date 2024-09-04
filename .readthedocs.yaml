@@ -30,7 +30,8 @@ build:
       - echo "Copying notebooks into docs dir..."
       - pwd
       - ls
-      - cp -r notebooks/ docs/source/_collections/files/examples/
+      - mkdir docs/source/_collections/files/examples/
+      - cp -r notebooks/. docs/source/_collections/files/examples/
     # post_build: 
     #   - rm -r docs/source/_collections/files/examples/ git-lfs git-lfs-linux-amd64-v3.1.4.tar.gz
 
