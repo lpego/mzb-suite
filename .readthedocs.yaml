@@ -32,8 +32,9 @@ build:
       - ls
       - mkdir -p docs/source/_collections/files/examples/
       - cp -r notebooks/. docs/source/_collections/files/examples/
+      - ls docs/source/_collections/files/examples/
     # post_build: 
-    #   - rm -r docs/source/_collections/files/examples/ git-lfs git-lfs-linux-amd64-v3.1.4.tar.gz
+    #   - rm -r docs/source/_collections/files/examples/
 
 # Build documentation in the "docs/" directory with Sphinx
 sphinx:
