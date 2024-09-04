@@ -52,6 +52,7 @@ extensions = [
     "sphinx.ext.autosectionlabel", 
     "sphinx.ext.napoleon", 
     "nbsphinx",
+    "sphinxcontrib.collections",
 ]
 
 # Automatic labels for sections etc, prefixed for each file for each file
@@ -103,4 +104,20 @@ html_theme_options = {
     "navigation_depth": 3,
     "includehidden": True,
     "titles_only": False,
+}
+
+
+# -- Sphinx Collections --------------------------------------------------
+# https://github.com/useblocks/sphinx-collections 
+# To keep .ipynb notebooks outside of Sphinx's root dir but still include them in documentation
+# Seems that source path is relative to where you launch the sphinx-build command??? 
+# This works when running sphinx-build in the root of the docs dir
+collections = {
+    'some_other_name': {
+        'driver': 'copy_folder',
+        'source': '../notebooks/',
+        'target': '/files/examples/',
+        'ignore': ["demo.ipynb"],
+        'final_clean': True, 
+    }
 }
