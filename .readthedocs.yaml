@@ -6,7 +6,6 @@
 version: 2
 
 # Set the OS, Python version and other tools you might need
-version: 2
 build:
   os: "ubuntu-20.04"
   tools:
@@ -29,8 +28,8 @@ build:
       - ./git-lfs checkout
     pre_build:
       - echo "Copying notebooks into docs dir..."
-      # - pwd
-      # - ls
+      - pwd
+      - ls
       - cp -r notebooks/ docs/source/_collections/files/examples/
     # post_build: 
     #   - rm -r docs/source/_collections/files/examples/ git-lfs git-lfs-linux-amd64-v3.1.4.tar.gz
