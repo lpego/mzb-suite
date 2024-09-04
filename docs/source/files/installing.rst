@@ -133,18 +133,18 @@ To download the project, you simply need to clone it into a location of your cho
 
 .. code-block:: bash
 
-    git clone git@renkulab.io:biodetect/mzb-workflow.git
+    git clone https://gitlab.renkulab.io/biodetect/mzb-workflow.git
 
 .. admonition:: \ \ 
    
-   If you don't have Git installed, you can follow instructions `here <https://git-scm.com/downloads>`__. We recommend using Git because it allows to easily update the package and tracking any changes you make. 
+   If you don't have Git installed, you can follow instructions `here <https://git-scm.com/downloads>`__. We recommend using Git because it allows you to easily update the package, and to track any changes you make to the source code. 
 
 This will create a folder called ``mzb-workflow`` in the current working directory. 
 
 .. hint:: \ \ 
    If you don't want to use Git, you can directly download an archive of the `repository <https://renkulab.io/gitlab/biodetect/mzb-workflow>`__ from GitLab and extract it manually. 
 
-You can then install the necessary packages using the mamba package manager and the ``environment.yml`` file: 
+You can then install the necessary packages using the a package manager like `mamba <https://github.com/conda-forge/miniforge>`__ or `conda <https://conda.io/projects/conda/en/latest/user-guide/install/index.html>`__, using the ``environment.yml`` file: 
 
 .. code-block:: bash
 
@@ -152,8 +152,7 @@ You can then install the necessary packages using the mamba package manager and 
     mamba env create -f environment.yml    # or use conda env create -f environment.yml
 
 .. hint:: \ \ 
-   If you don't have the ``conda`` command available, you need to install it. Check "Add to PATH" during installation so you can access the command from any terminal. 
-   We strongly recommend using Mamba, find installation instruction `here <https://mamba-framework.readthedocs.io/en/latest/installation_guide.html>`__; but if you prefer you can also install `Anaconda <https://www.anaconda.com/download>`__.
+   We strongly recommend using Mamba, find installation instruction `here <https://mamba-framework.readthedocs.io/en/latest/installation_guide.html>`__. If you don't have the ``mamba`` or  ``conda`` commands available, you might need to reinstall them, making sure to check "Add to PATH" during installation so you can access the command from any terminal. 
 
 .. _pip_install_mzbsuite:
 
@@ -182,3 +181,24 @@ Remember that you always have to activate the environment before running mzb-sui
 .. code-block:: bash
 
     mamba activate mzbsuite
+
+Install GPU support
+___________________ 
+
+If you open ``environment.yml``, you will see that there are a few lines commented out. By default, we install the CPU-only version of packages, but if you have a CUDA-capable GPU available, you can install the CUDA version and benefit from GPU acceleration. 
+
+.. admonition:: \ \ 
+
+    You will also need to have CUDA-compatible drivers for your GPU installed, as well as `CUDA toolkit <https://developer.nvidia.com/cuda-toolkit>`__ installed. Check out this short `guide <https://mct-master.github.io/machine-learning/2023/04/25/olivegr-pytorch-gpu.html>`__ for help. 
+
+In ``environment.yml``, simply comment out the line ``- pytorch::cpuonly``, and remove the comment from ``- pytorch-cuda=11.8``; your pytorch dependencies should like so: 
+
+.. code-block:: yaml
+
+    - pytorch::pytorch=2.0.1
+    - pytorch::torchvision=0.15.2
+    - pytorch-cuda=11.8
+    # - pytorch::cpuonly
+    - pytorch-lightning=2.0.3
+
+
