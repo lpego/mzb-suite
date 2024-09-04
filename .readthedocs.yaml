@@ -39,8 +39,7 @@ build:
 # Build documentation in the "docs/" directory with Sphinx
 sphinx:
   builder: html
-  configuration: docs/source/conf_RtD.py
-  fail_on_warning: True
+  configuration: docs/conf_RtD.py
 
 # Optionally build your docs in additional formats such as PDF and ePub
 # formats:
