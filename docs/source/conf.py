@@ -116,7 +116,7 @@ collections = {
     'some_other_name': {
         'driver': 'copy_folder',
         'source': '../notebooks/',
-        'target': '/files/examples/',
+        'target': 'files/examples/',
         'ignore': ["demo.ipynb"],
         'final_clean': True, 
     }
