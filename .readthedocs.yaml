@@ -34,14 +34,14 @@ build:
       - cp -r notebooks/. docs/source/_collections/files/examples/
       - ls docs/source/_collections/files/examples/
       - ls docs/
-      - ls docs/source/
+      - ls docs/RtD/
     # post_build: 
     #   - rm -r docs/source/_collections/files/examples/
 
 # Build documentation in the "docs/" directory with Sphinx
 sphinx:
   builder: html
-  configuration: docs/RtD/conf_RtD.py
+  configuration: docs/RtD/conf.py
 
 # Optionally build your docs in additional formats such as PDF and ePub
 # formats:
