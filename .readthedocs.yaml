@@ -35,13 +35,15 @@ build:
       - ls docs/source/_collections/files/examples/
       - ls docs/
       - ls docs/RtD/
+      # overwriting local build conf.py
+      - cp -f docs/RtD/conf.py docs/source/conf.py
     # post_build: 
     #   - rm -r docs/source/_collections/files/examples/
 
 # Build documentation in the "docs/" directory with Sphinx
 sphinx:
   builder: html
-  configuration: docs/RtD/conf.py
+  configuration: docs/source/conf.py
 
 # Optionally build your docs in additional formats such as PDF and ePub
 # formats:
