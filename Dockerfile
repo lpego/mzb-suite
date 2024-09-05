@@ -43,7 +43,8 @@ RUN apt-get update && \
     ffmpeg \
     libsm6 \
     libxext6 \
-    htop
+    htop \ 
+    git
 USER ${NB_USER}
 
 # USER root
@@ -60,6 +61,11 @@ RUN mamba env update --name base --file /tmp/environment.yml && \
     mamba clean -y --all && \
     mamba env export -n "base" && \
     rm -rf ${HOME}/.renku/venv && \
+    # sparse-clone mzb-workflow repo and install in base env with pip
+    git clone -n --depth=1 --filter=tree:0 https://gitlab.renkulab.io/biodetect/mzb-workflow && \
+    cd mzb-workflow && \ 
+    git sparse-checkout set --no-cone mzbsuite && \ 
+    git checkout && \ 
     pip install -e .
 
 COPY --from=builder ${HOME}/.renku/venv ${HOME}/.renku/venv
