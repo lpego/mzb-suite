@@ -59,6 +59,7 @@ RUN mamba env update --name base --file /tmp/environment.yml && \
     /opt/conda/bin/pip install -r /tmp/requirements.txt --no-cache-dir && \
     mamba clean -y --all && \
     mamba env export -n "base" && \
-    rm -rf ${HOME}/.renku/venv
+    rm -rf ${HOME}/.renku/venv && \
+    pip install -e .
 
 COPY --from=builder ${HOME}/.renku/venv ${HOME}/.renku/venv
