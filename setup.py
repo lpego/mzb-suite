@@ -12,7 +12,7 @@ def read(fname):
 
 setup(
     name="mzbsuite",
-    version="0.2.2",
+    version="0.2.3",
     author="Michele Volpi, Luca Pegoraro",
     author_email="mivolpi@ethz.ch",
     description=(
@@ -24,7 +24,7 @@ setup(
     packages=[],
     long_description=read("README.md"),
     classifiers=[
-        "Development Status :: 1 -- Planning",
+        "Development Status :: 3 -- Alpha",
         "Topic :: Scientific/Engineering :: Image Recognition",
         "License :: OSI Approved :: BSD License",
     ],
