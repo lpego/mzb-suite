@@ -68,6 +68,7 @@ RUN mamba env update --name base --file /tmp/environment.yml && \
     git sparse-checkout set --no-cone mzbsuite && \ 
     git checkout && \ 
     wget https://gitlab.renkulab.io/biodetect/mzb-workflow/-/raw/master/setup.py && \
+    wget https://gitlab.renkulab.io/biodetect/mzb-workflow/-/raw/master/README.md && \
     pip install -e .
 
 COPY --from=builder ${HOME}/.renku/venv ${HOME}/.renku/venv
