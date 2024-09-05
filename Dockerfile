@@ -44,7 +44,8 @@ RUN apt-get update && \
     libsm6 \
     libxext6 \
     htop \ 
-    git
+    git \ 
+    wget
 USER ${NB_USER}
 
 # USER root
@@ -66,6 +67,7 @@ RUN mamba env update --name base --file /tmp/environment.yml && \
     cd mzb-workflow && \ 
     git sparse-checkout set --no-cone mzbsuite && \ 
     git checkout && \ 
+    wget https://gitlab.renkulab.io/biodetect/mzb-workflow/-/raw/master/setup.py && \
     pip install -e .
 
 COPY --from=builder ${HOME}/.renku/venv ${HOME}/.renku/venv
