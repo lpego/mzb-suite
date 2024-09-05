@@ -98,7 +98,14 @@ If you want to run the pipeline on yur own data and local computer resources but
 
 #. Alternatively, you can also directly copy-paste the URL address starting with ``http://127.0.0.1`` into your browser (e.g. Firefox, Chrome), hit Enter, and you should drop into a JupyterLab interface. 
 
+Launching the Docker image
+__________________________
 The procedure is the same when starting the Docker image the following times, except it will not download it again therefore should be much faster launching it. Please not that the ``base`` environment (activated by default) in the Docker container already contains all required dependencies, so you don't need to activate it using ``mamba``. 
+
+If you prefer to use VS Code to access your container (recommended), you can also use a simplified ``docker run`` command, but remember to attach the local path where you mzb-workflow is located; like so: 
+
+.. code-block:: bash
+    docker run -v path\to\your\local\mzb-workflow:/home/jovyan/work/mzb-workflow
 
 The animation below shows the procedure to launch the container from Docker Desktop, and attach VS Code to it (requires the image to already have been downloaded). 
 
