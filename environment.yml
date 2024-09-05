@@ -21,7 +21,7 @@ dependencies:
   - pip
 
   - pip:
-    - -e .
+    # - -e .
     - pyyaml==6.0
     - wandb==0.15.8
     - opencv-python==4.8.0.76
