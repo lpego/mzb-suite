@@ -238,8 +238,8 @@ def main(args, cfg):
 
     preds_size.to_csv(out_dir / f"size_skel_supervised_model.csv", index=False)
     
-    pathlib.PosixPath = temp ### restore original pathlib function
-
+    if (sys.platform == "win32"):
+        pathlib.PosixPath = temp ### restore original pathlib function
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

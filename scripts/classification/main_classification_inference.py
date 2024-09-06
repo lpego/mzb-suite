@@ -182,7 +182,8 @@ def main(args, cfg):
         with open(out_dir / "classification_report.txt", "w") as f:
             f.write(rep_txt)
     
-    pathlib.PosixPath = temp ### restore original pathlib function
+    if (sys.platform == "win32"):
+        pathlib.PosixPath = temp ### restore original pathlib function
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
