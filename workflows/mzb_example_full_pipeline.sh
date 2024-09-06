@@ -53,5 +53,5 @@ python ${ROOT_DIR}/scripts/skeletons/main_supervised_skeleton_inference.py \
     --input_model=${ROOT_DIR}/models/mzb-skeleton-models/${MODEL_S} \
     --output_dir=${ROOT_DIR}/results/mzb_example/skeletons/supervised_skeletons/ \
     --save_masks=${ROOT_DIR}/data/mzb_example_data/derived/skeletons/supervised_skeletons/ \
-    --config_file=${ROOT_DIR}/configs/mzb_example_config.yaml \ 
+    --config_file=${ROOT_DIR}/configs/mzb_example_config.yaml \
     -v
