@@ -8,22 +8,21 @@
 ![Overview of mzb-suite](docs/assets/MZB_pipeline_v3.png)
 
 ## What can it be used for? 
-- Segment individual MZB organisms in images, both raw and manually annotated ones. 
-- Extract total length of individual organisms (unsupervised), and both length and head width (supervised). 
-- Use pre-trained Machine Learning (ML) models to predict identity of a subset of taxa. 
-- Assisted ML model re-training using user-provided annotations. 
-- Organize data in a folder structure that is easy to navigate, and that can be used for further analysis. 
-- Worked examples and documentation are provided to adapt the pipeline to user project. 
+- Segment individual MZB organisms from large-pane images into individual clips (unsupervised).  
+- Extract total length of individual organisms (unsupervised), and both length and head width for selected taxa (supervised). 
+- Use pre-trained Machine Learning (ML) models to predict coarse-grained identity for selected of taxa. 
+- Assisted ML model re-training on other taxa using user-provided annotations. 
+- Assists in organising data in a folder structure that is easy to navigate, and that can be used for further analysis. 
+- Worked examples and documentation are provided to adapt the pipeline to users' projects. 
 
 ## Who can use it? 
-Anyone that wants to process images of MZB acquired in a lab setting, with fixed focal length, uniform background and lighting conditions. The pipeline can handle small amounts of noise in the images, but any debris similar in size to the organisms of interest will not be filtered out, making this pipeline unsuitable for images taken in the field. 
+Anyone that wants to process images of MZB or other organisms acquired in a lab setting, with fixed focal length, uniform background and lighting conditions. The pipeline can handle small amounts of noise in the images, but any debris similar in size to the organisms of interest will not be filtered out, making this pipeline unsuitable for images taken in the field. 
 
 -------------------------------------------
 
 # Get started
 <!-- LINKS -->
 Please see the [documentation](https://mzb-workflow.readthedocs.io/en/latest/), it explains everything relating to the package. You can jump to directly to sections here: 
-<!-- and [GitHub Pages](https://lpego.github.io/mab-workflow/).  -->
 
 1. [Installation](https://mzb-workflow.readthedocs.io/en/latest/files/installing.html)
 
@@ -36,37 +35,33 @@ Please see the [documentation](https://mzb-workflow.readthedocs.io/en/latest/), 
 5. [mzbsuite module reference](https://mzb-workflow.readthedocs.io/en/latest/files/modules/mzbsuite.html)
 
 -------------------------------------------
+# Project info
 
-## Contributions
-<!-- AUTHORS -->
+## Contributors & contacts
+- Luca Pegoraro (WSL) - luca.pegoraro@wsl.ch
+- Michele Volpi (SDSC) - mivolpi@ethz.ch
 
-<!-- CONTACTS -->
+Full authors and contribution details in list in [this file](AUTHORS). 
+ 
+## Issues & feature requests
+If you encounter a reproducible bug, please prepare a MWE and open an Issue [here](https://gitlab.renkulab.io/biodetect/mzb-workflow/-/issues) where we can track it. 
 
-<!-- FEATURE REQUESTS?  -->
+Development time is limited for this project, so no major new features are being implemented at the moment. You are of course welcome to open a [pull request](https://gitlab.renkulab.io/biodetect/mzb-workflow/-/merge_requests), we will try to examine it quickly! 
 
-<!-- ### How to cite
-LEAVE BLANK FOR PREPRINT OR PAPER
-------------------------------------------- -->
+## How to cite
+_coming soon..._
 
 ## Changelog 
 
-**v0.2.3** Restructuring notebooks & documentation.  
-
-**v0.2.2** Added Windows native command prompt support. 
-
-**v0.2.1** Adding CI to GitHub and GitHub Pages for serving docs. 
-
-**v0.2.0** Pipeline in functional state, lots of modifications from previous ver...  
-
-**v0.1.0** First release. Attempt to structure project and scripts in a way that is easy to understand and maintain.
+Find it [here](CHANGELOG). 
 
 ## ToDo list
 
-### Feature requests
+### Features under consideration
 - [ ] Add original image file name as a separate column in all `csv` outputs 
 - [ ] Add options to provide multiple px/mm conversion rates, one for each image (i.e. parse `csv` file as dictionary to pass as arguments)
 - [ ] Add module for evaluations, and for generating plots
-- [x] Change scale exclusion parameter in `configs` & documentation so that you select square where scale is to exclude, instead of selecting the pixels to keep in the image. *changed config file and docs*
+- [x] Change scale exclusion parameter in `configs` & documentation so that you select square where scale is to exclude, instead of selecting the pixels to keep in the image. -- *changed config file and docs*
 
 ### General
 - [x] Move taxonomy file location onto running parameters from configuration file
@@ -87,13 +82,13 @@ LEAVE BLANK FOR PREPRINT OR PAPER
 - [x] Notebooks not picking up correct conda env in JupyterLab... 
 - [x] Cannot run .sh script in the console directly if in cwd??? 
 - [x] Notebooks don’t pick up conda env… 
-- [ ] Cannot load correct kernel (with `mzbsuite`) in Jupyter notebooks from Renku interactive session... 
+- [x] Cannot load correct kernel (with `mzbsuite`) in Jupyter notebooks from Renku interactive session... 
 - [ ] ~~Finding and changing filepaths in Jupyter notebooks is difficult for users…~~
 
 ### Documentation
 - [x] Put docs on ReadTheDocs and/or GitHub Pages
 	- [x] Configure ReadTheDocs integration
-	- [ ] Configure automated docs build in GitHub Pages from mirror repo
+	- [ ] ~~Configure automated docs build in GitHub Pages from mirror repo -- *unsupported*~~
 	- [ ] ~~See if you can pull the commit name and reconstruct the docker image name on renku dynamically in the documentation (source/files/installing.rst)...~~ 
 	- [x] Otherwise just grab a recent one that build correctly and stick with that
 - [x] Add "Quickstart" section with tutorial in the documentation
@@ -105,10 +100,10 @@ LEAVE BLANK FOR PREPRINT OR PAPER
 - [x] compress long code blocks? 
 - [ ] direct links to documentation within markdown cells in notebooks 
 - [x] make notebook for supervised skeletons finetuning 
-	- [ ] conflict with Jupyter notebook environment...
+	- [x] conflict with Jupyter notebook environment...
 - [ ] Fix notebooks outputs: 
 	- [x] `segmentation.ipynb` replace plots in-place while running instead of generating new ones. 
-	- [ ] `skeletonizatn_unsupervised.ipynb` replace plots in-place while running instead of generating new ones. 
+	- [x] `skeletonizatn_unsupervised.ipynb` replace plots in-place while running instead of generating new ones. 
 	- [x] `skeletonization_supervised_inference.ipynb` returns empty predictions in notebook... 
 	- [ ] `classification_finetune.ipynb` last cell (actually retraining the model) might not be compatible with an interactive environment...
 
@@ -116,7 +111,7 @@ LEAVE BLANK FOR PREPRINT OR PAPER
 - [x] Class (im)balance for flume MZB samples (classification and skeletons) 
 - [x] Accuracy for classification model  - `results/project_portable_flume/class_convnext-small-v0_validation_set`
 - [x] Accuracy for supervised skeletonization model (length and head width) - `results/project_portable_flume/skseg_mit-b2-v1_validation_set`
-- [ ] Accuracy for unsupervised skeletonization (length) 
+- [x] Accuracy for unsupervised skeletonization (length) 
 
 --- 
    
