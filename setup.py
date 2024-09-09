@@ -14,13 +14,13 @@ setup(
     name="mzbsuite",
     version="0.2.3",
     author="Michele Volpi, Luca Pegoraro",
-    author_email="mivolpi@ethz.ch",
+    author_email="mivolpi@ethz.ch, luca.pegoraro@wsl.ch",
     description=(
         "A suite of tools and utilities for the analysis of macrozoobenthos images"
     ),
     license="BSD",
     keywords="macrozoobenthos skeletonization classificaiton insects benthos",
-    url="",
+    url="https://gitlab.renkulab.io/biodetect/mzb-workflow",
     packages=[],
     long_description=read("README.md"),
     classifiers=[
