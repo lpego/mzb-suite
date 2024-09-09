@@ -1,0 +1,9 @@
+**v0.2.3** Restructuring notebooks & documentation.  
+
+**v0.2.2** Added Windows native command prompt support. 
+
+**v0.2.1** Adding CI to GitHub and GitHub Pages for serving docs. 
+
+**v0.2.0** Pipeline in functional state, lots of modifications from previous versions...  
+
+**v0.1.0** First release. Attempt to structure project and scripts in a way that is easy to understand and maintain.
