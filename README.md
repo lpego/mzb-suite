@@ -2,6 +2,9 @@
 [![ReadTheDocs status](https://readthedocs.org/projects/mzb-workflow/badge/?version=latest)](https://mzb-workflow.readthedocs.io/en/latest/?badge=latest)
 ![GitLab Docker build](https://gitlab.renkulab.io/biodetect/mzb-workflow/badges/master/pipeline.svg)
 
+# Experimental ⚠️
+**⚠️⚠️⚠️ -- this is an experimental build adding GUI functionality, stuff is likely to break! -- ⚠️⚠️⚠️**
+
 # What is mzb-suite? 
 `mzb-suite` is an image processing pipeline for lab images of macrozoobenthos (MZB), partially automating data extraction from images.  
 
