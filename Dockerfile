@@ -56,18 +56,19 @@ USER ${NB_USER}
 # USER ${NB_USER}
 
 ### Install the Python dependencies
-COPY requirements.txt environment.yml /tmp/
-RUN git clone -n --depth=1 --filter=tree:0 https://gitlab.renkulab.io/biodetect/mzb-workflow && \
-    cd mzb-workflow && \ 
-    git sparse-checkout set --no-cone mzbsuite && \ 
-    git checkout && \ 
-    wget https://gitlab.renkulab.io/biodetect/mzb-workflow/-/raw/pyproject/setup.py && \
-    wget https://gitlab.renkulab.io/biodetect/mzb-workflow/-/raw/pyproject/pyproject.toml && \
-    wget https://gitlab.renkulab.io/biodetect/mzb-workflow/-/raw/pyproject/README.md && \
-    mamba env update --name base --file /tmp/environment.yml && \
-    /opt/conda/bin/pip install -r /tmp/requirements.txt --no-cache-dir && \
+COPY requirements.txt environment.yml setup.py pyproject.toml README.md /tmp/
+COPY --parents ./mzbsuite /tmp/
+RUN mamba env update --name base --file /tmp/environment.yml && \
+    # /opt/conda/bin/pip install -r /tmp/requirements.txt --no-cache-dir && \
     mamba clean -y --all && \
     mamba env export -n "base" && \
     rm -rf ${HOME}/.renku/venv && \
+    # git clone -n --depth=1 --filter=tree:0 https://gitlab.renkulab.io/biodetect/mzb-workflow && \
+    # cd mzb-workflow && \ 
+    # git sparse-checkout set --no-cone mzbsuite && \ 
+    # git checkout && \ 
+    # # wget https://gitlab.renkulab.io/biodetect/mzb-workflow/-/raw/pyproject/setup.py && \
+    # # wget https://gitlab.renkulab.io/biodetect/mzb-workflow/-/raw/pyproject/pyproject.toml && \
+    # # wget https://gitlab.renkulab.io/biodetect/mzb-workflow/-/raw/pyproject/README.md && \
 
 COPY --from=builder ${HOME}/.renku/venv ${HOME}/.renku/venv
