@@ -1,5 +1,3 @@
-#syntax=docker/dockerfile:1
-
 ########################################################
 #        Renku install section - do not edit           #
 
@@ -59,7 +57,7 @@ USER ${NB_USER}
 
 ### Install the Python dependencies
 COPY requirements.txt environment.yml setup.py pyproject.toml README.md /tmp/
-COPY --parents ./mzbsuite /tmp/
+ADD /mzbsuite/ /tmp/
 RUN mamba env update --name base --file /tmp/environment.yml && \
     # /opt/conda/bin/pip install -r /tmp/requirements.txt --no-cache-dir && \
     mamba clean -y --all && \
