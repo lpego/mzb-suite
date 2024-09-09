@@ -1,0 +1,37 @@
+# pyproject.toml
+
+[build-system]
+requires = [
+    "setuptools",
+    "wheel"
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mzbsuite"
+version = "0.2.3"
+description = "A suite of tools and utilities for the analysis of macrozoobenthos images"
+readme = "README.md"
+authors = [
+    {name = "Michele Volpi", email = "mivolpi@ethz.ch"},
+    {name = "Luca Pegoraro", email = "luca.pegoraro@wsl.ch"},
+]
+requires-python = ">=3.10"
+license = {file = "LICENCE"}
+keywords = ["macrozoobenthos", "skeletonization", "classificaiton", "insects", "benthos"]
+classifiers=[
+        "Development Status :: 3 -- Alpha",
+        "Topic :: Scientific/Engineering :: Image Recognition",
+        "License :: OSI Approved :: BSD License",
+]
+dependencies = [] # unused for now, could install all deps here instead of with conda
+
+[project.urls]
+Homepage = "https://gitlab.renkulab.io/biodetect/mzb-workflow"
+Documentation = "https://mzb-workflow.readthedocs.io/en/latest/"
+
+[tool.setuptools]
+# By default, include-package-data is true in pyproject.toml, so you do
+# NOT necessarily have to specify this line.
+packages = ["mzbsuite"]
+include-package-data = true
