@@ -9,7 +9,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mzbsuite"
-version = "0.2.3"
+version = "0.3.0"
 description = "A suite of tools and utilities for the analysis of macrozoobenthos images"
 readme = "README.md"
 authors = [
