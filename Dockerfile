@@ -1,3 +1,5 @@
+#syntax=docker/dockerfile:1
+
 ########################################################
 #        Renku install section - do not edit           #
 
