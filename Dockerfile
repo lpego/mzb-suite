@@ -58,21 +58,9 @@ USER ${NB_USER}
 ### Install the Python dependencies
 COPY requirements.txt environment.yml setup.py pyproject.toml README.md LICENCE /tmp/
 ADD /mzbsuite/ /tmp/mzbsuite/
-RUN pwd && \
-    echo "ls -l" && ls -l && \ 
-    echo "ls -l /tmp" && ls -l /tmp && \
-    echo "ls -l /tmp/mzbsuite" && ls -l /tmp/mzbsuite
 RUN mamba env update --name base --file /tmp/environment.yml && \
-    # /opt/conda/bin/pip install -r /tmp/requirements.txt --no-cache-dir && \
     mamba clean -y --all && \
     mamba env export -n "base" && \
-    rm -rf ${HOME}/.renku/venv && \
-    # git clone -n --depth=1 --filter=tree:0 https://gitlab.renkulab.io/biodetect/mzb-workflow && \
-    # cd mzb-workflow && \ 
-    # git sparse-checkout set --no-cone mzbsuite && \ 
-    # git checkout && \ 
-    # # wget https://gitlab.renkulab.io/biodetect/mzb-workflow/-/raw/pyproject/setup.py && \
-    # # wget https://gitlab.renkulab.io/biodetect/mzb-workflow/-/raw/pyproject/pyproject.toml && \
-    # # wget https://gitlab.renkulab.io/biodetect/mzb-workflow/-/raw/pyproject/README.md && \
+    rm -rf ${HOME}/.renku/venv
 
 COPY --from=builder ${HOME}/.renku/venv ${HOME}/.renku/venv
