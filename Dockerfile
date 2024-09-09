@@ -61,9 +61,9 @@ RUN git clone -n --depth=1 --filter=tree:0 https://gitlab.renkulab.io/biodetect/
     cd mzb-workflow && \ 
     git sparse-checkout set --no-cone mzbsuite && \ 
     git checkout && \ 
-    wget https://gitlab.renkulab.io/biodetect/mzb-workflow/-/raw/master/setup.py && \
-    wget https://gitlab.renkulab.io/biodetect/mzb-workflow/-/raw/master/pyproject.toml && \
-    wget https://gitlab.renkulab.io/biodetect/mzb-workflow/-/raw/master/README.md && \
+    wget https://gitlab.renkulab.io/biodetect/mzb-workflow/-/raw/pyproject/setup.py && \
+    wget https://gitlab.renkulab.io/biodetect/mzb-workflow/-/raw/pyproject/pyproject.toml && \
+    wget https://gitlab.renkulab.io/biodetect/mzb-workflow/-/raw/pyproject/README.md && \
     mamba env update --name base --file /tmp/environment.yml && \
     /opt/conda/bin/pip install -r /tmp/requirements.txt --no-cache-dir && \
     mamba clean -y --all && \
