@@ -6,6 +6,7 @@ Authors of the dataset and software:
 
 - Luca Pegoraro (WSL): co-authored all scripts, wrote all documentation and curated deployment. 
 - Michele Volpi (SDSC): authored the main functionality of the package, and trained the ML models. 
+- Aaron Eggenberger (WSL): authored Streamlit GUI, as part of his Civil Service at WSL. 
 - Danina Schmidt (EAWAG): acquired the image data, studied the camera setups and acquisition process, made all the taxonomic and lengths annotations. 
 - Nico Baetz, Chrisitne Weber (EAWAG): contributed MZB samples, provided feedback. 
 - Catherine Graham (WSL): acquired funding and provided feedback throughout the project. 
