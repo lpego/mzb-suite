@@ -57,18 +57,17 @@ USER ${NB_USER}
 
 ### Install the Python dependencies
 COPY requirements.txt environment.yml /tmp/
-RUN mamba env update --name base --file /tmp/environment.yml && \
-    /opt/conda/bin/pip install -r /tmp/requirements.txt --no-cache-dir && \
-    mamba clean -y --all && \
-    mamba env export -n "base" && \
-    rm -rf ${HOME}/.renku/venv && \
-    # sparse-clone mzb-workflow repo and install in base env with pip
-    git clone -n --depth=1 --filter=tree:0 https://gitlab.renkulab.io/biodetect/mzb-workflow && \
+RUN git clone -n --depth=1 --filter=tree:0 https://gitlab.renkulab.io/biodetect/mzb-workflow && \
     cd mzb-workflow && \ 
     git sparse-checkout set --no-cone mzbsuite && \ 
     git checkout && \ 
     wget https://gitlab.renkulab.io/biodetect/mzb-workflow/-/raw/master/setup.py && \
+    wget https://gitlab.renkulab.io/biodetect/mzb-workflow/-/raw/master/pyproject.toml && \
     wget https://gitlab.renkulab.io/biodetect/mzb-workflow/-/raw/master/README.md && \
-    pip install -e .
+    mamba env update --name base --file /tmp/environment.yml && \
+    /opt/conda/bin/pip install -r /tmp/requirements.txt --no-cache-dir && \
+    mamba clean -y --all && \
+    mamba env export -n "base" && \
+    rm -rf ${HOME}/.renku/venv && \
 
 COPY --from=builder ${HOME}/.renku/venv ${HOME}/.renku/venv
