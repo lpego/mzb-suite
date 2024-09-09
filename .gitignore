@@ -16,6 +16,9 @@ data/*/*/*
 data/mzb_example_data/derived
 ### ignore models checkpoints
 *.pth
+### ignore Streamlit GUI logs
+streamlit_log.yaml
+*_log.yaml
 
 ### Emacs ###
 # -*- mode: gitignore; -*-
