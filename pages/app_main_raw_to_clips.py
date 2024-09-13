@@ -61,7 +61,7 @@ if not "config_folder" in st.session_state:
 # Select config folder
 with col1: 
     config_folder = st.session_state.get("config_folder", None)
-    # st.write("Select folder where config files are stored")
+    st.write("Select folder where config files are stored")
     config_folder_button = st.button("Select config folder")
     if config_folder_button:
         config_folder = select_folder()
@@ -80,14 +80,13 @@ input_button = st.button("Select path to directory with raw images")
 if input_button:
   input_dir = select_folder()
   st.session_state.input_dir = input_dir
-  st.write(st.session_state.input_dir, input_dir)
 
 if input_dir:
    st.write("Selected folder path: `%s`" % input_dir)
    streamlit_log["app_main_raw_to_clips"]["input_dir"] = input_dir
 
 output_dir = st.session_state.get("output_dir", None)
-save_button = st.button("Select path to where to save classification predictions as csv")
+save_button = st.button("Select path to where to save the segmented clips of organisms")
 if save_button:
   output_dir = select_folder()
   st.session_state.output_dir = output_dir
@@ -153,7 +152,7 @@ if loadingButton and checkEmpty():
    cfg = cfg_to_arguments(cfg)
 
    ### Finally, launch the script!
-   main(args, cfg)
+   main(args, cfg, st_GUI=True) # st flag that is launched from GUI
 
    ### Write out the YAML logs
    streamlit_log["app_main_raw_to_clips"]["end_time"] = datetime.datetime.now()
