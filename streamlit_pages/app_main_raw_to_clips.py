@@ -122,17 +122,6 @@ if debug:
 loadingButton = st.button('Launch!')
 
 if loadingButton and checkEmpty():
-
-   # # Progress bar
-   # progress_text = 'Loading...'
-   # my_bar = st.progress(0, text=progress_text)
-
-   # for percent_complete in range(100):
-   #    time.sleep(0.01)
-   #    my_bar.progress(percent_complete + 1, text=progress_text)
-   # time.sleep(4.4)
-   # my_bar.empty()
-   
    ### Create dictionary for argparse
    arg_list = ["input_dir",
                "output_dir",
@@ -152,7 +141,7 @@ if loadingButton and checkEmpty():
    cfg = cfg_to_arguments(cfg)
 
    ### Finally, launch the script!
-   main(args, cfg, st_GUI=True) # st flag that is launched from GUI
+   main(args, cfg, st_GUI=True) # st_GUI flag that is launched from GUI
 
    ### Write out the YAML logs
    streamlit_log["app_main_raw_to_clips"]["end_time"] = datetime.datetime.now()
