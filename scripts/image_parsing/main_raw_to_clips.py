@@ -11,6 +11,7 @@ from matplotlib import pyplot as plt
 from scipy import ndimage
 from skimage import feature, measure, morphology, segmentation
 from tqdm import tqdm
+from stqdm import stqdm
 from IPython.display import display, clear_output
 
 from mzbsuite.utils import cfg_to_arguments, noneparse
@@ -24,7 +25,7 @@ else:
     prefix = "../../"  # or "../"
     PLOTS = True
 
-def main(args, cfg):
+def main(args, cfg, st_GUI=False):
     """
     This script takes a folder of raw images and clips them into smaller images, with their mask.
 
@@ -41,6 +42,9 @@ def main(args, cfg):
 
     cfg : argparse.Namespace
         Configuration with detailed parametrisations.
+        
+    st_GUI : boolean
+        Flag for using tqdm / stqdm depending on whether Streamlit GUI is being used.
 
     Returns
     -------
@@ -72,7 +76,12 @@ def main(args, cfg):
     # define normalization function
     norm = lambda x: (x - np.min(x)) / (np.max(x) - np.min(x))
 
-    iterator = tqdm(files_proc, total=len(files_proc))
+    if st_GUI:
+        # If launched from GUI use stqdm
+        iterator = stqdm(files_proc, total=len(files_proc), backend=True, frontend=True)
+    else: 
+        # otherwise fallback to regular tqdm
+        iterator = tqdm(files_proc, total=len(files_proc))
     for i, fo in enumerate(iterator):
         mask_props = []
 
@@ -353,4 +362,4 @@ if __name__ == "__main__":
         print(f"main args: {args}")
         print(f"scripts config: {cfg}")
 
-    sys.exit(main(args, cfg))
+    sys.exit(main(args, cfg, st_GUI))
