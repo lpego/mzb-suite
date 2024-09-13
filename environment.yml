@@ -28,6 +28,7 @@ dependencies:
     - segmentation_models_pytorch==0.3.3
     - tensorboard==2.13.0
     - tensorboardX==2.6.2
+    - stqdm==0.0.5
     # - sphinx==6.2.1
     # - sphinx-collections==0.0.1
     # - sphinx-rtd-theme==1.2.2
