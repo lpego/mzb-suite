@@ -1,73 +1,64 @@
-import sys
-import streamlit as st
-import tkinter as tk
-from tkinter import filedialog
-import os
-import time
-
-# Finished
-
-st.title ('mzbsuite')
 import os
 import time, datetime
 import tkinter as tk
 from tkinter import filedialog
 import streamlit as st
 import yaml
+
+### streamlit utils
 from mzbsuite.streamlit.streamlit_utils import file_selector, select_folder
 
-### Custom functions
-def clear():
-    st.session_state.config_file=False
-    st.session_state.input_dir=False
-    st.session_state.output_dir=None
-    st.session_state.save_full_mask_dir=None
+### mzbsuite utils and scripts
+from mzbsuite.utils import cfg_to_arguments, noneparse
+from scripts.image_parsing.main_raw_to_clips import main
 
+st.title ('Segmentation: main_raw_to_clips')
+
+### Custom functions
+# def clear():
+#     st.session_state.config_file=False
+#     st.session_state.input_dir=False
+#     st.session_state.output_dir=None
+#     st.session_state.save_full_mask_dir=None
 
 def checkEmpty():
    config_main_var=''
    input_main_var=''
    output_main_var=''
    save_full_mask_dir_var=''
-
    try:
       config_main_var = st.session_state.config_file
    except:
       st.write('**:red[Please select path to config file with per-script args]**')
-
    try:
       input_main_var = st.session_state.input_dir
    except:
       st.write('**:red[Please select path to directory with raw images]**')
-
    try:
       output_main_var = st.session_state.output_dir
    except:
       st.write('**:red[Please select path to where to save model checkpoints]**')
-
    try:
       save_full_mask_dir_var = st.session_state.save_full_mask_dir
    except:
       st.write('**:red[Please select path to directory where to save labeled full masks]**')
-
    if  config_main_var != '' and save_full_mask_dir_var !='' and input_main_var != '' and output_main_var != '':
-
       return True
    else:
-
       return False
 
 debug = True # set to False for regular operation
-streamlit_log = {"app_main_prepare_learning_sets": {"start_time": datetime.datetime.now()}}
 
+### Initialise YAML log
+streamlit_log = {"app_main_raw_to_clips": {"start_time": datetime.datetime.now()}}
    
 ### Actual variables to grab
-### Config file nested folder-file select
+# Config file nested folder-file select
 col1, col2 = st.columns([2, 4])
-### Set up nested buttons states
+# Set up nested buttons states
 if not "config_folder" in st.session_state:
     st.session_state["config_folder"] = False
-### Select config folder
+# Select config folder
 with col1: 
     config_folder = st.session_state.get("config_folder", None)
     # st.write("Select folder where config files are stored")
@@ -75,34 +66,35 @@ with col1:
     if config_folder_button:
         config_folder = select_folder()
         st.session_state.config_folder = config_folder
-### Select file in config_folder
+# Select file in config_folder
 with col2:
     if st.session_state.config_folder is not False:
         config_file = file_selector(config_folder)
         st.session_state.config_file = config_folder
         st.write('You selected `%s`' % config_file)
-        streamlit_log["app_main_prepare_learning_sets"]["config_file"] = config_file
+        streamlit_log["app_main_raw_to_clips"]["config_file"] = config_file
 
-
+### Grab the other running parameters
 input_dir = st.session_state.get("input_dir", None)
 input_button = st.button("Select path to directory with raw images")
 if input_button:
   input_dir = select_folder()
   st.session_state.input_dir = input_dir
+  st.write(st.session_state.input_dir, input_dir)
 
 if input_dir:
    st.write("Selected folder path: `%s`" % input_dir)
-   streamlit_log["app_main_prepare_learning_sets"]["input_dir"] = input_dir
+   streamlit_log["app_main_raw_to_clips"]["input_dir"] = input_dir
 
 output_dir = st.session_state.get("output_dir", None)
-save_button = st.button("Select path to where to save classificaiton predictions as csv")
+save_button = st.button("Select path to where to save classification predictions as csv")
 if save_button:
   output_dir = select_folder()
   st.session_state.output_dir = output_dir
 
 if output_dir:
    st.write("Selected folder path: `%s`" % output_dir)
-   streamlit_log["app_main_prepare_learning_sets"]["save_model"] = output_dir
+   streamlit_log["app_main_raw_to_clips"]["save_model"] = output_dir
 
 save_full_mask_dir = st.session_state.get("save_full_mask_dir", None)
 input_button = st.button("Select path to directory where to save labeled full masks")
@@ -112,9 +104,7 @@ if input_button:
 
 if save_full_mask_dir:
    st.write("Selected folder path: `%s`" % save_full_mask_dir)
-   streamlit_log["app_main_prepare_learning_sets"]["save_full_mask_dir"] = save_full_mask_dir
-
-
+   streamlit_log["app_main_raw_to_clips"]["save_full_mask_dir"] = save_full_mask_dir
 
 verbose = st.session_state.get("verbose", None)
 verbose_checkbox = st.checkbox("Show more info")
@@ -122,37 +112,52 @@ if verbose_checkbox:
     verbose = True
 else: 
     verbose = False
+st.session_state.verbose = verbose
+streamlit_log["app_main_raw_to_clips"]["verbose"] = verbose
 
-streamlit_log["app_main_prepare_learning_sets"]["verbose"] = verbose
-
-### Testing printouts
+### Debug info
 if debug: 
-    st.write("DEBUGGING INFO:", streamlit_log)
+   st.write("DEBUGGING INFO:", streamlit_log)
 
-# Finish button
-loadingButton = st.button('Finish')
+### Launch button
+loadingButton = st.button('Launch!')
 
 if loadingButton and checkEmpty():
 
-   #  # Progress bar
-   #  progress_text = 'Loading...'
-   #  my_bar = st.progress(0, text=progress_text)
+   # # Progress bar
+   # progress_text = 'Loading...'
+   # my_bar = st.progress(0, text=progress_text)
 
-   #  for percent_complete in range(100):
-   #      time.sleep(0.01)
-   #      my_bar.progress(percent_complete + 1, text=progress_text)
-   #  time.sleep(4.4)
-   #  my_bar.empty()
+   # for percent_complete in range(100):
+   #    time.sleep(0.01)
+   #    my_bar.progress(percent_complete + 1, text=progress_text)
+   # time.sleep(4.4)
+   # my_bar.empty()
+   
+   ### Create dictionary for argparse
+   arg_list = ["input_dir",
+               "output_dir",
+               "save_full_mask_dir", 
+               "verbose"
+               ]
+   args = {}
+   for x in arg_list: 
+      args[x] = eval(x)
+   
+   ### Convert to arguments
+   args = cfg_to_arguments(args)
+   
+   with open(str(config_file), "r") as f:
+      cfg = yaml.load(f, Loader=yaml.FullLoader)
+      
+   cfg = cfg_to_arguments(cfg)
 
-   print(sys.prefix)
+   ### Finally, launch the script!
+   main(args, cfg)
 
-   from scripts.image_parsing.main_raw_to_clips import main
-
-   main(config_file, input_dir, output_dir, save_full_mask_dir, verbose)
-
-   ### Write the YAML
-   streamlit_log["app_main_prepare_learning_sets"]["end_time"] = datetime.datetime.now()
+   ### Write out the YAML logs
+   streamlit_log["app_main_raw_to_clips"]["end_time"] = datetime.datetime.now()
    with open('streamlit_log.yaml', 'a') as outfile:
       yaml.dump(streamlit_log, outfile, sort_keys=False)
-   del(streamlit_log)
-   st.write('Success, appending run parameters to "streamlit_log.yaml"')
+   del(streamlit_log) # empty the log, ready for next iteration
+   st.write('Success! Appending run parameters to "streamlit_log.yaml"')
