@@ -1,0 +1,15 @@
+[[pages]]
+path = "streamlit_homepage.py"
+name = "Homepage"
+icon = "🏠"
+
+[[pages]]
+name = "Segmentation"
+icon = "🎈️"
+is_section = true
+
+[[pages]]
+path = "streamlit_pages/app_main_raw_to_clips.py"
+name = "Segmentation unsupervised"
+icon = ":books:"
+# url_path = "my_books" # You can override the default url path for a page
