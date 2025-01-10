@@ -43,7 +43,7 @@ LSET_FOLD=${ROOT_DIR}/data/learning_sets/project_portable_flume/aggregated_learn
 # For this, the next step that uses a supervised neural network is required.
 # this function also takes a list of files to process, if you want to run it on a subset of the data. As csv with column "file"
 ## ------------------------------------------------------------------------------------------
-# python scripts/skeletons/main_unsupervised_skeleton_estimation.py \
+# python scripts/skeletonization/main_unsupervised_skeleton_estimation.py \
 #     --config_file=${ROOT_DIR}/configs/configuration_flume_datasets.yaml \
 #     --input_dir=${ROOT_DIR}/data/derived/project_portable_flume/blobs/ \
 #     --output_dir=${ROOT_DIR}/results/project_portable_flume/skeletons/automatic_skeletons/ \
@@ -54,7 +54,7 @@ LSET_FOLD=${ROOT_DIR}/data/learning_sets/project_portable_flume/aggregated_learn
 ## This is run on a custom folder structure and will regturn a csv with the results
 ## Specifically, this is run on the validation set to get the accuracy of the model
 ## ------------------------------------------------------------------------------------------
-# python scripts/skeletons/main_supervised_skeleton_inference.py \
+# python scripts/skeletonization/main_supervised_skeleton_inference.py \
 #     --config_file=${ROOT_DIR}/configs/configuration_flume_datasets.yaml \
 #     --input_dir=${LSET_FOLD} \
 #     --input_type="val" \
@@ -64,7 +64,7 @@ LSET_FOLD=${ROOT_DIR}/data/learning_sets/project_portable_flume/aggregated_learn
 
 # ## And this is to parse a custom folder structure with images from different sources
 # ## ---------------------------------------------------------------------------------------------------
-# python scripts/skeletons/main_supervised_skeleton_inference.py \
+# python scripts/skeletonization/main_supervised_skeleton_inference.py \
 #     --config_file=${ROOT_DIR}/configs/configuration_flume_datasets.yaml \
 #     --input_dir=${ROOT_DIR}/data/learning_sets/project_portable_flume/aggregated_learning_sets/mixed_set/ \
 #     --input_type="external" \

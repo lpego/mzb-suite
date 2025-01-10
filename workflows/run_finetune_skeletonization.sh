@@ -14,7 +14,7 @@ then
     echo "Directory ${LSET_FOLD} exists." 
 else 
     echo "Directory ${LSET_FOLD} is being set up."
-    python scripts/skeletons/main_preprocess_manual_skeleton_annotations.py \
+    python scripts/skeletonization/main_preprocess_manual_skeleton_annotations.py \
         --input_raw_dir=${ROOT_DIR}/data/raw/2021_swiss_invertebrates/manual_measurements/ \
         --input_clips_dir=${ROOT_DIR}/data/derived/project_portable_flume/blobs/ \
         --output_dir=${LSET_FOLD} \
@@ -25,7 +25,7 @@ fi
 # ## ------------------------------------------------------------------------------------ ##
 ## This is run to finetune the skeleton prediction model; 
 ## it will read the curated learning sets and will return a new model. 
-python scripts/skeletons/main_supervised_skeletons_finetune.py \
+python scripts/skeletonization/main_supervised_skeletons_finetune.py \
         --config_file=${ROOT_DIR}/configs/configuration_flume_datasets.yaml \
         --input_dir=${LSET_FOLD} \
     --save_model=${ROOT_DIR}/models/mzb-skeleton-models/${MODEL} \
@@ -34,7 +34,7 @@ python scripts/skeletons/main_supervised_skeletons_finetune.py \
 # # ## ------------------------------------------------------------------------------------ ##
 # ## This is run on a custom folder structure and will return a csv with the results; 
 # ## specifically, this is run on the validation set to get the accuracy of the model
-# python scripts/skeletons/main_supervised_skeleton_inference.py \
+# python scripts/skeletonization/main_supervised_skeleton_inference.py \
 #     --config_file=${ROOT_DIR}/configs/configuration_flume_datasets.yaml \
 #     --input_dir=${LSET_FOLD} \
 #     --input_type="val" \
@@ -50,7 +50,7 @@ if [ false ] ; # change to true to run inference on external set
 then
     echo "Skipping inference on external set"
 else
-    python scripts/skeletons/main_supervised_skeleton_inference.py \
+    python scripts/skeletonization/main_supervised_skeleton_inference.py \
         --config_file=${ROOT_DIR}/configs/configuration_flume_datasets.yaml \
         --input_dir=${ROOT_DIR}/data/learning_sets/project_portable_flume/aggregated_learning_sets/mixed_set/ \
         --input_type="external" \
@@ -62,7 +62,7 @@ fi
 
 # # ## ------------------------------------------------------------------------------------ ##
 # ## Validate the model on the validation set 
-# python scripts/skeletons/main_supervised_skeleton_assessment.py \
+# python scripts/skeletonization/main_supervised_skeleton_assessment.py \
 #     --config_file=${ROOT_DIR}/configs/configuration_flume_datasets.yaml \
 #     --model_annotations=${ROOT_DIR}/results/project_portable_flume/skeletons/supervised_skeletons/skseg_${MODEL}_validation_set/size_skel_supervised_model.csv \
 #     --manual_annotations=${ROOT_DIR}/data/learning_sets/project_portable_flume/skeletonization/manual_annotations_summary.csv
