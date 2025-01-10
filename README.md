@@ -8,7 +8,7 @@
 # What is mzb-suite? 
 `mzb-suite` is an image processing pipeline for lab images of macrozoobenthos (MZB), partially automating data extraction from images.  
 
-![Overview of mzb-suite](docs/assets/MZB_pipeline_v3.png)
+![Overview of mzb-suite](docs/assets/MZB_pipeline_v3.1.png)
 
 ## What can it be used for? 
 - Segment individual MZB organisms from large-pane images into individual clips (unsupervised).  
