@@ -9,7 +9,7 @@ SET MODEL_S=mit-b2-v0
 
 @REM ## ------------------------------------------------------------------------------------ ##
 @REM ## Preprocess manual annotations for supervised skeletons assessment;  
-python %ROOT_DIR%\scripts\skeletons\main_preprocess_manual_skeleton_annotations.py^
+python %ROOT_DIR%\scripts\skeletonization\main_preprocess_manual_skeleton_annotations.py^
  --input_raw_dir D:\phenopype\line_annotations\^
  --input_clips_dir D:\phenopype\data\^
  --skel_save_attributes %ROOT_DIR%\data\mzb_example\skeletons\supervised_skeletons\manual_anns^

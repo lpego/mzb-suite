@@ -54,7 +54,7 @@ steps:
     command: python $my-script $input-data $output-data $save_mask
     inputs:
       - my-script:
-          path: scripts/skeletons/main_unsupervised_skeleton_estimation.py
+          path: scripts/skeletonization/main_unsupervised_skeleton_estimation.py
       - input-data:
           path: $root /data/mzb_example_data/derived/blobs/
     outputs:
@@ -72,7 +72,7 @@ steps:
     command: python $my-script $input-data $output-data $save_mask
     inputs:
       - my-script:
-          path: scripts/skeletons/main_supervised_skeleton_inference.py
+          path: scripts/skeletonization/main_supervised_skeleton_inference.py
       - input-data:
           path: $root /data/mzb_example_data/derived/blobs/
     outputs:

@@ -39,7 +39,7 @@ echo
 # ## The pipeline to get these numbers is unsupervised, but can only approximate length of the organism, and not the width of the head.
 # ## For this, the next step that uses a supervised neural network is required.
 # ## this function also takes a list of files to process, if you want to run it on a subset of the data, passed as csv with column "file"
-# python scripts/skeletons/main_unsupervised_skeleton_estimation.py \
+# python scripts/skeletonization/main_unsupervised_skeleton_estimation.py \
 #     --config_file=${ROOT_DIR}/configs/configuration_flume_datasets.yaml \
 #     --input_dir=${ROOT_DIR}/data/derived/mzb_example_data/blobs/ \
 #     --output_dir=${ROOT_DIR}/results/mzb_example_data/skeletons/unsupervised_skeletons/ \
@@ -49,7 +49,7 @@ echo
 
 # ## This is run on a custom folder structure and will return a csv with the results
 # ## Specifically, this is run on the validation set to get the accuracy of the model
-# python scripts/skeletons/main_supervised_skeleton_inference.py \
+# python scripts/skeletonization/main_supervised_skeleton_inference.py \
 #     --config_file=${ROOT_DIR}/configs/configuration_flume_datasets.yaml \
 #     --input_dir=${ROOT_DIR}/data/mzb_example_data/training_dataset/trn_set/diptera/ \
 #     --input_type="val" \
@@ -59,7 +59,7 @@ echo
 #     # -v
 
 ## And this is to parse a custom folder structure with images from different sources
-# python scripts/skeletons/main_supervised_skeleton_inference.py \
+# python scripts/skeletonization/main_supervised_skeleton_inference.py \
 #     --config_file=${ROOT_DIR}/configs/configuration_flume_datasets.yaml \
 #     --input_dir=${ROOT_DIR}/data/mzb_example_data/training_dataset/trn_set/diptera/ \
 #     --input_type="external" \

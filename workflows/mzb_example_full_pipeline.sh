@@ -36,7 +36,7 @@ python ${ROOT_DIR}/scripts/classification/main_classification_inference.py \
 ## This runs the unsupervised skeletonization and measurement. It will read all the mask 
 ## clips created in the first step and will return a csv with the results. 
 ## This unsupervised pipeline can only approximate body length, not head width.
-python ${ROOT_DIR}/scripts/skeletons/main_unsupervised_skeleton_estimation.py \
+python ${ROOT_DIR}/scripts/skeletonization/main_unsupervised_skeleton_estimation.py \
     --input_dir=${ROOT_DIR}/data/mzb_example_data/derived/blobs/ \
     --output_dir=${ROOT_DIR}/results/mzb_example/skeletons/unsupervised_skeletons/ \
     --save_masks=${ROOT_DIR}/data/mzb_example_data/derived/skeletons/unsupervised_skeletons/ \
@@ -47,7 +47,7 @@ python ${ROOT_DIR}/scripts/skeletons/main_unsupervised_skeleton_estimation.py \
 # ## ------------------------------------------------------------------------------------ ##
 ## This runs a supervised DL model to predict body length and head width skeletons; 
 ## it stores the masks as images, and saves measurements into a csv file. 
-python ${ROOT_DIR}/scripts/skeletons/main_supervised_skeleton_inference.py \
+python ${ROOT_DIR}/scripts/skeletonization/main_supervised_skeleton_inference.py \
     --input_dir=${ROOT_DIR}/data/mzb_example_data/derived/blobs/ \
     --input_type="external" \
     --input_model=${ROOT_DIR}/models/mzb-skeleton-models/${MODEL_S} \
