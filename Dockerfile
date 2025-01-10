@@ -56,7 +56,7 @@ USER ${NB_USER}
 # USER ${NB_USER}
 
 ### Install the Python dependencies
-COPY requirements.txt environment.yml setup.py pyproject.toml README.md LICENCE /tmp/
+COPY environment.yml setup.py pyproject.toml README.md LICENCE /tmp/
 ADD /mzbsuite/ /tmp/mzbsuite/
 RUN mamba env update --name base --file /tmp/environment.yml && \
     mamba clean -y --all && \
