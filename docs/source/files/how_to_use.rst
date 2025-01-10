@@ -45,14 +45,14 @@ For example:
     MODEL_C="convnext-small-v0"
     MODEL_S="mit-b2-v0"
 
-    python scripts/image_parsing/main_raw_to_clips.py \
+    python scripts/segmentation/main_raw_to_clips.py \
         --input_dir=${ROOT_DIR}/data/mzb_example_data/raw_img/ \
         --output_dir=${ROOT_DIR}/data/mzb_example_data/derived/blobs/ \
         --save_full_mask_dir=${ROOT_DIR}/data/mzb_example_data/derived/full_image_masks_test \
         --config_file=${ROOT_DIR}/configs/configuration_flume_datasets.yaml \
         -v
 
-The extract above from ``workflows/full_pipeline_custom.sh`` will run the script ``scripts/image_parsing/main_raw_to_clips.py``, passing it various global parameters: 
+The extract above from ``workflows/full_pipeline_custom.sh`` will run the script ``scripts/segmentation/main_raw_to_clips.py``, passing it various global parameters: 
 
 - ``ROOT_DIR`` is the the root directory fo the project; this is important to anchor all the relative path references that modules make; 
 - ``MODEL_C`` is the name of the DL model to be used for classification, see list of models :ref:`files/project_structure:Models`; 
