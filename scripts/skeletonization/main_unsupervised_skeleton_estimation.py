@@ -15,8 +15,9 @@ from scipy.spatial import distance_matrix
 from skimage.measure import label, regionprops
 from skimage.morphology import dilation, disk, medial_axis, thin
 from tqdm import tqdm
+from IPython.display import display, clear_output
 
-from mzbsuite.skeletons.mzb_skeletons_helpers import (
+from mzbsuite.skeletonization.mzb_skeletons_helpers import (
     get_endpoints,
     get_intersections,
     paint_image,
@@ -108,17 +109,14 @@ def main(args, cfg):
 
     files_to_skel = [a for a in mask_list if a.name.lower() not in exclude]
 
-    # %%
     out_dir = (
         args.output_dir
         / f"{args.input_dir.name}_unsupervised_{datetime.now().strftime('%Y%m%d_%H%M')}"
     )
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    # %%
     growing_df = []
     # Load the image
-    # PLOTS = True
 
     iterator = tqdm(files_to_skel, total=len(files_to_skel))
     # iterator = tqdm([args.input_dir / "1_ob_mixed_difficutly_clip_32_mask.jpg"])
@@ -192,7 +190,7 @@ def main(args, cfg):
                 f, a = plt.subplots(1, 2)
                 a[0].imshow(rgb_fi)
                 a[1].imshow(rgb_ma)
-                plt.title(f"Area: {np.sum(mask_)}")
+                plt.title(f"Area: {round(np.sum(mask_), 1)}")
                 plt.show()
 
         else:
@@ -286,7 +284,10 @@ def main(args, cfg):
             )
             growing_df.append(sub_df)
 
+            # some visualizations for debugging
             if PLOTS:
+                clear_output(wait=False)
+                
                 f, a = plt.subplots(1, 3, figsize=(12, 12))
                 a[0].imshow(
                     paint_image(
@@ -314,14 +315,15 @@ def main(args, cfg):
 
                 a[1].imshow(paint_image(rgb_fi, sel_skel, [255, 0, 0]))
                 a[2].imshow(rgb_ma)
-
-                a[0].title.set_text(f"Area: {np.sum(mask_)}")
-                a[1].title.set_text(f"Sel Segm: {skel_cand[np.argmax(sk_l)]}")
-                a[2].title.set_text(f"Skel_lenght_px {sk_l[np.argmax(sk_l)]}")
+                
+                a[0].title.set_text(f"Sel Segm: {skel_cand[np.argmax(sk_l)]}")
+                a[1].title.set_text(f"Skel_lenght_px {round(sk_l[np.argmax(sk_l)], 0)}")
+                a[2].title.set_text(f"Area: {round(np.sum(mask_), 2)}")
+                
+                # clear_output(wait=True)
 
     full_df = pd.concat(growing_df)
     full_df.to_csv(out_dir / "skeleton_attributes.csv", index=False)
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -341,62 +343,4 @@ if __name__ == "__main__":
     args.output_dir = Path(args.output_dir)
 
     sys.exit(main(args, cfg))
-
-# %% some visualizations for debugging
-if PLOTS:
-    rgb_ = cv2.imread(str(fo)[:-8] + "rgb.png")[:, :, [2, 1, 0]].astype(np.uint8)
-    rgb_fi = paint_image(rgb_, skeleton, color=[255, 0, 0])
-    rgb_ma = paint_image(rgb_, mask, color=[255, 0, 255])
-
-    labs = np.unique(skel_labels[skel_labels > 0])
-    for i in labs:
-        plt.figure()
-        plt.imshow(
-            paint_image(
-                rgb_, dilation(skel_labels == i, disk(3)), [i / len(labs) * 255, 0, 255]
-            )
-        )
-        plt.title(i)
-
-    plt.figure()
-    # plt.imshow(paint_image(rgb_, dilation(skel_labels, disk(3)), [255, 0, 255]))
-    plt.imshow(dilation(skel_labels, disk(3)))
-    plt.scatter(np.array(inter)[:, 0], np.array(inter)[:, 1])
-    plt.scatter(np.array(endpo)[:, 0], np.array(endpo)[:, 1], marker="s")
-    for i in np.unique(skel_labels[skel_labels > 0]):
-        plt.text(
-            x=skprop[i - 1].centroid[1],
-            y=skprop[i - 1].centroid[0],
-            s=f"{i}",
-            color="white",
-        )
-
-    f, a = plt.subplots(1, 3, figsize=(12, 12))
-    a[0].imshow(
-        paint_image(
-            skel_labels * 255, dilation(skel_labels > 0, disk(3)), [255, 0, 255]
-        )
-    )
-
-    a[0].scatter(np.array(inter)[:, 0], np.array(inter)[:, 1])
-    a[0].scatter(np.array(endpo)[:, 0], np.array(endpo)[:, 1], marker="s")
-    for i in np.unique(skel_labels[skel_labels > 0]):
-        a[0].text(
-            x=skprop[i - 1].centroid[1],
-            y=skprop[i - 1].centroid[0],
-            s=f"{i}",
-            color="white",
-        )
-
-    sel_skel = np.zeros_like(skel_labels)
-    for i in np.unique(skel_labels[skel_labels > 0]):
-        # if i in skel_cand[np.argmax(sk_l)]:
-        sel_skel += dilation(skel_labels == i, disk(3))
-    sel_skel = sel_skel > 0
-
-    a[1].imshow(paint_image(rgb_fi, sel_skel, [255, 0, 0]))
-    a[2].imshow(rgb_ma)
-
-    a[0].title.set_text(f"Area: {np.sum(mask_)}")
-    a[1].title.set_text(f"Sel Segm: {skel_cand[np.argmax(sk_l)]}")
-    a[2].title.set_text(f"Skel_lenght_px {sk_l[np.argmax(sk_l)]}")
+    

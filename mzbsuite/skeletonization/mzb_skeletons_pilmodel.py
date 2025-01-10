@@ -22,7 +22,7 @@ from torchvision import transforms
 
 import segmentation_models_pytorch as smp
 
-from mzbsuite.skeletons.mzb_skeletons_dataloader import MZBLoader_skels
+from mzbsuite.skeletonization.mzb_skeletons_dataloader import MZBLoader_skels
 
 
 # %%

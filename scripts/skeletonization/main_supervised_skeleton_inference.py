@@ -19,8 +19,8 @@ import pandas as pd
 import pytorch_lightning as pl
 import yaml
 
-from mzbsuite.skeletons.mzb_skeletons_pilmodel import MZBModel_skels
-from mzbsuite.skeletons.mzb_skeletons_helpers import paint_image_tensor, Denormalize
+from mzbsuite.skeletonization.mzb_skeletons_pilmodel import MZBModel_skels
+from mzbsuite.skeletonization.mzb_skeletons_helpers import paint_image_tensor, Denormalize
 from mzbsuite.utils import cfg_to_arguments, find_checkpoints
 
 # Set the thread layer used by MKL
