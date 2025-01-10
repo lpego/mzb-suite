@@ -7,7 +7,7 @@ Here we briefly overview other convenience scripts provided for facilitate other
 
 Pre-processing filenames
 ------------------------
-The script ``scripts/diverse_preprocessing/preprocess_filenames.py`` standardises the names of the files in the provided path ``main_root``, by changing capitalization to lowercase and changing spaces to ``_``. 
+The script ``scripts/preprocessing/preprocess_filenames.py`` standardises the names of the files in the provided path ``main_root``, by changing capitalization to lowercase and changing spaces to ``_``. 
 It then parses the parent directories names and standardises them in the same way, and removes trailing spaces from filenames. 
 The last step removes all files ``_mask.jpg`` that could have been left from previous iterations of the pipeline if output folders were not separated from input folders. 
 

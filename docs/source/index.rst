@@ -78,7 +78,7 @@ Scripts
 :doc:`files/scripts/processing_scripts`
     Detailed explanation for processing functions
 
-:doc:`files/scripts/diverse_preprocessing`
+:doc:`files/scripts/preprocessing`
     Details of other convenience scripts
 
 .. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -122,7 +122,7 @@ API reference
     :hidden:
 
     files/scripts/processing_scripts
-    files/scripts/diverse_preprocessing
+    files/scripts/preprocessing
 
 .. toctree::
     :caption: API reference

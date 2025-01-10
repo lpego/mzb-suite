@@ -1,7 +1,7 @@
 Processing scripts
 ##################
 
-All the code in ``scripts/`` (except ``diverse_preprocessing``, see :ref:`files/scripts/diverse_preprocessing:Other scripts`) is encapsulated in a ``main`` function, with a short statement towards the end of the code: 
+All the code in ``scripts/`` (except ``preprocessing``, see :ref:`files/scripts/preprocessing:Other scripts`) is encapsulated in a ``main`` function, with a short statement towards the end of the code: 
 
 .. code-block:: python
 
@@ -15,7 +15,7 @@ You can read more about ``__main__`` functions in this `tutorial <https://realpy
 Below we explain the various scripts that make up the three module in ``mzbsuite``: 
 
     - :ref:`files/scripts/processing_scripts:Segmentation`
-    - :ref:`files/scripts/processing_scripts:Skeleton Prediction`
+    - :ref:`files/scripts/processing_scripts:Skeletonization`
     - :ref:`files/scripts/processing_scripts:Classification`
 
 .. - Automdodules
@@ -26,9 +26,9 @@ Segmentation
 ------------
 This module takes as input images with multiple organisms and separates them in smaller clips, each containing a single organism. It consists mainly of built in functionality of ``opencv2``. 
 
-:mod:`scripts.image_parsing.main_raw_to_clips` 
+:mod:`scripts.segmentation.main_raw_to_clips` 
 
-.. automodule:: scripts.image_parsing.main_raw_to_clips
+.. automodule:: scripts.segmentation.main_raw_to_clips
     :members: 
 
 #. Note that if the script is run interactively, and the ``PLOTS`` variable is set to True, the script will print to screen the clips and masks as they are produced. 
@@ -79,26 +79,26 @@ This module takes as input images with multiple organisms and separates them in 
 
 .. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 
-Skeleton Prediction
+Skeletonization
 -------------------
 In this toolbox, we offer two ways of performing an estimation of the body size of organisms. One is unsupervised (i.e. Unsupervised Skeleton Prediction), and relies on the estimation of the skeleton from the binary mask. The other is supervised, and relies on a model trained from manually annotated data. 
 
 Unsupervised Skeleton Prediction
 ________________________________
-The main function ``scripts.skeletons.main_unsupervised_skeleton_estimation.py`` implements the unsupervised skeleton estimation from binary masks. We estimate the mask's skeleton, estimate a filament segmentation, and compute the longest path traversing the whole skeleton. We return the longest path, assuming it corresponds to the length of the organism's body.  
+The main function ``scripts.skeletonization.main_unsupervised_skeleton_estimation.py`` implements the unsupervised skeleton estimation from binary masks. We estimate the mask's skeleton, estimate a filament segmentation, and compute the longest path traversing the whole skeleton. We return the longest path, assuming it corresponds to the length of the organism's body.  
 
 Each mask is represented by 0 and 1 pixel values, where 0 is the background and 1 is the foreground, the latter corresponding to the organism. The algorithm is applied individually to each binary mask, as follows: 
 
-:mod:`scripts.skeletons.main_unsupervised_skeleton_estimation` 
+:mod:`scripts.skeletonization.main_unsupervised_skeleton_estimation` 
 
-.. automodule:: scripts.skeletons.main_unsupervised_skeleton_estimation
+.. automodule:: scripts.skeletonization.main_unsupervised_skeleton_estimation
     :members: 
 
 #. The distance transform is computed using the function ``scipy.ndimage.distance_transform_edt``. We divide the mask in different predefined area classes, and use area-dependent parameters to threshold the distance transform. 
 #. We select the largest area from the thresholded distance transform, as we assume this is the organism's body.
 #. We apply thinning using ``skimage.morphology.thin`` to the selected area.
-#. We find intersections and endpoints of the skeleton using the custom implementation in ``mzbsuite.skeletons.mzb_skeletons_helpers.get_intersections`` and ``mzbsuite.skeletons.mzb_skeletons_helpers.get_endpoints``.
-#. We compute the longest path using ``mzbsuite.skeletons.mzb_skeletons_helpers.traverse_graph``. We could test using other implementations. 
+#. We find intersections and endpoints of the skeleton using the custom implementation in ``mzbsuite.skeletonization.mzb_skeletons_helpers.get_intersections`` and ``mzbsuite.skeletonization.mzb_skeletons_helpers.get_endpoints``.
+#. We compute the longest path using ``mzbsuite.skeletonization.mzb_skeletons_helpers.traverse_graph``. We could test using other implementations. 
 #. We save a CSV file at location ``{out_dir}/skeleton_attributes.csv`` containing: 
     
     - ``clip_filename``: the name of the clip
@@ -110,11 +110,11 @@ Each mask is represented by 0 and 1 pixel values, where 0 is the background and 
 
 Supervised Skeleton Prediction
 ______________________________
-This module is composed of 3 scripts: ``scripts.skeletons.main_supervised_skeleton_inference.py`` uses models pre-trained on manually annotated images, whereby an expert drew length and head width for a range of MZB taxa; ``scripts.skeletons.main_supervised_skeleton_assessment.py`` compares model prediction with manual annotations and plots them out; ``scripts.skeletons.main_supervised_skeleton_finetune.py`` allows to re-train the model with user's annotations. 
+This module is composed of 3 scripts: ``scripts.skeletonization.main_supervised_skeleton_inference.py`` uses models pre-trained on manually annotated images, whereby an expert drew length and head width for a range of MZB taxa; ``scripts.skeletonization.main_supervised_skeleton_assessment.py`` compares model prediction with manual annotations and plots them out; ``scripts.skeletonization.main_supervised_skeleton_finetune.py`` allows to re-train the model with user's annotations. 
 
-:mod:`scripts.skeletons.main_supervised_skeleton_inference` 
+:mod:`scripts.skeletonization.main_supervised_skeleton_inference` 
 
-.. automodule:: scripts.skeletons.main_supervised_skeleton_inference
+.. automodule:: scripts.skeletonization.main_supervised_skeleton_inference
     :members: 
 
 The inference script ``main_supervised_skeleton_inference.py`` is as follows: 
@@ -130,9 +130,9 @@ The inference script ``main_supervised_skeleton_inference.py`` is as follows:
 #. Create a dataframe containing: name of saved clip with superimposed skeleton (``clip_name``), prediciton for body (``nn_pred_body``) and head (``nn_pred_head``). 
 #. Write predictions to CSV at location ``{out_dir}/size_skel_supervised_model.csv``. 
 
-:mod:`scripts.skeletons.main_supervised_skeleton_assessment` 
+:mod:`scripts.skeletonization.main_supervised_skeleton_assessment` 
 
-.. automodule:: scripts.skeletons.main_supervised_skeleton_assessment
+.. automodule:: scripts.skeletonization.main_supervised_skeleton_assessment
     :members: 
 
 The assessment script ``main_supervised_skeleton_assessment.py`` is as follows: 
@@ -144,16 +144,16 @@ The assessment script ``main_supervised_skeleton_assessment.py`` is as follows:
 #. Plot absolute error for body length and head width, scatterplots for errors, barplots relative errors by species; all plots are saved in ``{input_dir}/{plotname}.{local_format}``, where ``{input_dir}`` and ``{local_format}`` is specified in the config file. 
 #. Calculate report with custom function ``mzbsuite.utils.regression_report``; write to text file in ``{input_dir}/estimation_report.txt``
 
-:mod:`scripts.skeletons.main_supervised_skeletons_finetune` 
+:mod:`scripts.skeletonization.main_supervised_skeletons_finetune` 
 
-.. automodule:: scripts.skeletons.main_supervised_skeletons_finetune
+.. automodule:: scripts.skeletonization.main_supervised_skeletons_finetune
     :members: 
 
-The re-training script ``main_supervised_skeletons_finetune.py`` is as follows: 
+The re-training script ``main_supervised_skeletonization_finetune.py`` is as follows: 
 
 #. Use ``pytorch_lightning`` builtins to seyup loaders for best and latest model in input folder ``input_dir`` specified in the config file. 
 #. Setup progress bar and keep track of logging date with custom class ``mzbsuite.utils.SaveLogCallback``. 
-#. Use the custom class ``mzbsuite.skeletons.mzb_skeletons_pilmodel.MZBModel_skels`` to pass config file arguments to model. 
+#. Use the custom class ``mzbsuite.skeletonization.mzb_skeletons_pilmodel.MZBModel_skels`` to pass config file arguments to model. 
 #. Check if there is a model to continue training from, otherwise load the best validated model and continue training from that. 
 #. Pass model training progress to Weigths & Biases logger (for more detail see :ref:`files/best_practices:Logging your model's training`)
 #. Setup ``torch.Trainer`` using parameters defined in the config file and above. 

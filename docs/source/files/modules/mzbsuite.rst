@@ -18,12 +18,12 @@ Here we detail the main classes and functions in ``mzbsuite``.
 
 :mod:`mzb_skeletons_dataloader`
 -------------------------------
-.. automodule:: mzbsuite.skeletons.mzb_skeletons_dataloader
+.. automodule:: mzbsuite.skeletonization.mzb_skeletons_dataloader
     :members:
 
 :mod:`mzb_skeletons_pilmodel`
 -----------------------------
-.. automodule:: mzbsuite.skeletons.mzb_skeletons_pilmodel
+.. automodule:: mzbsuite.skeletonization.mzb_skeletons_pilmodel
 	:members:
 
 .. Helper functions and docstrings 
@@ -31,7 +31,7 @@ Here we detail the main classes and functions in ``mzbsuite``.
 
 :mod:`mzb_skeletons_helpers`
 ----------------------------
-.. automodule:: mzbsuite.skeletons.mzb_skeletons_helpers
+.. automodule:: mzbsuite.skeletonization.mzb_skeletons_helpers
 	:members:
 
 :mod:`mzbsuite.utils`      

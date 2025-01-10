@@ -43,7 +43,7 @@ Modules
 -------
 This project contains 3 modules: 
 
-.. image:: ../../assets/MZB_pipeline_v3.png
+.. image:: ../../assets/MZB_pipeline_v3.1.png
 
 #. Module :ref:`files/scripts/processing_scripts:Segmentation`: this module is mainly used as preprocessing steps for classification and measurements, but contains handy functionalities on its own. The raw input images are wide RGB photographs of many organisms, which are hard to process on their own. A first step is to detect all the organisms as independent and disjoint objects, and to crop them out of the original image. This is done with traditional image processing methods, and it is completely unsupervised. From this, we derive i) an RGB crop of the organism, with filename corresponding to the original image name plus clip ID and ii) a binary mask of the insect, filename corresponding to the original image name plus a clip ID. The binary mask can be used to compute the area of the insect (number of pixels) and RGB + clip can be used to compute local descriptors. 
 
