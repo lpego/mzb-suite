@@ -16,7 +16,7 @@ from pytorch_lightning import Trainer
 from pytorch_lightning.loggers import WandbLogger, TensorBoardLogger
 from pytorch_lightning.strategies.ddp import DDPStrategy
 
-from mzbsuite.skeletons.mzb_skeletons_pilmodel import MZBModel_skels
+from mzbsuite.skeletonization.mzb_skeletons_pilmodel import MZBModel_skels
 from mzbsuite.utils import cfg_to_arguments, SaveLogCallback
 
 # Set the thread layer used by MKL

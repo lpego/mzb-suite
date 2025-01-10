@@ -6,7 +6,7 @@ from PIL import Image  # , ImageFilter, ImageDraw, ImageOps
 
 from torch.utils.data import Dataset
 
-from mzbsuite.skeletons.mzb_skeletons_helpers import Denormalize
+from mzbsuite.skeletonization.mzb_skeletons_helpers import Denormalize
 
 
 class MZBLoader_skels(Dataset):
