@@ -1,13 +1,10 @@
-# %% test skimage skeletonize
 import copy
 import sys
 from pathlib import Path
 from datetime import datetime
 import argparse
-
 import cv2
 import yaml
-
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
@@ -15,6 +12,7 @@ from scipy.spatial import distance_matrix
 from skimage.measure import label, regionprops
 from skimage.morphology import dilation, disk, medial_axis, thin
 from tqdm import tqdm
+from stqdm import stqdm
 from IPython.display import display, clear_output
 
 from mzbsuite.skeletonization.mzb_skeletons_helpers import (
@@ -36,7 +34,7 @@ else:
     prefix = "../../"  # or "../"
     PLOTS = True
 
-def main(args, cfg):
+def main(args, cfg, st_GUI=False):
     """
     Main function for skeleton estimation (body size) in the unsupervised setting.
 
@@ -54,6 +52,9 @@ def main(args, cfg):
             
     cfg : argparse.Namespace
         Arguments parsed from the configuration file.
+        
+    st_GUI : boolean
+        Flag for using tqdm / stqdm depending on whether Streamlit GUI is being used.
 
     Returns
     -------
@@ -109,17 +110,23 @@ def main(args, cfg):
 
     files_to_skel = [a for a in mask_list if a.name.lower() not in exclude]
 
-    out_dir = (
-        args.output_dir
-        / f"{args.input_dir.name}_unsupervised_{datetime.now().strftime('%Y%m%d_%H%M')}"
-    )
-    out_dir.mkdir(parents=True, exist_ok=True)
+    # Creating a folder non-interactively can cause problems, deprecated
+    # out_dir = (
+    #     args.output_dir 
+    #     / f"{args.input_dir.name}_unsupervised_{datetime.now().strftime('%Y%m%d_%H%M')}"
+    # )
+    # out_dir.mkdir(parents=True, exist_ok=True)
+    out_dir = Path(args.output_dir)
 
     growing_df = []
     # Load the image
 
-    iterator = tqdm(files_to_skel, total=len(files_to_skel))
-    # iterator = tqdm([args.input_dir / "1_ob_mixed_difficutly_clip_32_mask.jpg"])
+    if st_GUI: 
+        # If launched from GUI use stqdm
+        iterator = stqdm(files_to_skel, total=len(files_to_skel), backend=True, frontend=True)
+    else: 
+        # otherwise fallback to regular tqdm
+        iterator = tqdm(files_to_skel, total=len(files_to_skel))
     for fo in iterator:
         iterator.set_description(fo.name)
         # read in mask and rgb, rgb only for plotting
