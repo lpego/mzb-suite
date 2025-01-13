@@ -1,176 +1,122 @@
-import streamlit as st
-import tkinter as tk
-from tkinter import filedialog
-import os
-import time
-
-# run the file: streamlit run app.py
-
-st.title ('mzbsuite')
 import os
 import time, datetime
 import tkinter as tk
 from tkinter import filedialog
-import streamlit as st
 import yaml
-from mzbsuite.streamlit.streamlit_utils import file_selector, select_folder
 
-### Custom functions
-def clear():
-    st.session_state.config_file=False
-    st.session_state.input_dir=False
-    st.session_state.output_dir=None
-    st.session_state.save_masks=None
-    st.session_state.list_of_files=False
+### streamlit utils
+import streamlit as st
+import mzbsuite.streamlit.streamlit_utils as stutils
 
+### mzbsuite utils and scripts
+from mzbsuite.utils import cfg_to_arguments, noneparse
+from scripts.skeletonization.main_unsupervised_skeleton_estimation import main
 
-def checkEmpty():
-   config_main_var=''
-   input_main_var=''
-   output_main_var=''
-   save_masks_var=''
-   list_of_files_var=''
+# Configuration by variables
+VARIABLES = {
+    "config_file": {
+        "type": "file",
+        "description": "Path to config file",
+        "two_stage": True,
+        "stage1_label": "Select folder for config file",
+        "stage2_label": "Select config file",
+    },
+    "input_dir": {"type": "folder", "description": "Directory containing the masks"},
+    "output_dir": {"type": "folder", "description": "Directory to save results"},
+    "save_masks": {"type": "folder", "description": "Directory to save masks as JPG"},
+    "list_of_files": {
+        "type": "file",
+        "description": "CSV file with classification predictions",
+        "two_stage": True,
+        "stage1_label": "Select folder for list of files",
+        "stage2_label": "Select list of files",
+    },
+    "verbose": {"type": "boolean", "description": "Verbose mode"},
+}
 
-   try:
-      config_main_var = st.session_state.config_file
-   except:
-      st.write('**:red[Please select path to config file with per-script args]**')
+# Initialize session state for all variables
+for var, props in VARIABLES.items():
+    if var not in st.session_state:
+        st.session_state[var] = None
 
-   try:
-      input_main_var = st.session_state.input_dir
-   except:
-      st.write('**:red[Please select path to the directory containing the masks]**')
+# Display fields based on config
+# st.title("Unsupervised skeletonization estimation")
+st.write("Please provide the following inputs:")
 
-   try:
-      output_main_var = st.session_state.output_dir
-   except:
-      st.write('**:red[Please select path to the directory where to save the results]**')
+for var, props in VARIABLES.items():
+    if props.get("two_stage"):  # Two-stage file selector
+        col1, col2 = st.columns([2, 4])
 
-   try:
-      save_masks_var = st.session_state.save_masks
-   except:
-      st.write('**:red[Please select path to the directory where to save the masks as jpg]**')
+        with col1:
+            st.write(f"**{props['description']}**")
+            if st.button(props["stage1_label"], key=f"{var}_folder_button"):
+                st.session_state[f"{var}_folder"] = stutils.select_folder()
+            if st.session_state.get(f"{var}_folder"):
+                st.write(f"Folder selected: `{st.session_state[f'{var}_folder']}`")
 
-   try:
-      list_of_files_var = st.session_state.list_of_files
-   except:
-      st.write('**:red[Please select path to the csv file containing the classification predictions]**')
+        with col2:
+            if st.session_state.get(f"{var}_folder"):
+                st.write(f"**{props['stage2_label']} in `{st.session_state[f'{var}_folder']}`**")
+                # Dropdown for file selection from the folder
+                files = [f for f in os.listdir(st.session_state[f"{var}_folder"]) if os.path.isfile(os.path.join(st.session_state[f"{var}_folder"], f))]
+                selected_file = st.selectbox(f"Select a file for {var}", files, key=f"{var}_file")
+                if selected_file:
+                    st.session_state[var] = os.path.join(st.session_state[f"{var}_folder"], selected_file)
+                if st.session_state.get(var):
+                    st.write(f"File selected: `{st.session_state[var]}`")
 
-   if  config_main_var != '' and save_masks_var !='' and input_main_var != '' and output_main_var != ''  and list_of_files_var != '':
+    else:  # Regular single-stage selectors
+        st.write(f"**{props['description']}**")
+        if props["type"] == "file":
+            if st.button(f"Select {props['description']}", key=f"{var}_button"):
+                st.session_state[var] = stutils.file_selector()
+        elif props["type"] == "folder":
+            if st.button(f"Select {props['description']}", key=f"{var}_button"):
+                st.session_state[var] = stutils.select_folder()
+        elif props["type"] == "boolean":
+            st.session_state[var] = st.checkbox(props['description'])
 
-      return True
-   else:
+        if st.session_state[var]:
+            st.write(f"Selected: `{st.session_state[var]}`")
 
-      return False
+# Start time
+start_time = datetime.datetime.now()
 
-debug = True # set to False for regular operation
-streamlit_log = {"main_unsupervised_skeleton_estimation": {"start_time": datetime.datetime.now()}}
+# Buttons: Finish and Clear
+col1, col2 = st.columns(2)
 
-   
-### Actual variables to grab
-### Config file nested folder-file select
-col1, col2 = st.columns([2, 4])
-### Set up nested buttons states
-if not "config_folder" in st.session_state:
-    st.session_state["config_folder"] = False
-### Select config folder
-with col1: 
-    config_folder = st.session_state.get("config_folder", None)
-    # st.write("Select folder where config files are stored")
-    config_folder_button = st.button("Select config folder")
-    if config_folder_button:
-        config_folder = select_folder()
-        st.session_state.config_folder = config_folder
-### Select file in config_folder
+with col1:
+    if st.button("Finish"):
+        if stutils.validate_session_state(VARIABLES):
+            
+            # args = {key: st.session_state[key] for key in st.session_state}
+            args = stutils.log_session_state(start_time, VARIABLES) # just use the log dictionary
+            args.pop("start_time", None) # remove unnecessary key:value pairs
+            args.pop("end_time", None) # remove unnecessary key:value pairs
+            args = cfg_to_arguments(args)
+            # st.write(args)
+            
+            with open('D:\mzb-workflow\configs\mzb_example_config.yaml', "r") as f:
+                cfg = yaml.load(f, Loader=yaml.FullLoader)
+            cfg = cfg_to_arguments(cfg)
+            # st.write(cfg)
+            
+            ### Finally, launch the script!
+            main(args, cfg, st_GUI=True) # st_GUI flag that is launched from GUI
+            
+            # Save log
+            streamlit_log = stutils.log_session_state(start_time, VARIABLES)
+            with open("streamlit_log.yaml", "a") as outfile:
+                yaml.dump(streamlit_log, outfile, sort_keys=False)
+
+            st.write('**:green[Success!]** Run parameters saved to "streamlit_log.yaml".')
+        else:
+            st.write("**:red[Please complete all required inputs.]**")
+
 with col2:
-    if st.session_state.config_folder is not False:
-        config_file = file_selector(config_folder)
-        st.session_state.config_file = config_folder
-        st.write('You selected `%s`' % config_file)
-        streamlit_log["main_unsupervised_skeleton_estimation"]["config_file"] = config_file
+    if st.button("Clear"):
+        stutils.clear_session_state(VARIABLES)  # Reset variables and refresh the UI
 
-input_dir = st.session_state.get("input_dir", None)
-input_button = st.button("Select path to the directory containing the masks")
-if input_button:
-  input_dir = select_folder()
-  st.session_state.input_dir = input_dir
-
-if input_dir:
-   st.write("Selected folder path: `%s`" % input_dir)
-   streamlit_log["main_unsupervised_skeleton_estimation"]["input_dir"] = input_dir
-
-output_dir = st.session_state.get("output_dir", None)
-save_button = st.button("Select path to the directory where to save the results")
-if save_button:
-  output_dir = select_folder()
-  st.session_state.output_dir = output_dir
-
-if output_dir:
-   st.write("Selected folder path: `%s`" % output_dir)
-   streamlit_log["main_unsupervised_skeleton_estimation"]["save_model"] = output_dir
-
-save_masks = st.session_state.get("save_masks", None)
-input_button = st.button("Select path to the directory where to save the masks as jpg")
-if input_button:
-  save_masks = select_folder()
-  st.session_state.save_masks = save_masks
-
-if save_masks:
-   st.write("Selected folder path: `%s`" % save_masks)
-   streamlit_log["main_unsupervised_skeleton_estimation"]["save_masks"] = save_masks
-
-st.write("Select path to the csv file containing the classification predictions")
-col1, col2 = st.columns([2, 4])
-if not "list_of_files_folder" in st.session_state:
-    st.session_state["list_of_files_folder"] = False
-with col1: 
-    list_of_files_folder = st.session_state.get("list_of_files_folder", None)
-    list_of_files_folder_button = st.button("Select the csv file folder")
-    if list_of_files_folder_button:
-        list_of_files_folder = select_folder()
-        st.session_state.list_of_files_folder = list_of_files_folder
-with col2:
-    if st.session_state.list_of_files_folder is not False:
-        list_of_files = file_selector(list_of_files_folder)
-        st.session_state.list_of_files = list_of_files_folder
-        st.write('You selected `%s`' % list_of_files)
-        streamlit_log["main_unsupervised_skeleton_estimation"]["list_of_files"] = list_of_files
-
-
-
-
-
-verbose = st.session_state.get("verbose", None)
-verbose_checkbox = st.checkbox("Show more info")
-if verbose_checkbox:
-    verbose = True
-else: 
-    verbose = False
-
-streamlit_log["main_unsupervised_skeleton_estimation"]["verbose"] = verbose
-
-### Testing printouts
-if debug: 
-    st.write("DEBUGGING INFO:", streamlit_log)
-
-# Finish button
-loadingButton = st.button('Finish')
-
-if loadingButton and checkEmpty():
-
-    # Progress bar
-    progress_text = 'Loading...'
-    my_bar = st.progress(0, text=progress_text)
-
-    for percent_complete in range(100):
-        time.sleep(0.01)
-        my_bar.progress(percent_complete + 1, text=progress_text)
-    time.sleep(4.4)
-    my_bar.empty()
-
-    ### Write the YAML
-    streamlit_log["main_unsupervised_skeleton_estimation"]["end_time"] = datetime.datetime.now()
-    with open('streamlit_log.yaml', 'a') as outfile:
-        yaml.dump(streamlit_log, outfile, sort_keys=False)
-    del(streamlit_log)
-    st.write('Success, appending run parameters to "streamlit_log.yaml"')
+# Debugging info
+if st.session_state.get("verbose"):
+    st.write("DEBUG INFO:", {var: st.session_state[var] for var in VARIABLES.keys()})
