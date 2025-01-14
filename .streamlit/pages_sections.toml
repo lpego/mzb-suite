@@ -6,11 +6,66 @@ icon = "🏠"
 
 [[pages]]
 name = "Segmentation"
-icon = "💠"
+icon = "🧩"
 is_section = true
 
+    [[pages]]
+    path = "streamlit_pages/app_main_raw_to_clips.py"
+    name = "Segmentation unsupervised"
+    icon = "🧩"
+    # url_path = "my_books" # You can override the default url path for a page
+
 [[pages]]
-path = "streamlit_pages/app_main_raw_to_clips.py"
-name = "Segmentation unsupervised"
-icon = "💠"
-# url_path = "my_books" # You can override the default url path for a page
+name = "Skeletonization"
+icon = "🦴"
+is_section = true
+
+    [[pages]]
+    path = "streamlit_pages/app_main_unsupervised_skeleton_estimation.py"
+    name = "Skeletonization unsupervised"
+    icon = "🦴"
+
+    [[pages]]
+    path = "streamlit_pages/app_main_supervised_skeleton_inference.py"
+    name = "Skeletonization supervised - inference"
+    icon = "🦴"
+
+    [[pages]]
+    path = "streamlit_pages/app_main_supervised_skeletons_finetune.py"
+    name = "Skeletonization supervised - finetuning"
+    icon = "🦴"
+
+    # [[pages]]
+    # path = "streamlit_pages/app_main_supervised_skeleton_assessment.py"
+    # name = "Skeletonization supervised - assessment"
+    # icon = "🦴"
+
+[[pages]]
+name = "Classification"
+icon = "🗂️"
+is_section = true
+
+    [[pages]]
+    path = "streamlit_pages/app_main_classification_inference.py"
+    name = "Classification - inference"
+    icon = "🗂️"
+
+    [[pages]]
+    path = "streamlit_pages/app_main_classification_finetune.py"
+    name = "Classification - finetuning"
+    icon = "🗂️"
+
+[[pages]]
+name = "Other utiities"
+icon = "🛠️"
+is_section = true
+
+    [[pages]]
+    path = "streamlit_pages/app_main_prepare_learning_sets.py"
+    name = "Prepare learning sets"
+    icon = "🛠️"
+
+    [[pages]]
+    path = "streamlit_pages/app_main_preprocess_manual_skeleton_annotations.py"
+    name = "Pre-process manual skeleton annotations"
+    icon = "🛠️"
