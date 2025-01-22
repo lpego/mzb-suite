@@ -1,0 +1,37 @@
+name: str-mzb
+channels:
+  - conda-forge
+  # - nvidia
+  # - pytorch
+dependencies:
+  - python=3.10
+  - numpy
+  - pandas
+  - pytorch::pytorch
+  - pytorch::torchvision
+  # - pytorch-cuda=11.8
+  # - pytorch::cpuonly
+  - pytorch-lightning
+  - matplotlib
+  - scikit-learn
+  - scikit-image
+  - ipython
+  - ipykernel
+  - scipy
+  - streamlit
+  - pip
+
+  - pip:
+    - pyyaml
+    - wandb
+    - opencv-python
+    - segmentation_models_pytorch
+    - tensorboard
+    - tensorboardX
+    - stqdm
+    - st-pages
+    # - sphinx==6.2.1
+    # - sphinx-collections==0.0.1
+    # - sphinx-rtd-theme==1.2.2
+    # - nbsphinx==0.9.2
+    - -e .

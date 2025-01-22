@@ -1,8 +1,8 @@
 
 # Arguments not to be spec via CLI
 glob_random_seed: 222 
-glob_root_folder: /home/jovyan/work/mzb-workflow/
-glob_blobs_folder: /home/jovyan/work/mzb-workflow/data/derived/blobs/
+glob_root_folder: /Users/mivolpi/Projects/BioDetect/mzb-workflow
+glob_blobs_folder: /Users/mivolpi/Projects/BioDetect/mzb-workflow/data/derived/blobs/
 glob_local_format: pdf
 model_logger: wandb
 
