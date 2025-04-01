@@ -1,4 +1,3 @@
-# this is an example: 
 message: If you use this software and/or dataset, please cite it as below.
 title: Macrozoobenthos phenotyping
 authors:
@@ -16,12 +15,12 @@ preferred-citation:
       given-names: Catherine
     - family-names: Matthews
       given-names: Blake
-   
   collection-title: Macrozoobenthos phenotyping
   collection-type: dataset
+  year: 2019
+
   # start: 8024
   # end: 8035
-  # year: 2019
   # publisher:
     # name: 
   # url:
