@@ -233,7 +233,10 @@ def main(args, cfg):
     #     f"{args.output_dir}_{dataset_name}_{datetime.now().strftime('%Y%m%d_%H%M')}"
     # )
     out_dir = Path(f"{args.output_dir}")
-
+    out_dir = (
+        args.output_dir
+        / f"{args.input_dir.name}_supervised_{datetime.now().strftime('%Y%m%d_%H%M')}"
+    )
     out_dir.mkdir(exist_ok=True, parents=True)
 
     preds_size.to_csv(out_dir / f"size_skel_supervised_model.csv", index=False)
@@ -292,6 +295,7 @@ if __name__ == "__main__":
         args.save_masks = Path(f"{args.save_masks}")
         args.save_masks.mkdir(parents=True, exist_ok=True)
 
+    args.input_dir = Path(args.input_dir)
     args.output_dir = Path(args.output_dir)
 
     if args.verbose:

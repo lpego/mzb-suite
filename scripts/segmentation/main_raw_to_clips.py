@@ -2,6 +2,7 @@
 import argparse
 import sys, os
 from pathlib import Path
+from datetime import datetime
 
 import cv2
 import numpy as np
@@ -313,7 +314,7 @@ def main(args, cfg):
             c += 1
 
     mask_props = pd.concat(mask_props).reset_index().drop(columns=["index"])
-    mask_props.to_csv(outdir / "_mask_properties.csv")
+    mask_props.to_csv(outdir / f"_mask_properties_{datetime.now().strftime('%Y%m%d_%H%M')}.csv")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

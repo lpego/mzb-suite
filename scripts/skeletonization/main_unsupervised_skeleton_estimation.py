@@ -109,6 +109,7 @@ def main(args, cfg):
 
     files_to_skel = [a for a in mask_list if a.name.lower() not in exclude]
 
+    out_dir = Path(f"{args.output_dir}")
     out_dir = (
         args.output_dir
         / f"{args.input_dir.name}_unsupervised_{datetime.now().strftime('%Y%m%d_%H%M')}"
