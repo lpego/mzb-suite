@@ -11,7 +11,7 @@ SET MODEL_S=mit-b2-v0
 @REM ## ------------------------------------------------------------------------------------ ##
 @REM ## This extracts single organisms as clips from full-pane images; 
 @REM ## to tweak the results, see the configuration file parameters. 
-python %ROOT_DIR%\scripts\image_parsing\main_raw_to_clips.py^
+python %ROOT_DIR%\scripts\segmentation\main_raw_to_clips.py^
  --input_dir %ROOT_DIR%\data\mzb_example_data\raw_img\^
  --output_dir %ROOT_DIR%\data\mzb_example_data\derived\blobs\^
  --save_full_mask_dir %ROOT_DIR%\data\mzb_example_data\derived\full_image_masks^
