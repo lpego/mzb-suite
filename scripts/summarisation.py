@@ -4,11 +4,29 @@ import pandas as pd
 
 
 def find_csv_in_folder(folder, pattern):
+    import re
+    from datetime import datetime
     # If only one subfolder, go inside it
     entries = [os.path.join(folder, e) for e in os.listdir(folder)]
     dirs = [e for e in entries if os.path.isdir(e)]
     if len(dirs) == 1:
         folder = dirs[0]
+    elif len(dirs) > 1:
+        # Try to match datetime pattern in folder names and pick the most recent
+        dt_pattern = re.compile(r'(\d{8}_\d{4})')
+        dt_folders = []
+        for d in dirs:
+            m = dt_pattern.search(os.path.basename(d))
+            if m:
+                try:
+                    dt = datetime.strptime(m.group(1), '%Y%m%d_%H%M')
+                    dt_folders.append((dt, d))
+                except Exception:
+                    pass
+        if dt_folders:
+            dt_folders.sort(reverse=True)
+            folder = dt_folders[0][1]
+            print(f"Warning: Multiple folders found in {os.path.abspath(os.path.dirname(folder))}. Using most recent: {os.path.basename(folder)}")
     for fname in os.listdir(folder):
         if fname.endswith('.csv') and pattern in fname:
             return os.path.join(folder, fname)
@@ -22,13 +40,26 @@ def strip_extension(s):
 
 
 def main():
+    # --- MANUAL ARGS BLOCK FOR NOTEBOOK OR SCRIPT TESTING ---
+    # Uncomment and edit the following lines to override argparse for quick testing:
+    class Args:
+        classification = r'D:\mzb-workflow\results\swiss-invertebrates\classification'
+        skeletons_supervised = r'D:\mzb-workflow\results\swiss-invertebrates\skeletons\supervised_skeletons'
+        skeletons_unsupervised = r'D:\mzb-workflow\results\swiss-invertebrates\skeletons\unsupervised_skeletons'
+        output_folder = r'D:\mzb-workflow\results\swiss-invertebrates'
+        verbose = True
+    args = Args()
+    # --------------------------------------------------------
+
     parser = argparse.ArgumentParser(description='Merge classification, size_skel, and skeleton_attributes CSVs.')
     parser.add_argument('--classification', required=True, help='Folder containing classification CSV')
     parser.add_argument('--skeletons_supervised', required=True, help='Folder containing size_skel_supervised_model.csv')
     parser.add_argument('--skeletons_unsupervised', required=True, help='Folder containing skeleton_attributes.csv')
     parser.add_argument('--output_folder', required=True, help='Folder to save merged output')
     parser.add_argument('--verbose', '-v', action='store_true', help='Print verbose output')
-    args = parser.parse_args()
+    # Only parse args if not manually set above
+    if 'args' not in locals():
+        args = parser.parse_args()
 
     # Find files
     class_path = find_csv_in_folder(args.classification, 'classification_predictions')
