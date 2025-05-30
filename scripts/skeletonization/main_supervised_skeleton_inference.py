@@ -239,7 +239,7 @@ def main(args, cfg):
     )
     out_dir.mkdir(exist_ok=True, parents=True)
 
-    preds_size.to_csv(out_dir / f"size_skel_supervised_model.csv", index=False)
+    preds_size.to_csv(out_dir / f"supervised_skeletons.csv", index=False)
     
     if (sys.platform == "win32"):
         pathlib.PosixPath = temp ### restore original pathlib function

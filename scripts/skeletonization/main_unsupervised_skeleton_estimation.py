@@ -324,7 +324,7 @@ def main(args, cfg):
                 # clear_output(wait=True)
 
     full_df = pd.concat(growing_df)
-    full_df.to_csv(out_dir / "skeleton_attributes.csv", index=False)
+    full_df.to_csv(out_dir / "unsupervised_skeletons.csv", index=False)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
