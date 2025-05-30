@@ -141,15 +141,14 @@ def main(args, cfg):
     else:
         data["gt"] = 0
 
-    # out_dir = (
-    #     Path(args.output_dir)
-    #     / f"{model.data_dir.name}_{Path(args.input_model).name}_{datetime.now().strftime('%Y%m%d_%H%M')}"
-    # )
     out_dir = Path(args.output_dir)
-    if not out_dir.exists():
-        out_dir.mkdir(parents=True)
+    out_dir = (
+        Path(args.output_dir)
+        / f"{model.data_dir.name}_{Path(args.input_model).name}_{datetime.now().strftime('%Y%m%d_%H%M')}"
+    )
+    out_dir.mkdir(parents=True, exist_ok=True)
 
-    csv_name = f"predictions.csv"
+    csv_name = f"classification_predictions.csv"
     df_ = pd.DataFrame(data=data)
     df_.to_csv(out_dir / csv_name, index=False)
 
