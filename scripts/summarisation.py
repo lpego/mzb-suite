@@ -36,7 +36,12 @@ def find_csv_in_folder(folder, pattern):
 def strip_extension(s):
     if pd.isnull(s):
         return s
-    return os.path.splitext(str(s))[0]
+    base = os.path.splitext(str(s))[0]
+    # Remove trailing _rgb or _mask if present
+    for suffix in ['_rgb', '_mask']:
+        if base.endswith(suffix):
+            base = base[: -len(suffix)]
+    return base
 
 
 def main():
@@ -51,10 +56,10 @@ def main():
     args = Args()
     # --------------------------------------------------------
 
-    parser = argparse.ArgumentParser(description='Merge classification, size_skel, and skeleton_attributes CSVs.')
-    parser.add_argument('--classification', required=True, help='Folder containing classification CSV')
-    parser.add_argument('--skeletons_supervised', required=True, help='Folder containing size_skel_supervised_model.csv')
-    parser.add_argument('--skeletons_unsupervised', required=True, help='Folder containing skeleton_attributes.csv')
+    parser = argparse.ArgumentParser(description='Merge classification, unsupervised skeletons and supervised skeleton into single CSV.')
+    parser.add_argument('--classification', required=True, help='Folder containing classification_predictions.csv')
+    parser.add_argument('--skeletons_supervised', required=True, help='Folder containing supervised_skeletons.csv')
+    parser.add_argument('--skeletons_unsupervised', required=True, help='Folder containing unsupervised_skeletons.csv')
     parser.add_argument('--output_folder', required=True, help='Folder to save merged output')
     parser.add_argument('--verbose', '-v', action='store_true', help='Print verbose output')
     # Only parse args if not manually set above
@@ -63,35 +68,44 @@ def main():
 
     # Find files
     class_path = find_csv_in_folder(args.classification, 'classification_predictions')
-    size_path = find_csv_in_folder(args.skeletons_supervised, 'size_skel_supervised_model')
-    skel_path = find_csv_in_folder(args.skeletons_unsupervised, 'skeleton_attributes')
+    skel_unsup_path = find_csv_in_folder(args.skeletons_unsupervised, 'unsupervised_skeletons')
+    skel_sup_path = find_csv_in_folder(args.skeletons_supervised, 'supervised_skeletons')
 
     if args.verbose:
         print(f"Classification file: {class_path}")
-        print(f"Size skel file: {size_path}")
-        print(f"Skeleton attributes file: {skel_path}")
+        print(f"Unsupervised skeletons file: {skel_unsup_path}")
+        print(f"Supervised skeletons file: {skel_sup_path}")
 
     # Read CSVs
     df_class = pd.read_csv(class_path)
-    df_size = pd.read_csv(size_path)
-    df_skel = pd.read_csv(skel_path)
+    df_skel_unsup = pd.read_csv(skel_unsup_path)
+    df_skel_sup = pd.read_csv(skel_sup_path)
 
     # Strip extensions from merge columns
     if 'file' in df_class.columns:
         df_class['file_noext'] = df_class['file'].apply(strip_extension)
-    if 'clip_name' in df_size.columns:
-        df_size['clip_name_noext'] = df_size['clip_name'].apply(strip_extension)
-    if 'clip_filename' in df_skel.columns:
-        df_skel['clip_filename_noext'] = df_skel['clip_filename'].apply(strip_extension)
+    if 'clip_filename' in df_skel_unsup.columns:
+        df_skel_unsup['clip_name_noext'] = df_skel_unsup['clip_filename'].apply(strip_extension)
+    if 'clip_name' in df_skel_sup.columns:
+        df_skel_sup['clip_filename_noext'] = df_skel_sup['clip_name'].apply(strip_extension)
 
     if args.verbose:
         print(f"Classification shape: {df_class.shape}")
-        print(f"Size skel shape: {df_size.shape}")
-        print(f"Skeleton attributes shape: {df_skel.shape}")
+        print(f"Unsupervised skeletons shape: {df_skel_unsup.shape}")
+        print(f"Skeleton attributes shape: {df_skel_sup.shape}")
+        # Print first 10 rows of zipped merge columns
+        zipped = list(zip(
+            df_class['file_noext'] if 'file_noext' in df_class else [],
+            df_skel_unsup['clip_name_noext'] if 'clip_name_noext' in df_skel_unsup else [],
+            df_skel_sup['clip_filename_noext'] if 'clip_filename_noext' in df_skel_sup else []
+        ))
+        print("First 10 rows of merge columns (file_noext, clip_name_noext, clip_filename_noext):")
+        for row in zipped[:10]:
+            print(row)
 
     # Merge on extension-stripped columns
-    df_merged = pd.merge(df_class, df_size, left_on='file_noext', right_on='clip_name_noext', how='outer')
-    df_merged = pd.merge(df_merged, df_skel, left_on='file_noext', right_on='clip_filename_noext', how='outer')
+    df_merged = pd.merge(df_class, df_skel_unsup, left_on='file_noext', right_on='clip_name_noext', how='outer')
+    df_merged = pd.merge(df_merged, df_skel_sup, left_on='file_noext', right_on='clip_filename_noext', how='outer')
 
     if args.verbose:
         print(f"Merged shape: {df_merged.shape}")
