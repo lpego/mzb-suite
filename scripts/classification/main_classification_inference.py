@@ -214,7 +214,7 @@ if __name__ == "__main__":
         "--output_dir",
         type=str,
         required=True,
-        help="path to where to save classificaiton predictions as csv",
+        help="path to where to save classification predictions as csv",
     )
     parser.add_argument("--verbose", "-v", action="store_true", help="print more info")
     args = parser.parse_args()
