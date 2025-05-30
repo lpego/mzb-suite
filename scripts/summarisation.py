@@ -155,6 +155,23 @@ def main(args, cfg):
                 print('Added pred_class column with class names mapped from provided taxonomy file (index starting at 1).')
 
     # Output
+    # Reorder columns as requested
+    preferred_order = [
+        'file_noext',
+        'pred_class',
+        'skel_length',
+        'skel_length_mm',
+        'conv_rate_mm_px',
+        'segms',
+        'area',
+        'nn_pred_body',
+        'nn_pred_head'
+    ]
+    # Add any remaining columns not in preferred_order
+    rest = [col for col in df_merged.columns if col not in preferred_order]
+    final_order = [col for col in preferred_order if col in df_merged.columns] + rest
+    df_merged = df_merged[final_order]
+
     os.makedirs(args.output_folder, exist_ok=True)
     out_path = os.path.join(args.output_folder, 'merged_output.csv')
     df_merged.to_csv(out_path, index=False)
