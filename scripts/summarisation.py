@@ -1,7 +1,9 @@
-import os
+import os, sys
 import argparse
 import pandas as pd
 
+import yaml
+from mzbsuite.utils import cfg_to_arguments
 
 def find_csv_in_folder(folder, pattern):
     import re
@@ -44,27 +46,26 @@ def strip_extension(s):
     return base
 
 
-def main():
-    # --- MANUAL ARGS BLOCK FOR NOTEBOOK OR SCRIPT TESTING ---
-    # Uncomment and edit the following lines to override argparse for quick testing:
-    class Args:
-        classification = r'D:\mzb-workflow\results\swiss-invertebrates\classification'
-        skeletons_supervised = r'D:\mzb-workflow\results\swiss-invertebrates\skeletons\supervised_skeletons'
-        skeletons_unsupervised = r'D:\mzb-workflow\results\swiss-invertebrates\skeletons\unsupervised_skeletons'
-        output_folder = r'D:\mzb-workflow\results\swiss-invertebrates'
-        verbose = True
-    args = Args()
-    # --------------------------------------------------------
+def main(args, cfg):
+    """
+    Function to summarse classification, unsupervised skeletons and supervised skeletons into a single CSV.
+    Parameters
 
-    parser = argparse.ArgumentParser(description='Merge classification, unsupervised skeletons and supervised skeleton into single CSV.')
-    parser.add_argument('--classification', required=True, help='Folder containing classification_predictions.csv')
-    parser.add_argument('--skeletons_supervised', required=True, help='Folder containing supervised_skeletons.csv')
-    parser.add_argument('--skeletons_unsupervised', required=True, help='Folder containing unsupervised_skeletons.csv')
-    parser.add_argument('--output_folder', required=True, help='Folder to save merged output')
-    parser.add_argument('--verbose', '-v', action='store_true', help='Print verbose output')
-    # Only parse args if not manually set above
-    if 'args' not in locals():
-        args = parser.parse_args()
+    ----------
+    args : argparse.Namespace
+        - classification: path to the folder containing classification_predictions.csv
+        - skeletons_supervised: path to the folder containing supervised_skeletons.csv
+        - skeletons_unsupervised: path to the folder containing unsupervised_skeletons.csv
+         - taxonomy_file: path to the taxonomy file used for the classification (optional)
+        - output_folder: path to the folder where the merged output will be saved
+        - verbose: whether to print verbose output
+    cfg : dict
+        - config_file: path to the config file with per-script args (required if taxonomy file provided)
+
+    Returns
+    -------
+    None. Saves the results in the specified folder.
+    """
 
     # Find files
     class_path = find_csv_in_folder(args.classification, 'classification_predictions')
@@ -84,10 +85,13 @@ def main():
     # Strip extensions from merge columns
     if 'file' in df_class.columns:
         df_class['file_noext'] = df_class['file'].apply(strip_extension)
+        df_class.drop(columns=['file'], inplace=True)
     if 'clip_filename' in df_skel_unsup.columns:
         df_skel_unsup['clip_name_noext'] = df_skel_unsup['clip_filename'].apply(strip_extension)
+        df_skel_unsup.drop(columns=['clip_filename'], inplace=True)
     if 'clip_name' in df_skel_sup.columns:
         df_skel_sup['clip_filename_noext'] = df_skel_sup['clip_name'].apply(strip_extension)
+        df_skel_sup.drop(columns=['clip_name'], inplace=True)
 
     if args.verbose:
         print(f"Classification shape: {df_class.shape}")
@@ -103,13 +107,52 @@ def main():
         for row in zipped[:10]:
             print(row)
 
-    # Merge on extension-stripped columns
-    df_merged = pd.merge(df_class, df_skel_unsup, left_on='file_noext', right_on='clip_name_noext', how='outer')
-    df_merged = pd.merge(df_merged, df_skel_sup, left_on='file_noext', right_on='clip_filename_noext', how='outer')
+    # Merge on extension-stripped columns, avoid duplicate key columns
+    df_merged = pd.merge(
+        df_class,
+        df_skel_unsup,
+        left_on='file_noext',
+        right_on='clip_name_noext',
+        how='outer',
+        suffixes=(None, '_unsup')
+    )
+    df_merged = pd.merge(
+        df_merged,
+        df_skel_sup,
+        left_on='file_noext',
+        right_on='clip_filename_noext',
+        how='outer',
+        suffixes=(None, '_sup')
+    )
+    # Drop duplicate merge columns if present
+    for col in ['clip_name_noext', 'clip_filename_noext']:
+        if col in df_merged.columns:
+            df_merged.drop(columns=[col], inplace=True)
 
     if args.verbose:
         print(f"Merged shape: {df_merged.shape}")
         print(f"Columns: {df_merged.columns.tolist()}")
+        
+    # If taxonomy file is provided, map class numbers to names in 'pred' column
+    if args.taxonomy_file is not None:
+        print("Taxonomy file found, proceeding to map class numbers to names.")
+        try:
+            mzb_taxonomy = pd.read_csv(args.taxonomy_file)
+            mzb_taxonomy = mzb_taxonomy.drop(columns=["Unnamed: 0"])
+            mzb_taxonomy = mzb_taxonomy.ffill(axis=1)
+            # watch out this sorted is important for the class names to be in the right order
+            class_names = sorted(
+                list(mzb_taxonomy[cfg.lset_class_cut].str.lower().unique())
+            )
+        except Exception as e:
+            print(f"[ERROR] Could not parse config with cfg_to_arguments or missing lset_class_cut: {e}")
+            
+        # Build mapping: class number (row index starting at 1) -> class name (lowercase)
+        class_map = {i + 1: name for i, name in enumerate(class_names)}
+        if 'pred' in df_merged.columns:
+            df_merged['pred_class'] = df_merged['pred'].map(class_map)
+            if args.verbose:
+                print('Added pred_class column with class names mapped from provided taxonomy file (index starting at 1).')
 
     # Output
     os.makedirs(args.output_folder, exist_ok=True)
@@ -119,4 +162,44 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+     # # --- MANUAL ARGS BLOCK FOR NOTEBOOK OR SCRIPT TESTING ---
+    # # Uncomment and edit the following lines to override argparse for quick testing:
+    # class Args:
+    #     classification = r'D:\mzb-workflow\results\swiss-invertebrates\classification'
+    #     skeletons_supervised = r'D:\mzb-workflow\results\swiss-invertebrates\skeletons\supervised_skeletons'
+    #     skeletons_unsupervised = r'D:\mzb-workflow\results\swiss-invertebrates\skeletons\unsupervised_skeletons'
+    #     output_folder = r'D:\mzb-workflow\results\swiss-invertebrates'
+    #     config_file = r'D:\mzb-workflow\configs\mzb_example_config.yaml'
+    #     verbose = True
+    # args = Args()
+    
+    # args = parser.parse_args()
+    # with open(str(args.config_file), "r") as f: 
+    #     cfg = yaml.load(f, Loader=yaml.FullLoader)
+    # cfg = cfg_to_arguments(cfg)
+    # # --------------------------------------------------------
+
+    parser = argparse.ArgumentParser(description='Merge classification, unsupervised skeletons and supervised skeleton into single CSV.')
+    parser.add_argument('--classification', required=True, help='Folder containing classification_predictions.csv')
+    parser.add_argument('--skeletons_supervised', required=True, help='Folder containing supervised_skeletons.csv')
+    parser.add_argument('--skeletons_unsupervised', required=True, help='Folder containing unsupervised_skeletons.csv')
+    parser.add_argument('--taxonomy_file', required=False, help='Path to the taxonomy file used for the classification')
+    parser.add_argument('--output_folder', required=True, help='Folder to save merged output')
+    parser.add_argument('--verbose', '-v', action='store_true', help='Print verbose output')
+    parser.add_argument("--config_file", required=False, help="path to config file with per-script args")
+    # # Only parse args if not manually set above
+    # if 'args' not in locals():
+    #     args = parser.parse_args()
+        
+    #     with open(str(args.config_file), "r") as f:
+    #         cfg = yaml.load(f, Loader=yaml.FullLoader)
+
+    #     cfg = cfg_to_arguments(cfg)
+    args = parser.parse_args()
+
+    with open(str(args.config_file), "r") as f:
+        cfg = yaml.load(f, Loader=yaml.FullLoader)
+
+    cfg = cfg_to_arguments(cfg)
+
+    sys.exit(main(args, cfg))
