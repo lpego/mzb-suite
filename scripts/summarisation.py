@@ -147,8 +147,8 @@ def main(args, cfg):
         except Exception as e:
             print(f"[ERROR] Could not parse config with cfg_to_arguments or missing lset_class_cut: {e}")
             
-        # Build mapping: class number (row index starting at 1) -> class name (lowercase)
-        class_map = {i + 1: name for i, name in enumerate(class_names)}
+        # Build mapping: class number (row index starting at 0) -> class name (lowercase)
+        class_map = {i: name for i, name in enumerate(class_names)}
         if 'pred' in df_merged.columns:
             df_merged['pred_class'] = df_merged['pred'].map(class_map)
             if args.verbose:
