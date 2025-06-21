@@ -105,8 +105,10 @@ def main(args, cfg):
         dataset_name = "external"
 
     im_fi = dataloader.dataset.img_paths
-
     pbar_cb = pl.callbacks.progress.TQDMProgressBar(refresh_rate=1)
+    # Filter out mask files
+    mask_suffixes = ("_msk.png", "_mask.jpeg", "_mask.jpg")
+    im_fi = [p for p in im_fi if not any(str(p).endswith(suf) for suf in mask_suffixes)]
 
     trainer = pl.Trainer(
         precision=32,
