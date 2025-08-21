@@ -483,3 +483,38 @@ for treatment, duration in sampling_durations_dict.items():
     pred_class_cols = [col for col in norm_summary_df.columns if col not in ['site_number', 'site_treatment']]
     norm_summary_df.loc[mask, pred_class_cols] = norm_summary_df.loc[mask, pred_class_cols] / duration
     
+# --- New plot: Stacked barplot using normalised counts in norm_summary_df ---
+if 'pred_class' in df.columns and 'norm_summary_df' in locals():
+    # Get pred_class columns
+    pred_class_cols = [col for col in norm_summary_df.columns if col not in ['site_number', 'site_treatment']]
+    sites = norm_summary_df['site_number'].unique()
+    n_sites = len(sites)
+    fig_norm_bar, axes_norm_bar = plt.subplots(1, n_sites, figsize=(7 * n_sites, 6), sharey=True)
+    if n_sites == 1:
+        axes_norm_bar = [axes_norm_bar]
+    for idx, site in enumerate(sites):
+        site_df = norm_summary_df[norm_summary_df['site_number'] == site]
+        treatments = site_df['site_treatment'].values
+        bottom = None
+        for pc in pred_class_cols:
+            values = site_df[pc].values
+            axes_norm_bar[idx].bar(
+                treatments,
+                values,
+                label=str(pc),
+                color=pred_class_color_map.get(pc, '#cccccc'),
+                bottom=bottom
+            )
+            if bottom is None:
+                bottom = values.copy()
+            else:
+                bottom += values
+        axes_norm_bar[idx].set_title(f'Site {site} - Normalised pred_class counts by Treatment')
+        axes_norm_bar[idx].set_xlabel('Treatment')
+        axes_norm_bar[idx].set_ylabel('Normalised Count (per min)')
+        axes_norm_bar[idx].tick_params(axis='x', rotation=30)
+    fig_norm_bar.legend(handles=[Patch(facecolor=pred_class_color_map.get(pc, '#cccccc'), label=str(pc)) for pc in pred_class_cols],
+                      title='pred_class', loc='upper right')
+    plt.tight_layout(rect=[0, 0, 0.95, 1])
+    plt.savefig(os.path.join(output_dir, 'stacked_barplot_predclass_by_treatment_normalised.png'))
+    plt.close(fig_norm_bar)
