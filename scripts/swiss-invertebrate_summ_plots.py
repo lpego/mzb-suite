@@ -120,15 +120,14 @@ for idx, site in enumerate(site_numbers):
     axes1[idx, 1].grid(axis='y')
 
 # Add a legend for site_treatment colors
-from matplotlib.patches import Patch
 legend_handles = [Patch(facecolor=treatment_color_map[t], label=treatment_display_names[t]) for t in all_treatments]
 fig1.legend(handles=legend_handles, title='site_treatment', loc='upper right')
 
-plt.tight_layout(rect=[0, 0, 0.95, 1])
-plt.savefig(os.path.join(output_dir, 'all_sites_boxplots.png'))
-plt.close()
+# # Basic boxplot
+# plt.tight_layout(rect=[0, 0, 0.95, 1])
+# plt.savefig(os.path.join(output_dir, 'all_sites_boxplots.png'))
+# plt.close()
 
-# --- New multi-panel plot for three variables ---
 # Variables to plot and their y-labels
 panel_vars = [
     ('nn_pred_body', 'Body Length (mm)', lambda df: df['nn_pred_body'] / df['conv_rate_mm_px']),
@@ -136,30 +135,31 @@ panel_vars = [
     ('area', 'Area (mm²)', lambda df: df['area'] / (df['conv_rate_mm_px'] ** 2)),
 ]
 
-fig2, axes2 = plt.subplots(n_sites, 3, figsize=(21, 5 * n_sites), squeeze=False)
+# # --- New multi-panel plot for three variables ---
+# fig2, axes2 = plt.subplots(n_sites, 3, figsize=(21, 5 * n_sites), squeeze=False)
 
-for idx, site in enumerate(site_numbers):
-    site_df = df[df['site_number'] == site]
-    treatments = [t for t in all_treatments if t in site_df['site_treatment'].unique()]
-    for col_idx, (var, ylabel, func) in enumerate(panel_vars):
-        data = [func(site_df[site_df['site_treatment'] == t]).dropna() for t in treatments]
-        bplot = axes2[idx, col_idx].boxplot(data, patch_artist=True, labels=[treatment_display_names[t] for t in treatments])
-        for patch, t in zip(bplot['boxes'], treatments):
-            patch.set_facecolor(treatment_color_map[t])
-        for median in bplot['medians']:
-            median.set(color='black', linewidth=2.5)
-        axes2[idx, col_idx].set_title(f'Site {site} - {ylabel} by Treatment')
-        axes2[idx, col_idx].set_xlabel('site_treatment')
-        axes2[idx, col_idx].set_ylabel(ylabel)
-        axes2[idx, col_idx].grid(axis='y')
+# for idx, site in enumerate(site_numbers):
+#     site_df = df[df['site_number'] == site]
+#     treatments = [t for t in all_treatments if t in site_df['site_treatment'].unique()]
+#     for col_idx, (var, ylabel, func) in enumerate(panel_vars):
+#         data = [func(site_df[site_df['site_treatment'] == t]).dropna() for t in treatments]
+#         bplot = axes2[idx, col_idx].boxplot(data, patch_artist=True, labels=[treatment_display_names[t] for t in treatments])
+#         for patch, t in zip(bplot['boxes'], treatments):
+#             patch.set_facecolor(treatment_color_map[t])
+#         for median in bplot['medians']:
+#             median.set(color='black', linewidth=2.5)
+#         axes2[idx, col_idx].set_title(f'Site {site} - {ylabel} by Treatment')
+#         axes2[idx, col_idx].set_xlabel('site_treatment')
+#         axes2[idx, col_idx].set_ylabel(ylabel)
+#         axes2[idx, col_idx].grid(axis='y')
 
-# Add a legend for site_treatment colors
-legend_handles2 = [Patch(facecolor=treatment_color_map[t], label=treatment_display_names[t]) for t in all_treatments]
-fig2.legend(handles=legend_handles2, title='site_treatment', loc='upper right')
+# # Add a legend for site_treatment colors
+# legend_handles2 = [Patch(facecolor=treatment_color_map[t], label=treatment_display_names[t]) for t in all_treatments]
+# fig2.legend(handles=legend_handles2, title='site_treatment', loc='upper right')
 
-plt.tight_layout(rect=[0, 0, 0.95, 1])
-plt.savefig(os.path.join(output_dir, 'all_sites_boxplots_multi_panel.png'))
-plt.close(fig2)
+# plt.tight_layout(rect=[0, 0, 0.95, 1])
+# plt.savefig(os.path.join(output_dir, 'all_sites_boxplots_multi_panel.png'))
+# plt.close(fig2)
 
 # --- Assign pred_class color palette globally for all panels, using a different colormap ---
 if 'pred_class' in df.columns:
@@ -238,6 +238,7 @@ else:
     legend_handles4 = []
 plt.tight_layout(rect=[0, 0, 0.95, 1])
 plt.savefig(os.path.join(output_dir, 'all_sites_boxplots_multi_panel_by_pred_class_grouped_predclasscolor.png'))
+plt.close(fig3)
 
 # --- New plot: All sites combined, grouped by treatment and pred_class ---
 if 'pred_class' in df.columns:
