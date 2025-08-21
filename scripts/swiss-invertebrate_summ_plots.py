@@ -465,15 +465,21 @@ sampling_durations = [
 sampling_durations_dict = dict(sampling_durations)
 
 # For each treatment, calculate normalized counts and add as a new column
+# Create a pivot table: rows are unique (site_number, site_treatment), columns are pred_class, values are counts
+summary_df = df.pivot_table(
+    index=['site_number', 'site_treatment'],
+    columns='pred_class',
+    aggfunc='size',
+    fill_value=0
+).reset_index()
+
+# Copy summary_df to avoid modifying the original
+norm_summary_df = summary_df.copy()
+
 # here we simply divide by number of minutes fo sampling
+# for treatment, duration in sampling_durations_dict.items():
 for treatment, duration in sampling_durations_dict.items():
-    # Count rows for each treatment
-    count_col = f"{treatment}_count"
-    norm_col = f"{treatment}_count_norm"
-    df[count_col] = (df['site_treatment'] == treatment).astype(int)
-    # Normalized count (per minute)
-    df[norm_col] = df[count_col] / duration
-
-# Example: get normalized counts per site
-norm_counts_per_site = df.groupby('site_number')[[f"{t}_count_norm" for t in sampling_durations_dict]].sum()
-
+    mask = norm_summary_df['site_treatment'] == treatment
+    pred_class_cols = [col for col in norm_summary_df.columns if col not in ['site_number', 'site_treatment']]
+    norm_summary_df.loc[mask, pred_class_cols] = norm_summary_df.loc[mask, pred_class_cols] / duration
+    
