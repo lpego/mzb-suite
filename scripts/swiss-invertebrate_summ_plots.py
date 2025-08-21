@@ -356,6 +356,8 @@ if 'pred_class' in df.columns:
     plt.tight_layout(rect=[0, 0, 0.95, 1])
     plt.savefig(os.path.join(output_dir, 'all_sites_combined_boxplots_multi_panel_by_pred_class_grouped_predclasscolor_bd_ur_hf1_hf2.png'))
     plt.close(fig_selected2)
+   
+# --- All sites combined, all treatments by taxon ---
 if 'pred_class' in df.columns:
     # Get all treatments and pred_classes (excluding 'errors')
     combined_treatments = [t for t in all_treatments if t in df['site_treatment'].unique()]
