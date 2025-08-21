@@ -304,7 +304,6 @@ if 'pred_class' in df.columns:
     plt.savefig(os.path.join(output_dir, 'all_sites_combined_boxplots_multi_panel_by_pred_class_grouped_predclasscolor.png'))
     plt.close(fig_combined)
 
-
 # --- Combined figure: treatments ['ob', 'b1', 'b2'] and ['bd', 'ur', 'hf1', 'hf2'] ---
 if 'pred_class' in df.columns:
     group1 = ['ob', 'b1', 'b2']
@@ -453,3 +452,28 @@ if 'pred_class' in df.columns:
     plt.tight_layout(rect=[0, 0, 0.95, 1])
     plt.savefig(os.path.join(output_dir, 'stacked_barplot_predclass_by_treatment.png'))
     plt.close(fig_bar)
+    
+##### Normalising data to account for sampling duration #####
+### For the drift phases, we need to account for the different sampling durations
+### Base Drift: 15 min; Up-Ramping: 3 min; High Flow 1: 3 min; High Flow 2: 9 min
+sampling_durations = [
+    ('bd', 15),  # Base Drift: 15 min
+    ('ur', 3),   # Up-Ramping: 3 min
+    ('hf1', 3),  # High Flow 1: 3 min
+    ('hf2', 9)   # High Flow 2: 9 min
+]
+sampling_durations_dict = dict(sampling_durations)
+
+# For each treatment, calculate normalized counts and add as a new column
+# here we simply divide by number of minutes fo sampling
+for treatment, duration in sampling_durations_dict.items():
+    # Count rows for each treatment
+    count_col = f"{treatment}_count"
+    norm_col = f"{treatment}_count_norm"
+    df[count_col] = (df['site_treatment'] == treatment).astype(int)
+    # Normalized count (per minute)
+    df[norm_col] = df[count_col] / duration
+
+# Example: get normalized counts per site
+norm_counts_per_site = df.groupby('site_number')[[f"{t}_count_norm" for t in sampling_durations_dict]].sum()
+
