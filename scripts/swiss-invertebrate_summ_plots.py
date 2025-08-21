@@ -3,6 +3,8 @@ import matplotlib.pyplot as plt
 import os
 import matplotlib.colors as mcolors
 from matplotlib.patches import Patch
+import numpy as np
+from scipy.stats import norm
 
 # Load the CSV
 df = pd.read_csv('..\\results\\swiss-invertebrates\\merged_output.csv')
@@ -524,3 +526,90 @@ if 'pred_class' in df.columns and 'norm_summary_df' in locals():
     plt.tight_layout(rect=[0, 0, 0.95, 1])
     plt.savefig(os.path.join(output_dir, 'stacked_barplot_predclass_by_treatment_normalised.png'))
     plt.close(fig_norm_bar)
+
+##### Disregarding taxa, just look at the size distribution epr treatment #####
+
+# # --- New histogram: Body Length (mm) frequency grouped by treatment ---
+# plt.figure(figsize=(12, 7))
+# bins = 30  # You can adjust the number of bins
+# for t in ordered_treatments:
+#     data = df[df['site_treatment'] == t].copy()
+#     data = (data['nn_pred_body'] / data['conv_rate_mm_px']).dropna()
+#     if not data.empty:
+#         counts, bin_edges = np.histogram(data, bins=bins)
+#         bin_centers = (bin_edges[:-1] + bin_edges[1:]) / 2
+#         # Scatter points for histogram
+#         plt.scatter(bin_centers, counts, color=treatment_color_map.get(t, None), alpha=0.8)
+#         # Fit normal distribution and plot tendency line
+#         mu, std = norm.fit(data)
+#         x = np.linspace(bin_edges[0], bin_edges[-1], 300)
+#         p = norm.pdf(x, mu, std)
+#         # Scale PDF to histogram counts
+#         p_scaled = p * (np.sum(counts) * (bin_edges[1] - bin_edges[0]))
+#         plt.plot(x, p_scaled, label=treatment_display_names[t], color=treatment_color_map.get(t, None), linewidth=2)
+# plt.xlabel('Body Length (mm)')
+# plt.ylabel('Frequency')
+# plt.title('Distribution of Body Length (mm) by Treatment (Normal Fit & Points)')
+# plt.legend(title='Treatment')
+# plt.tight_layout()
+# plt.savefig(os.path.join(output_dir, 'normalfit_body_length_by_treatment.png'))
+# plt.close()
+
+### --- New plot: Body Length (mm) frequency tendency line (normal fit) and points grouped by treatment group ---
+treatment_grouping_dic = {
+    'Benthos': ['ob', 'b1', 'b2'],
+    'Base Drift': ['bd'],
+    'Drift with stress': ['ur', 'hf1', 'hf2']
+}
+
+# Assign colors for groups
+group_names = list(treatment_grouping_dic.keys())
+group_palette = ["#8dd3c7", "#bebada", "#fb8072"]  # pastel colors for 3 groups
+group_color_map = {g: group_palette[i % len(group_palette)] for i, g in enumerate(group_names)}
+
+
+plt.figure(figsize=(12, 7))
+bins = 30  # You can adjust the number of bins
+for group, treatments in treatment_grouping_dic.items():
+    data = df[df['site_treatment'].isin(treatments)].copy()
+    data = (data['nn_pred_body'] / data['conv_rate_mm_px']).dropna()
+    if not data.empty:
+        counts, bin_edges = np.histogram(data, bins=bins)
+        bin_centers = (bin_edges[:-1] + bin_edges[1:]) / 2
+        plt.scatter(bin_centers, counts, color=group_color_map[group], alpha=0.8)
+        mu, std = norm.fit(data)
+        x = np.linspace(bin_edges[0], bin_edges[-1], 300)
+        p = norm.pdf(x, mu, std)
+        p_scaled = p * (np.sum(counts) * (bin_edges[1] - bin_edges[0]))
+        plt.plot(x, p_scaled, label=group, color=group_color_map[group], linewidth=2)
+plt.xlabel('Body Length (mm)')
+plt.ylabel('Frequency')
+plt.title('Distribution of Body Length (mm) by Treatment Group (Normal Fit & Points)')
+plt.legend(title='Treatment Group')
+plt.tight_layout()
+plt.savefig(os.path.join(output_dir, 'normalfit_body_length_by_treatment_group.png'))
+plt.close()
+
+### same plot but with head width instead
+plt.figure(figsize=(12, 7))
+bins = 30  # You can adjust the number of bins
+for group, treatments in treatment_grouping_dic.items():
+    # Use nn_pred_head converted to mm
+    data = df[df['site_treatment'].isin(treatments)].copy()
+    data = (data['nn_pred_head'] / data['conv_rate_mm_px']).dropna()
+    if not data.empty:
+        counts, bin_edges = np.histogram(data, bins=bins)
+        bin_centers = (bin_edges[:-1] + bin_edges[1:]) / 2
+        plt.scatter(bin_centers, counts, color=group_color_map[group], alpha=0.8)
+        mu, std = norm.fit(data)
+        x = np.linspace(bin_edges[0], bin_edges[-1], 300)
+        p = norm.pdf(x, mu, std)
+        p_scaled = p * (np.sum(counts) * (bin_edges[1] - bin_edges[0]))
+        plt.plot(x, p_scaled, label=group, color=group_color_map[group], linewidth=2)
+plt.xlabel('Head Width (mm)')
+plt.ylabel('Frequency')
+plt.title('Distribution of Head Width (mm) by Treatment Group (Normal Fit & Points)')
+plt.legend(title='Treatment Group')
+plt.tight_layout()
+plt.savefig(os.path.join(output_dir, 'normalfit_headwidth_by_treatment_group.png'))
+plt.close()
