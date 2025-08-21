@@ -122,6 +122,7 @@ for idx, site in enumerate(site_numbers):
 # Add a legend for site_treatment colors
 legend_handles = [Patch(facecolor=treatment_color_map[t], label=treatment_display_names[t]) for t in all_treatments]
 fig1.legend(handles=legend_handles, title='site_treatment', loc='upper right')
+plt.close(fig1)
 
 # # Basic boxplot
 # plt.tight_layout(rect=[0, 0, 0.95, 1])
@@ -476,11 +477,13 @@ summary_df = df.pivot_table(
 # Copy summary_df to avoid modifying the original
 norm_summary_df = summary_df.copy()
 
-# here we simply divide by number of minutes fo sampling
+# here we simply divide by number of minutes of sampling
 # for treatment, duration in sampling_durations_dict.items():
 for treatment, duration in sampling_durations_dict.items():
     mask = norm_summary_df['site_treatment'] == treatment
     pred_class_cols = [col for col in norm_summary_df.columns if col not in ['site_number', 'site_treatment']]
+    # Only exclude 'errors' from plotting, not from the dataframe
+    plot_pred_class_cols = [pc for pc in pred_class_cols if pc != 'errors']
     norm_summary_df.loc[mask, pred_class_cols] = norm_summary_df.loc[mask, pred_class_cols] / duration
     
 # --- New plot: Stacked barplot using normalised counts in norm_summary_df ---
@@ -494,12 +497,13 @@ if 'pred_class' in df.columns and 'norm_summary_df' in locals():
         axes_norm_bar = [axes_norm_bar]
     for idx, site in enumerate(sites):
         site_df = norm_summary_df[norm_summary_df['site_number'] == site]
-        treatments = site_df['site_treatment'].values
+        # Reorder treatments according to ordered_treatments
+        treatments_in_data = [t for t in ordered_treatments if t in site_df['site_treatment'].values]
         bottom = None
-        for pc in pred_class_cols:
-            values = site_df[pc].values
+        for pc in plot_pred_class_cols:
+            values = [site_df[site_df['site_treatment'] == t][pc].values[0] if t in site_df['site_treatment'].values else 0 for t in treatments_in_data]
             axes_norm_bar[idx].bar(
-                treatments,
+                [treatment_display_names[t] for t in treatments_in_data],
                 values,
                 label=str(pc),
                 color=pred_class_color_map.get(pc, '#cccccc'),
@@ -508,13 +512,15 @@ if 'pred_class' in df.columns and 'norm_summary_df' in locals():
             if bottom is None:
                 bottom = values.copy()
             else:
-                bottom += values
+                bottom = [b + v for b, v in zip(bottom, values)]
         axes_norm_bar[idx].set_title(f'Site {site} - Normalised pred_class counts by Treatment')
         axes_norm_bar[idx].set_xlabel('Treatment')
         axes_norm_bar[idx].set_ylabel('Normalised Count (per min)')
         axes_norm_bar[idx].tick_params(axis='x', rotation=30)
-    fig_norm_bar.legend(handles=[Patch(facecolor=pred_class_color_map.get(pc, '#cccccc'), label=str(pc)) for pc in pred_class_cols],
-                      title='pred_class', loc='upper right')
+    # Enforce custom legend order
+    legend_order = ['diptera', 'plecoptera', 'ephemeroptera', 'oligochaeta', 'trichoptera', 'coleoptera', 'acari']
+    legend_handles = [Patch(facecolor=pred_class_color_map.get(pc, '#cccccc'), label=str(pc)) for pc in legend_order if pc in plot_pred_class_cols]
+    fig_norm_bar.legend(handles=legend_handles, title='pred_class', loc='upper right')
     plt.tight_layout(rect=[0, 0, 0.95, 1])
     plt.savefig(os.path.join(output_dir, 'stacked_barplot_predclass_by_treatment_normalised.png'))
     plt.close(fig_norm_bar)
