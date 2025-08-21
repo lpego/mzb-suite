@@ -240,123 +240,6 @@ plt.tight_layout(rect=[0, 0, 0.95, 1])
 plt.savefig(os.path.join(output_dir, 'all_sites_boxplots_multi_panel_by_pred_class_grouped_predclasscolor.png'))
 plt.close(fig3)
 
-### --- New plot: All sites combined, only treatments ob, b1, b2 ---
-if 'pred_class' in df.columns:
-    selected_treatments = ['ob', 'b1', 'b2']
-    selected_treatments = [t for t in selected_treatments if t in df['site_treatment'].unique()]
-    selected_pred_classes = [pc for pc in df['pred_class'].unique() if pc != 'errors' and any(df['pred_class'] == pc)]
-    pairs = []
-    labels = []
-    colors = []
-    for t in selected_treatments:
-        for pc in selected_pred_classes:
-            subset = df[(df['site_treatment'] == t) & (df['pred_class'] == pc)]
-            if not subset.empty:
-                pairs.append((t, pc))
-                labels.append(f"{treatment_display_names[t]}\n{pc}")
-                colors.append(pred_class_color_map.get(pc, '#cccccc'))
-    fig_selected, axes_selected = plt.subplots(1, 3, figsize=(21, 6), squeeze=False)
-    for col_idx, (var, ylabel, func) in enumerate(panel_vars):
-        data = [func(df[(df['site_treatment'] == t) & (df['pred_class'] == pc)]).dropna() for t, pc in pairs]
-        positions = []
-        group_positions = []
-        group_labels = []
-        pos = 1
-        last_t = None
-        group_start = pos
-        for i, (t, pc) in enumerate(pairs):
-            if last_t is not None and t != last_t:
-                group_center = (group_start + positions[-1]) / 2
-                group_positions.append(group_center)
-                group_labels.append(treatment_display_names[last_t])
-                pos += 1.5
-                group_start = pos
-            positions.append(pos)
-            pos += 1
-            last_t = t
-        if positions:
-            group_center = (group_start + positions[-1]) / 2
-            def wrap_label(label):
-                if ' ' in label:
-                    parts = label.split(' ')
-                    return '\n'.join(parts)
-                return label
-            group_labels.append(wrap_label(treatment_display_names[last_t]))
-            group_positions.append(group_center)
-        bplot = axes_selected[0, col_idx].boxplot(data, patch_artist=True, labels=labels, positions=positions, widths=0.8)
-        axes_selected[0, col_idx].set_xticks(group_positions)
-        axes_selected[0, col_idx].set_xticklabels([wrap_label(lbl) for lbl in group_labels], rotation=0, ha='center', fontsize=11)
-        for patch, color in zip(bplot['boxes'], colors):
-            patch.set_facecolor(color)
-        for median in bplot['medians']:
-            median.set(color='black', linewidth=2.5)
-        axes_selected[0, col_idx].set_title(f'All Sites - {ylabel} by Treatment & pred_class (ob, b1, b2)')
-        axes_selected[0, col_idx].set_xlabel('site_treatment')
-        axes_selected[0, col_idx].set_ylabel(ylabel)
-        axes_selected[0, col_idx].grid(axis='y')
-
-# --- New plot: All sites combined, only treatments bd, ur, hf1, hf2 ---
-if 'pred_class' in df.columns:
-    selected_treatments2 = ['bd', 'ur', 'hf1', 'hf2']
-    selected_treatments2 = [t for t in selected_treatments2 if t in df['site_treatment'].unique()]
-    selected_pred_classes2 = [pc for pc in df['pred_class'].unique() if pc != 'errors' and any(df['pred_class'] == pc)]
-    pairs2 = []
-    labels2 = []
-    colors2 = []
-    for t in selected_treatments2:
-        for pc in selected_pred_classes2:
-            subset = df[(df['site_treatment'] == t) & (df['pred_class'] == pc)]
-            if not subset.empty:
-                pairs2.append((t, pc))
-                labels2.append(f"{treatment_display_names[t]}\n{pc}")
-                colors2.append(pred_class_color_map.get(pc, '#cccccc'))
-    fig_selected2, axes_selected2 = plt.subplots(1, 3, figsize=(21, 6), squeeze=False)
-    for col_idx, (var, ylabel, func) in enumerate(panel_vars):
-        data2 = [func(df[(df['site_treatment'] == t) & (df['pred_class'] == pc)]).dropna() for t, pc in pairs2]
-        positions2 = []
-        group_positions2 = []
-        group_labels2 = []
-        pos2 = 1
-        last_t2 = None
-        group_start2 = pos2
-        for i, (t, pc) in enumerate(pairs2):
-            if last_t2 is not None and t != last_t2:
-                group_center2 = (group_start2 + positions2[-1]) / 2
-                group_positions2.append(group_center2)
-                group_labels2.append(treatment_display_names[last_t2])
-                pos2 += 1.5
-                group_start2 = pos2
-            positions2.append(pos2)
-            pos2 += 1
-            last_t2 = t
-        if positions2:
-            group_center2 = (group_start2 + positions2[-1]) / 2
-            def wrap_label2(label):
-                if ' ' in label:
-                    parts = label.split(' ')
-                    return '\n'.join(parts)
-                return label
-            group_labels2.append(wrap_label2(treatment_display_names[last_t2]))
-            group_positions2.append(group_center2)
-        bplot2 = axes_selected2[0, col_idx].boxplot(data2, patch_artist=True, labels=labels2, positions=positions2, widths=0.8)
-        axes_selected2[0, col_idx].set_xticks(group_positions2)
-        axes_selected2[0, col_idx].set_xticklabels([wrap_label2(lbl) for lbl in group_labels2], rotation=0, ha='center', fontsize=11)
-        for patch, color in zip(bplot2['boxes'], colors2):
-            patch.set_facecolor(color)
-        for median in bplot2['medians']:
-            median.set(color='black', linewidth=2.5)
-        axes_selected2[0, col_idx].set_title(f'All Sites - {ylabel} by Treatment & pred_class (bd, ur, hf1, hf2)')
-        axes_selected2[0, col_idx].set_xlabel('site_treatment')
-        axes_selected2[0, col_idx].set_ylabel(ylabel)
-        axes_selected2[0, col_idx].grid(axis='y')
-    # Add legend for pred_class colors
-    if pred_class_color_map:
-        legend_handles_selected2 = [Patch(facecolor=pred_class_color_map[pc], label=str(pc)) for pc in selected_pred_classes2]
-        fig_selected2.legend(handles=legend_handles_selected2, title='pred_class', loc='upper right')
-    plt.tight_layout(rect=[0, 0, 0.95, 1])
-    plt.savefig(os.path.join(output_dir, 'all_sites_combined_boxplots_multi_panel_by_pred_class_grouped_predclasscolor_bd_ur_hf1_hf2.png'))
-    plt.close(fig_selected2)
-   
 # --- All sites combined, all treatments by taxon ---
 if 'pred_class' in df.columns:
     # Get all treatments and pred_classes (excluding 'errors')
@@ -422,6 +305,118 @@ if 'pred_class' in df.columns:
     plt.close(fig_combined)
 
 
+# --- Combined figure: treatments ['ob', 'b1', 'b2'] and ['bd', 'ur', 'hf1', 'hf2'] ---
+if 'pred_class' in df.columns:
+    group1 = ['ob', 'b1', 'b2']
+    group2 = ['bd', 'ur', 'hf1', 'hf2']
+    group1 = [t for t in group1 if t in df['site_treatment'].unique()]
+    group2 = [t for t in group2 if t in df['site_treatment'].unique()]
+    pred_classes = [pc for pc in df['pred_class'].unique() if pc != 'errors' and any(df['pred_class'] == pc)]
+    fig_combined_groups, axes_combined_groups = plt.subplots(3, 2, figsize=(14, 18), squeeze=False)
+    for col_idx, (var, ylabel, func) in enumerate(panel_vars):
+        # Sub-panel 1: group1
+        pairs1 = []
+        labels1 = []
+        colors1 = []
+        for t in group1:
+            for pc in pred_classes:
+                subset = df[(df['site_treatment'] == t) & (df['pred_class'] == pc)]
+                if not subset.empty:
+                    pairs1.append((t, pc))
+                    labels1.append(f"{treatment_display_names[t]}\n{pc}")
+                    colors1.append(pred_class_color_map.get(pc, '#cccccc'))
+        data1 = [func(df[(df['site_treatment'] == t) & (df['pred_class'] == pc)]).dropna() for t, pc in pairs1]
+        positions1 = []
+        group_positions1 = []
+        group_labels1 = []
+        pos1 = 1
+        last_t1 = None
+        group_start1 = pos1
+        for i, (t, pc) in enumerate(pairs1):
+            if last_t1 is not None and t != last_t1:
+                group_center1 = (group_start1 + positions1[-1]) / 2
+                group_positions1.append(group_center1)
+                group_labels1.append(treatment_display_names[last_t1])
+                pos1 += 1.5
+                group_start1 = pos1
+            positions1.append(pos1)
+            pos1 += 1
+            last_t1 = t
+        if positions1:
+            group_center1 = (group_start1 + positions1[-1]) / 2
+            def wrap_label1(label):
+                if ' ' in label:
+                    parts = label.split(' ')
+                    return '\n'.join(parts)
+                return label
+            group_labels1.append(wrap_label1(treatment_display_names[last_t1]))
+            group_positions1.append(group_center1)
+        bplot1 = axes_combined_groups[col_idx, 0].boxplot(data1, patch_artist=True, labels=labels1, positions=positions1, widths=0.8)
+        axes_combined_groups[col_idx, 0].set_xticks(group_positions1)
+        axes_combined_groups[col_idx, 0].set_xticklabels([wrap_label1(lbl) for lbl in group_labels1], rotation=0, ha='center', fontsize=11)
+        for patch, color in zip(bplot1['boxes'], colors1):
+            patch.set_facecolor(color)
+        for median in bplot1['medians']:
+            median.set(color='black', linewidth=2.5)
+        axes_combined_groups[col_idx, 0].set_title(f'{ylabel} - Treatments ob, b1, b2')
+        axes_combined_groups[col_idx, 0].set_xlabel('site_treatment')
+        axes_combined_groups[col_idx, 0].set_ylabel(ylabel)
+        axes_combined_groups[col_idx, 0].grid(axis='y')
+        # Sub-panel 2: group2
+        pairs2 = []
+        labels2 = []
+        colors2 = []
+        for t in group2:
+            for pc in pred_classes:
+                subset = df[(df['site_treatment'] == t) & (df['pred_class'] == pc)]
+                if not subset.empty:
+                    pairs2.append((t, pc))
+                    labels2.append(f"{treatment_display_names[t]}\n{pc}")
+                    colors2.append(pred_class_color_map.get(pc, '#cccccc'))
+        data2 = [func(df[(df['site_treatment'] == t) & (df['pred_class'] == pc)]).dropna() for t, pc in pairs2]
+        positions2 = []
+        group_positions2 = []
+        group_labels2 = []
+        pos2 = 1
+        last_t2 = None
+        group_start2 = pos2
+        for i, (t, pc) in enumerate(pairs2):
+            if last_t2 is not None and t != last_t2:
+                group_center2 = (group_start2 + positions2[-1]) / 2
+                group_positions2.append(group_center2)
+                group_labels2.append(treatment_display_names[last_t2])
+                pos2 += 1.5
+                group_start2 = pos2
+            positions2.append(pos2)
+            pos2 += 1
+            last_t2 = t
+        if positions2:
+            group_center2 = (group_start2 + positions2[-1]) / 2
+            def wrap_label2(label):
+                if ' ' in label:
+                    parts = label.split(' ')
+                    return '\n'.join(parts)
+                return label
+            group_labels2.append(wrap_label2(treatment_display_names[last_t2]))
+            group_positions2.append(group_center2)
+        bplot2 = axes_combined_groups[col_idx, 1].boxplot(data2, patch_artist=True, labels=labels2, positions=positions2, widths=0.8)
+        axes_combined_groups[col_idx, 1].set_xticks(group_positions2)
+        axes_combined_groups[col_idx, 1].set_xticklabels([wrap_label2(lbl) for lbl in group_labels2], rotation=0, ha='center', fontsize=11)
+        for patch, color in zip(bplot2['boxes'], colors2):
+            patch.set_facecolor(color)
+        for median in bplot2['medians']:
+            median.set(color='black', linewidth=2.5)
+        axes_combined_groups[col_idx, 1].set_title(f'{ylabel} - Treatments bd, ur, hf1, hf2')
+        axes_combined_groups[col_idx, 1].set_xlabel('site_treatment')
+        axes_combined_groups[col_idx, 1].set_ylabel(ylabel)
+        axes_combined_groups[col_idx, 1].grid(axis='y')
+    # Add legend for pred_class colors
+    if pred_class_color_map:
+        legend_handles_combined_groups = [Patch(facecolor=pred_class_color_map[pc], label=str(pc)) for pc in pred_classes]
+        fig_combined_groups.legend(handles=legend_handles_combined_groups, title='pred_class', loc='upper right')
+    plt.tight_layout(rect=[0, 0, 0.95, 1])
+    plt.savefig(os.path.join(output_dir, 'all_sites_combined_boxplots_multi_panel_by_pred_class_grouped_predclasscolor_split_groups.png'))
+    plt.close(fig_combined_groups)
 
 # --- New plot: Stacked barplot of pred_class counts per treatment for each site ---
 if 'pred_class' in df.columns:
