@@ -54,23 +54,21 @@ pastel_palette = [c for c in pastel_colors if 'light' in c or 'pale' in c or 'la
 
 # Define the desired treatment order and their display names
 ordered_treatments = [
-    "bd", # Base Drift
     'ob',  # Outside Benthos
     'b1', # Benthos 1
     'b2', # Benthos 2
     'SPACE',
-    'bf', # Base Drift
+    'bd', # Base Drift
     'ur', # Up-Ramping
     'hf1', # High Flow 1
     'hf2'  # High Flow 2
 ]
 treatment_display_names = {
-    "bd": "Base Drift",
     'ob': 'Outside Benthos',
     'b1': 'Benthos 1',
     'b2': 'Benthos 2',
     'SPACE': 'SPACE',
-    'bf': 'Base Drift',
+    'bd': 'Base Drift',
     'ur': 'Up-Ramping',
     'hf1': 'High Flow 1',
     'hf2': 'High Flow 2'
