@@ -420,6 +420,76 @@ if 'pred_class' in df.columns:
     plt.savefig(os.path.join(output_dir, 'all_sites_combined_boxplots_multi_panel_by_pred_class_grouped_predclasscolor_split_groups.png'))
     plt.close(fig_combined_groups)
 
+
+### Pooling tratments together
+treatment_grouping_dic = {
+    'Benthos': ['ob', 'b1', 'b2'],
+    'Base Drift': ['bd'],
+    'Drift with stress': ['ur', 'hf1', 'hf2']
+}
+df['treatment_phase'] = None
+for phase, treatments in treatment_grouping_dic.items():
+    df.loc[df['site_treatment'].isin(treatments), 'treatment_phase'] = phase
+
+# --- All sites combined, all treatments by taxon, grouped by treatment_phase ---
+if 'pred_class' in df.columns:
+    # Use treatment_phase for x-axis, group by pred_class
+    combined_phases = [phase for phase in treatment_grouping_dic.keys() if phase in df['treatment_phase'].unique()]
+    combined_pred_classes = [pc for pc in df['pred_class'].unique() if pc != 'errors' and any(df['pred_class'] == pc)]
+    pairs = []
+    labels = []
+    colors = []
+    for phase in combined_phases:
+        for pc in combined_pred_classes:
+            subset = df[(df['treatment_phase'] == phase) & (df['pred_class'] == pc)]
+            if not subset.empty:
+                pairs.append((phase, pc))
+                labels.append(f"{phase}\n{pc}")
+                colors.append(pred_class_color_map.get(pc, '#cccccc'))
+    fig_phase_combined, axes_phase_combined = plt.subplots(1, 3, figsize=(21, 6), squeeze=False)
+    for col_idx, (var, ylabel, func) in enumerate(panel_vars):
+        data = [func(df[(df['treatment_phase'] == phase) & (df['pred_class'] == pc)]).dropna() for phase, pc in pairs]
+        # Calculate positions: group by phase, wider gap between phases
+        positions = []
+        group_positions = []
+        group_labels = []
+        pos = 1
+        last_phase = None
+        group_start = pos
+        for i, (phase, pc) in enumerate(pairs):
+            if last_phase is not None and phase != last_phase:
+                group_center = (group_start + positions[-1]) / 2
+                group_positions.append(group_center)
+                group_labels.append(last_phase)
+                pos += 1.5
+                group_start = pos
+            positions.append(pos)
+            pos += 1
+            last_phase = phase
+        if positions:
+            group_center = (group_start + positions[-1]) / 2
+            group_labels.append(last_phase)
+            group_positions.append(group_center)
+        bplot = axes_phase_combined[0, col_idx].boxplot(data, patch_artist=True, labels=labels, positions=positions, widths=0.8)
+        axes_phase_combined[0, col_idx].set_xticks(group_positions)
+        axes_phase_combined[0, col_idx].set_xticklabels(group_labels, rotation=0, ha='center', fontsize=13)
+        for patch, color in zip(bplot['boxes'], colors):
+            patch.set_facecolor(color)
+        for median in bplot['medians']:
+            median.set(color='black', linewidth=2.5)
+        axes_phase_combined[0, col_idx].set_title(f'All Sites - {ylabel} by Treatment Phase & pred_class')
+        axes_phase_combined[0, col_idx].set_xlabel('Treatment Phase')
+        axes_phase_combined[0, col_idx].set_ylabel(ylabel)
+        axes_phase_combined[0, col_idx].grid(axis='y')
+    # Add legend for pred_class colors
+    if pred_class_color_map:
+        legend_handles_phase = [Patch(facecolor=pred_class_color_map[pc], label=str(pc)) for pc in combined_pred_classes if pc != 'errors']
+        fig_phase_combined.legend(handles=legend_handles_phase, title='pred_class', loc='upper right')
+    plt.tight_layout(rect=[0, 0, 0.95, 1])
+    plt.savefig(os.path.join(output_dir, 'all_sites_combined_boxplots_multi_panel_by_pred_class_grouped_by_treatment_phase.png'))
+    plt.close(fig_phase_combined)
+
+##### Looking at orgainsms counts now ##### 
 # --- New plot: Stacked barplot of pred_class counts per treatment for each site ---
 if 'pred_class' in df.columns:
     fig_bar, axes_bar = plt.subplots(1, n_sites, figsize=(7 * n_sites, 6), sharey=True)
@@ -527,6 +597,86 @@ if 'pred_class' in df.columns and 'norm_summary_df' in locals():
     plt.savefig(os.path.join(output_dir, 'stacked_barplot_predclass_by_treatment_normalised.png'))
     plt.close(fig_norm_bar)
 
+# --- New plot: Stacked barplot using normalised counts in norm_summary_df, only for drift treatments ---
+if 'pred_class' in df.columns and 'norm_summary_df' in locals():
+    # Only plot drift treatments
+    drift_treatments = ['bd', 'ur', 'hf1', 'hf2']
+    # Get pred_class columns
+    pred_class_cols = [col for col in norm_summary_df.columns if col not in ['site_number', 'site_treatment']]
+    plot_pred_class_cols = [pc for pc in pred_class_cols if pc != 'errors']
+    sites = norm_summary_df['site_number'].unique()
+    n_sites = len(sites)
+    fig_norm_bar, axes_norm_bar = plt.subplots(1, n_sites, figsize=(7 * n_sites, 6), sharey=True)
+    if n_sites == 1:
+        axes_norm_bar = [axes_norm_bar]
+    for idx, site in enumerate(sites):
+        site_df = norm_summary_df[(norm_summary_df['site_number'] == site) & (norm_summary_df['site_treatment'].isin(drift_treatments))]
+        # Reorder treatments according to drift_treatments
+        treatments_in_data = [t for t in drift_treatments if t in site_df['site_treatment'].values]
+        bottom = None
+        for pc in plot_pred_class_cols:
+            values = [site_df[site_df['site_treatment'] == t][pc].values[0] if t in site_df['site_treatment'].values else 0 for t in treatments_in_data]
+            axes_norm_bar[idx].bar(
+                [treatment_display_names[t] for t in treatments_in_data],
+                values,
+                label=str(pc),
+                color=pred_class_color_map.get(pc, '#cccccc'),
+                bottom=bottom
+            )
+            if bottom is None:
+                bottom = values.copy()
+            else:
+                bottom = [b + v for b, v in zip(bottom, values)]
+        axes_norm_bar[idx].set_title(f'Site {site} - Normalised pred_class counts by Drift Treatment')
+        axes_norm_bar[idx].set_xlabel('Drift Treatment')
+        axes_norm_bar[idx].set_ylabel('Normalised Count (per min)')
+        axes_norm_bar[idx].tick_params(axis='x', rotation=30)
+    # Enforce custom legend order
+    legend_order = ['diptera', 'plecoptera', 'ephemeroptera', 'oligochaeta', 'trichoptera', 'coleoptera', 'acari']
+    legend_handles = [Patch(facecolor=pred_class_color_map.get(pc, '#cccccc'), label=str(pc)) for pc in legend_order if pc in plot_pred_class_cols]
+    fig_norm_bar.legend(handles=legend_handles, title='pred_class', loc='upper right')
+    plt.tight_layout(rect=[0, 0, 0.95, 1])
+    plt.savefig(os.path.join(output_dir, 'stacked_barplot_predclass_by_drift_treatment_normalised.png'))
+    plt.close(fig_norm_bar)
+
+# --- New plot: Stacked barplot using normalised counts in norm_summary_df, only for drift treatments, all sites combined ---
+if 'pred_class' in df.columns and 'norm_summary_df' in locals():
+    drift_treatments = ['bd', 'ur', 'hf1', 'hf2']
+    # Aggregate across all sites for each drift treatment
+    combined_df = norm_summary_df[norm_summary_df['site_treatment'].isin(drift_treatments)]
+    # Group by treatment and sum across sites
+    summed_df = combined_df.groupby('site_treatment').sum(numeric_only=True).reset_index()
+    pred_class_cols = [col for col in summed_df.columns if col not in ['site_treatment']]
+    plot_pred_class_cols = [pc for pc in pred_class_cols if pc != 'errors']
+    treatments_in_data = [t for t in drift_treatments if t in summed_df['site_treatment'].values]
+    bottom = None
+    fig, ax = plt.subplots(figsize=(7, 6))
+    for pc in plot_pred_class_cols:
+        values = [summed_df[summed_df['site_treatment'] == t][pc].values[0] if t in summed_df['site_treatment'].values else 0 for t in treatments_in_data]
+        ax.bar(
+            [treatment_display_names[t] for t in treatments_in_data],
+            values,
+            label=str(pc),
+            color=pred_class_color_map.get(pc, '#cccccc'),
+            bottom=bottom
+        )
+        if bottom is None:
+            bottom = values.copy()
+        else:
+            bottom = [b + v for b, v in zip(bottom, values)]
+    ax.set_title('All Sites Combined - Normalised pred_class counts by Drift Treatment')
+    ax.set_xlabel('Drift Treatment')
+    ax.set_ylabel('Normalised Count (per min)')
+    ax.tick_params(axis='x', rotation=30)
+    # Enforce custom legend order
+    legend_order = ['diptera', 'plecoptera', 'ephemeroptera', 'oligochaeta', 'trichoptera', 'coleoptera', 'acari']
+    legend_handles = [Patch(facecolor=pred_class_color_map.get(pc, '#cccccc'), label=str(pc)) for pc in legend_order if pc in plot_pred_class_cols]
+    fig.legend(handles=legend_handles, title='pred_class', loc='upper right')
+    plt.tight_layout(rect=[0, 0, 0.95, 1])
+    plt.savefig(os.path.join(output_dir, 'stacked_barplot_predclass_by_drift_treatment_normalised_all_sites_combined.png'))
+    plt.close(fig)
+
+
 ##### Disregarding taxa, just look at the size distribution epr treatment #####
 
 # # --- New histogram: Body Length (mm) frequency grouped by treatment ---
@@ -567,7 +717,6 @@ group_names = list(treatment_grouping_dic.keys())
 group_palette = ["#8dd3c7", "#bebada", "#fb8072"]  # pastel colors for 3 groups
 group_color_map = {g: group_palette[i % len(group_palette)] for i, g in enumerate(group_names)}
 
-
 plt.figure(figsize=(12, 7))
 bins = 30  # You can adjust the number of bins
 for group, treatments in treatment_grouping_dic.items():
@@ -582,6 +731,11 @@ for group, treatments in treatment_grouping_dic.items():
         p = norm.pdf(x, mu, std)
         p_scaled = p * (np.sum(counts) * (bin_edges[1] - bin_edges[0]))
         plt.plot(x, p_scaled, label=group, color=group_color_map[group], linewidth=2)
+        # Add mean (dotted line) and median (solid line)
+        mean_val = data.mean()
+        median_val = data.median()
+        plt.axvline(mean_val, color=group_color_map[group], linestyle=':', linewidth=2)
+        plt.axvline(median_val, color=group_color_map[group], linestyle='-', linewidth=2)
 plt.xlabel('Body Length (mm)')
 plt.ylabel('Frequency')
 plt.title('Distribution of Body Length (mm) by Treatment Group (Normal Fit & Points)')
@@ -606,6 +760,11 @@ for group, treatments in treatment_grouping_dic.items():
         p = norm.pdf(x, mu, std)
         p_scaled = p * (np.sum(counts) * (bin_edges[1] - bin_edges[0]))
         plt.plot(x, p_scaled, label=group, color=group_color_map[group], linewidth=2)
+        # Add mean (dotted line) and median (solid line)
+        mean_val = data.mean()
+        median_val = data.median()
+        plt.axvline(mean_val, color=group_color_map[group], linestyle=':', linewidth=2)
+        plt.axvline(median_val, color=group_color_map[group], linestyle='-', linewidth=2)
 plt.xlabel('Head Width (mm)')
 plt.ylabel('Frequency')
 plt.title('Distribution of Head Width (mm) by Treatment Group (Normal Fit & Points)')
@@ -613,3 +772,109 @@ plt.legend(title='Treatment Group')
 plt.tight_layout()
 plt.savefig(os.path.join(output_dir, 'normalfit_headwidth_by_treatment_group.png'))
 plt.close()
+
+### same plot but with area instead
+plt.figure(figsize=(12, 7))
+bins = 30  # You can adjust the number of bins
+for group, treatments in treatment_grouping_dic.items():
+    # Use nn_pred_head converted to mm
+    data = df[df['site_treatment'].isin(treatments)].copy()
+    data = (data['area'] / (data['conv_rate_mm_px']**2)).dropna() # is this how you convert areas? can't even remember :P
+    if not data.empty:
+        counts, bin_edges = np.histogram(data, bins=bins)
+        bin_centers = (bin_edges[:-1] + bin_edges[1:]) / 2
+        plt.scatter(bin_centers, counts, color=group_color_map[group], alpha=0.8)
+        mu, std = norm.fit(data)
+        x = np.linspace(bin_edges[0], bin_edges[-1], 300)
+        p = norm.pdf(x, mu, std)
+        p_scaled = p * (np.sum(counts) * (bin_edges[1] - bin_edges[0]))
+        plt.plot(x, p_scaled, label=group, color=group_color_map[group], linewidth=2)
+        # Add mean (dotted line) and median (solid line)
+        mean_val = data.mean()
+        median_val = data.median()
+        plt.axvline(mean_val, color=group_color_map[group], linestyle=':', linewidth=2)
+        plt.axvline(median_val, color=group_color_map[group], linestyle='-', linewidth=2)
+plt.xlabel('Area (mm²)')
+plt.ylabel('Frequency')
+plt.title('Distribution of Area (mm²) by Treatment Group (Normal Fit & Points)')
+plt.legend(title='Treatment Group')
+plt.tight_layout()
+plt.savefig(os.path.join(output_dir, 'normalfit_area_by_treatment_group.png'))
+plt.close()
+
+### Combined figure with the three plots above combined
+# --- Combined figure: Body Length, Head Width, and Area distributions by Treatment Group (stacked vertically) ---
+
+fig, axes = plt.subplots(3, 1, figsize=(12, 18), sharex=False)
+
+bins = 30  # You can adjust the number of bins
+
+# Panel 1: Body Length
+for group, treatments in treatment_grouping_dic.items():
+    data = df[df['site_treatment'].isin(treatments)].copy()
+    data = (data['nn_pred_body'] / data['conv_rate_mm_px']).dropna()
+    if not data.empty:
+        counts, bin_edges = np.histogram(data, bins=bins)
+        bin_centers = (bin_edges[:-1] + bin_edges[1:]) / 2
+        axes[0].scatter(bin_centers, counts, color=group_color_map[group], alpha=0.8)
+        mu, std = norm.fit(data)
+        x = np.linspace(bin_edges[0], bin_edges[-1], 300)
+        p = norm.pdf(x, mu, std)
+        p_scaled = p * (np.sum(counts) * (bin_edges[1] - bin_edges[0]))
+        axes[0].plot(x, p_scaled, label=group, color=group_color_map[group], linewidth=2)
+        mean_val = data.mean()
+        median_val = data.median()
+        axes[0].axvline(mean_val, color=group_color_map[group], linestyle=':', linewidth=2)
+        axes[0].axvline(median_val, color=group_color_map[group], linestyle='-', linewidth=2)
+axes[0].set_xlabel('Body Length (mm)')
+axes[0].set_ylabel('Frequency')
+axes[0].set_title('Distribution of Body Length (mm) by Treatment Group (Normal Fit & Points)')
+axes[0].legend(title='Treatment Group')
+
+# Panel 2: Head Width
+for group, treatments in treatment_grouping_dic.items():
+    data = df[df['site_treatment'].isin(treatments)].copy()
+    data = (data['nn_pred_head'] / data['conv_rate_mm_px']).dropna()
+    if not data.empty:
+        counts, bin_edges = np.histogram(data, bins=bins)
+        bin_centers = (bin_edges[:-1] + bin_edges[1:]) / 2
+        axes[1].scatter(bin_centers, counts, color=group_color_map[group], alpha=0.8)
+        mu, std = norm.fit(data)
+        x = np.linspace(bin_edges[0], bin_edges[-1], 300)
+        p = norm.pdf(x, mu, std)
+        p_scaled = p * (np.sum(counts) * (bin_edges[1] - bin_edges[0]))
+        axes[1].plot(x, p_scaled, label=group, color=group_color_map[group], linewidth=2)
+        mean_val = data.mean()
+        median_val = data.median()
+        axes[1].axvline(mean_val, color=group_color_map[group], linestyle=':', linewidth=2)
+        axes[1].axvline(median_val, color=group_color_map[group], linestyle='-', linewidth=2)
+axes[1].set_xlabel('Head Width (mm)')
+axes[1].set_ylabel('Frequency')
+axes[1].set_title('Distribution of Head Width (mm) by Treatment Group (Normal Fit & Points)')
+axes[1].legend(title='Treatment Group')
+
+# Panel 3: Area
+for group, treatments in treatment_grouping_dic.items():
+    data = df[df['site_treatment'].isin(treatments)].copy()
+    data = (data['area'] / (data['conv_rate_mm_px']**2)).dropna()
+    if not data.empty:
+        counts, bin_edges = np.histogram(data, bins=bins)
+        bin_centers = (bin_edges[:-1] + bin_edges[1:]) / 2
+        axes[2].scatter(bin_centers, counts, color=group_color_map[group], alpha=0.8)
+        mu, std = norm.fit(data)
+        x = np.linspace(bin_edges[0], bin_edges[-1], 300)
+        p = norm.pdf(x, mu, std)
+        p_scaled = p * (np.sum(counts) * (bin_edges[1] - bin_edges[0]))
+        axes[2].plot(x, p_scaled, label=group, color=group_color_map[group], linewidth=2)
+        mean_val = data.mean()
+        median_val = data.median()
+        axes[2].axvline(mean_val, color=group_color_map[group], linestyle=':', linewidth=2)
+        axes[2].axvline(median_val, color=group_color_map[group], linestyle='-', linewidth=2)
+axes[2].set_xlabel('Area (mm²)')
+axes[2].set_ylabel('Frequency')
+axes[2].set_title('Distribution of Area (mm²) by Treatment Group (Normal Fit & Points)')
+axes[2].legend(title='Treatment Group')
+
+plt.tight_layout()
+plt.savefig(os.path.join(output_dir, 'normalfit_size_distributions_by_treatment_group_stacked.png'))
+plt.close(fig)
