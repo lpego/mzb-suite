@@ -13,8 +13,8 @@ version = "0.2.3"
 description = "A suite of tools and utilities for the analysis of macrozoobenthos images"
 readme = "README.md"
 authors = [
-    {name = "Michele Volpi", email = "mivolpi@ethz.ch"},
     {name = "Luca Pegoraro", email = "luca.pegoraro@wsl.ch"},
+    {name = "Michele Volpi", email = "mivolpi@ethz.ch"},
 ]
 requires-python = ">=3.10"
 license = {file = "LICENCE"}

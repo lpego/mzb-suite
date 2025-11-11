@@ -7,10 +7,10 @@ preferred-citation:
   type: software
   title: "mzb-phenotyping"
   authors:
-    - family-names: Volpi
-      given-names: Michele
     - family-names: Pegoraro
       given-names: Luca
+    - family-names: Volpi
+      given-names: Michele
     - family-names: Graham
       given-names: Catherine
     - family-names: Matthews

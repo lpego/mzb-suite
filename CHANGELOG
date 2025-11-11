@@ -1,3 +1,5 @@
+**v0.0.0** Due to migration to Renku 2.0, removing legacy files etc
+
 **v0.2.3** Restructuring notebooks & documentation.  
 
 **v0.2.2** Added Windows native command prompt support. 
