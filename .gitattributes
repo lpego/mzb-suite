@@ -1,5 +1,5 @@
 ### Specifying end-of-line handling
-# Force apporpaite EOL for Linux and WIndows specific files
+# Force appropriate EOL for Linux and WIndows specific files
 *.sh     eol=lf
 *.bat    eol=crlf
 # Let Git decide for these files
