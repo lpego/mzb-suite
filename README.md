@@ -1,6 +1,6 @@
 <!-- ![GitHub Pages](https://github.com/lpego/sphinx-rtd-test/actions/workflows/deploy_docs.yaml/badge.svg) -->
-[![ReadTheDocs status](https://readthedocs.org/projects/mzb-workflow/badge/?version=latest)](https://mzb-workflow.readthedocs.io/en/latest/?badge=latest)
-![GitLab Docker build](https://gitlab.renkulab.io/biodetect/mzb-workflow/badges/master/pipeline.svg)
+[![ReadTheDocs status](https://readthedocs.org/projects/mzb-suite/badge/?version=latest)](https://mzb-suite.readthedocs.io/en/latest/?badge=latest)
+<!-- ![GitLab Docker build](https://gitlab.renkulab.io/biodetect/mzb-workflow/badges/master/pipeline.svg) -->
 
 # What is mzb-suite? 
 `mzb-suite` is an image processing pipeline for lab images of macrozoobenthos (MZB), partially automating data extraction from images.  
@@ -22,6 +22,8 @@ Anyone that wants to process images of MZB or other organisms acquired in a lab 
 
 # Get started
 <!-- LINKS -->
+You can get the trained models and some demo data here: https://doi.org/10.5281/zenodo.17581222
+
 Please see the [documentation](https://mzb-workflow.readthedocs.io/en/latest/), it explains everything relating to the package. You can jump to directly to sections here: 
 
 1. [Installation](https://mzb-workflow.readthedocs.io/en/latest/files/installing.html)
