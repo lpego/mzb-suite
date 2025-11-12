@@ -35,3 +35,7 @@ Documentation = "https://mzb-workflow.readthedocs.io/en/latest/"
 # NOT necessarily have to specify this line.
 packages = ["mzbsuite"]
 include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["."]
+exclude = ["tests*"]
