@@ -33,7 +33,6 @@ Documentation = "https://mzb-workflow.readthedocs.io/en/latest/"
 [tool.setuptools]
 # By default, include-package-data is true in pyproject.toml, so you do
 # NOT necessarily have to specify this line.
-packages = ["mzbsuite"]
 include-package-data = true
 
 [tool.setuptools.packages.find]
