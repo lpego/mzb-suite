@@ -72,7 +72,7 @@ def main(args, cfg):
 
     # define normalization function
     norm = lambda x: (x - np.min(x)) / (np.max(x) - np.min(x))
-
+    mask_props = []
     iterator = tqdm(files_proc, total=len(files_proc))
     for i, fo in enumerate(iterator):
         mask_props = []
