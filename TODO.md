@@ -7,7 +7,8 @@ Updates to ensure repo runs on new Renku v2.x
     - [ ] hardcoded in notebooks
 
 - [ ] Make `docs\source\files\examples\demo.ipynb` actually run as an example
-- [ ] Write tiny python script to unzip Zenodo archive in appropriate location
+	- [ ] actually, it is mimicking CLI execution, which obviously cannot work in Jupyter notebooks. This might be confusing for users as well.. 
+- [x] Write tiny python script to unzip Zenodo archive in appropriate location
 
 - [ ] Update documentation 
     - [ ] Launching a session in new Renku 
