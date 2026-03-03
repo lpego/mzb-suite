@@ -26,18 +26,18 @@ for path in demodata_paths:
         # print(filename)
         try: 
             os.path.isfile(filename)
-            print("Demo data archive found!")
+            print("Demo data archive found in: ", f"{filename}")
             demodata = filename
         except FileNotFoundError:
             print("Demo data archive not found in ", f"{filename}")
             demodata = ""
-
-print(demodata)
+# print(demodata)
 
 ### Finding the root of the repo
 repo_paths = [
     "../mzb-suite",
     "../*/mzb-suite",
+    "../../mzb-suite",
     "../../*/mzb-suite",
 ]
 
@@ -48,19 +48,14 @@ for path in repo_paths:
         # print(dir)
         try: 
             os.path.isdir(dir)
-            print("Repo root dir found!")
+            print("Repo root dir found in: ", f"{dir}")
             repo = dir
         except FileNotFoundError:
             print("Repo root dir not found in ", f"{dir}")
             repo = ""
+# print(repo)
 
-print(repo)
-
-# ## Unzipping demo data
-# with zipfile.ZipFile(demodata, 'r') as zip_ref:
-#     zip_ref.extractall(repo)
-
-## Unzipping demo data
+### Unzipping demo data
 with zipfile.ZipFile(demodata, 'r') as zip_ref:
     for member in tqdm(zip_ref.infolist(), desc="Extracting "):
         try:
