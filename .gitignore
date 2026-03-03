@@ -5,6 +5,7 @@
 ### Manually added directories generated during tutorials/notebooks
 .vscode
 results
+models/*
 models/hub
 docs/html
 docs/_static
@@ -16,6 +17,7 @@ data/*/*/*
 data/mzb_example_data/derived
 ### ignore models checkpoints
 *.pth
+*.ckpt
 
 ### Emacs ###
 # -*- mode: gitignore; -*-
