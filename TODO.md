@@ -19,7 +19,7 @@ Updates to ensure repo runs on new Renku v2.x
 
 ### Extra
 - [ ] Look into streamlit frontend that can be launched on Renku
-    - [ ] Maybe offer also Docker container with streamlit frontend
+    - [ ] Maybe offer also Docker container with streamlit frontend?
 
 <!-- # ---------------------------------------------------------------------- # -->
 
