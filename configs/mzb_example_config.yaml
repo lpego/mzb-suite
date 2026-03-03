@@ -1,8 +1,8 @@
 
 # Arguments not to be spec via CLI
 glob_random_seed: 222 
-glob_root_folder: /Users/mivolpi/Projects/BioDetect/mzb-workflow
-glob_blobs_folder: /Users/mivolpi/Projects/BioDetect/mzb-workflow/data/derived/blobs/
+glob_root_folder: /home/renku/work/mzb-suite
+glob_blobs_folder: /home/renku/work/mzb-suite/data/derived/blobs/
 glob_local_format: pdf
 model_logger: wandb
 
@@ -26,7 +26,7 @@ impa_save_clips_plus_features: True
 lset_class_cut: order
 lset_val_size: 0.1
 # moved to args of function
-# lset_taxonomy: /home/jovyan/work/mzb-workflow/data/MZB_taxonomy.csv
+# lset_taxonomy: /home/renku/work/mzb-suite/data/MZB_taxonomy.csv
 
 ## Finetuning / training config for classifier
 trcl_learning_rate: 0.0001
