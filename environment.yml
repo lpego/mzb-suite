@@ -1,6 +1,7 @@
 name: mzbsuite
 channels:
   - conda-forge
+  - nodefaults
   - nvidia
   - pytorch
 dependencies:
