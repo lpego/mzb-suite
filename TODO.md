@@ -2,7 +2,7 @@ Updates to ensure repo runs on new Renku v2.x
 
 ## New TODOs
 - [ ] Change paths to Renku container locations
-    - [ ] config files in `config`
+    - [x] config files in `config`
     - [ ] hardcoded in some scripts
     - [ ] hardcoded in notebooks
 
@@ -14,8 +14,10 @@ Updates to ensure repo runs on new Renku v2.x
     - [ ] Launching a session in new Renku 
     - [ ] unzipping the demo data
 
-- [ ] Double check local isntall
-    - [ ] Have to remake Dockerfile from scratch (not relying on Renku)
+- [ ] Double check local install
+    - [x] Update to new packages' versions
+	- [ ] check that everything still works
+	- [ ] Have to remake Dockerfile from scratch (not relying on Renku)
     - [ ] Build and upload to (my personal) Dockerhub
 
 ### Extra
