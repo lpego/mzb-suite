@@ -50,27 +50,21 @@ def main(args, cfg):
     )
 
     mod_path = dirs[0]
-
-    model = MZBModel(
-        pretrained_network=cfg.trcl_model_pretrarch,
-    )
     
     ### resolving Path in Windows
     if (sys.platform == "win32"):
         temp = pathlib.PosixPath
         pathlib.PosixPath = pathlib.WindowsPath
     
-    ### Check for GPU, otherwise default to CPU
-    if torch.cuda.is_available(): 
-        model.model = model.load_from_checkpoint(
-            checkpoint_path=mod_path, map_location=torch.device("cuda")
-            )
-        model.to("cuda") 
-    else: 
-        model.model = model.load_from_checkpoint(
-            checkpoint_path=mod_path, map_location=torch.device("cpu")
-            )
-        model.to("cpu")
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+    model = MZBModel.load_from_checkpoint(
+        checkpoint_path=mod_path,
+        map_location=device,
+        weights_only=False, # due to legacy checkpoint
+    )
+
+    model.to(device)
 
     model.data_dir = Path(args.input_dir)
     model.num_classes = cfg.infe_num_classes

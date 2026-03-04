@@ -60,25 +60,35 @@ def main(args, cfg):
     )
 
     mod_path = dirs[0]
-
-    model = MZBModel_skels()
     
     ### resolving Path in Windows
     if (sys.platform == "win32"):
         temp = pathlib.PosixPath
         pathlib.PosixPath = pathlib.WindowsPath
     
-    ### Check for GPU, otherwise default to CPU
-    if torch.cuda.is_available(): 
-        model.model = model.load_from_checkpoint(
-            checkpoint_path=mod_path, map_location=torch.device("cuda")
-            )
-        model.to("cuda") 
-    else: 
-        model.model = model.load_from_checkpoint(
-            checkpoint_path=mod_path, map_location=torch.device("cpu")
-            )
-        model.to("cpu")
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+    model = MZBModel_skels.load_from_checkpoint(
+        checkpoint_path=mod_path,
+        map_location=device,
+        weights_only=False, # due to legacy checkpoint
+    )
+    
+    model.to(device)
+    
+    # model = MZBModel_skels()
+    
+    # ### Check for GPU, otherwise default to CPU
+    # if torch.cuda.is_available(): 
+    #     model.model = model.load_from_checkpoint(
+    #         checkpoint_path=mod_path, map_location=torch.device("cuda")
+    #         )
+    #     model.to("cuda") 
+    # else: 
+    #     model.model = model.load_from_checkpoint(
+    #         checkpoint_path=mod_path, map_location=torch.device("cpu")
+    #         )
+    #     model.to("cpu")
 
     model.data_dir = Path(args.input_dir)
     model.im_folder = model.data_dir / "images"
