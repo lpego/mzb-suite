@@ -20,12 +20,12 @@ dependencies:
   - pip=26.0
 
   - pip:
-    - pyyaml=6.0
-    - wandb=0.25
-    - opencv-python=4.13
-    - segmentation_models_pytorch=0.5
-    - tensorboard=2.20
-    - tensorboardX=2.6
+    - pyyaml==6.0
+    - wandb==0.25
+    - opencv-python==4.13
+    - segmentation_models_pytorch==0.5
+    - tensorboard==2.20
+    - tensorboardX==2.6
     # - sphinx
     # - sphinx-collections
     # - sphinx-rtd-theme
