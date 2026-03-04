@@ -48,21 +48,25 @@ RUN curl -fsSL https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/p
 RUN ln -s /usr/bin/codium /usr/bin/code
 
 # ------------------------------------------------------------------
+# Install dependencies
+# ------------------------------------------------------------------
+
 # Create non-root user
-# ------------------------------------------------------------------
 RUN useradd -m -u 1000 -s /bin/bash coder
-USER coder
-WORKDIR /home/coder/app
 
-# ------------------------------------------------------------------
-# Copy environment and install dependencies
-# ------------------------------------------------------------------
-COPY --chown=coder:coder environment.yml .
-COPY --chown=coder:coder . .
+WORKDIR /home/coder
+RUN git clone -b new_renku --single-branch https://github.com/lpego/mzb-suite.git
+WORKDIR /home/coder/mzb-suite
 
-# Create environment
+# Create environment as root
 RUN mamba env create -f environment.yml && \
     mamba clean -a -y
+
+# Make conda readable/executable for non-root user
+RUN chown -R coder:coder /home/coder
+
+# Switch to non-root user
+USER coder
 
 # Activate environment automatically
 ENV CONDA_DEFAULT_ENV=mzbsuite
