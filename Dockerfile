@@ -7,6 +7,9 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV MAMBA_ROOT_PREFIX=/opt/conda
 ENV PATH=$MAMBA_ROOT_PREFIX/bin:$PATH
 
+# Prevent VSCodium WSL prompt
+ENV DONT_PROMPT_WSL_INSTALL=1
+
 # ------------------------------------------------------------------
 # System dependencies
 # ------------------------------------------------------------------
@@ -59,7 +62,7 @@ RUN git clone -b new_renku --single-branch https://github.com/lpego/mzb-suite.gi
 WORKDIR /home/coder/mzb-suite
 
 # Create environment as root
-RUN mamba env create -f environment.yml && \
+RUN mamba env create -y -f environment.yml && \
     mamba clean -a -y
 
 # Make conda readable/executable for non-root user
