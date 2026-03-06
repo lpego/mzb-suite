@@ -74,6 +74,13 @@ RUN /opt/conda/envs/mzbsuite/bin/python -m ipykernel install \
     --name mzbsuite \
     --display-name "Python (mzbsuite)"
 
+# Set VS Codium theme
+RUN mkdir -p /home/coder/.vscodium-server/data/User && \
+echo '{"workbench.colorTheme":"Default Dark","python.defaultInterpreterPath":"/opt/conda/envs/mzbsuite/bin/python"}' \
+> /home/coder/.vscodium-server/data/User/settings.json
+
+RUN chown -R coder:coder /home/coder/.vscodium-server/
+
 # Switch to non-root user
 USER coder
 
@@ -92,11 +99,6 @@ RUN code --install-extension ms-python.python \
 # RUN printf '{
 #     "python.defaultInterpreterPath": "/opt/conda/envs/mzbsuite/bin/python"
 # }\n' > /home/coder/.local/share/code-server/User/settings.json
-
-# Set VS Codium theme
-RUN mkdir -p /home/coder/.vscodium-server/data/User && \
-echo '{"workbench.colorTheme":"Default Dark","python.defaultInterpreterPath":"/opt/conda/envs/mzbsuite/bin/python"}' \
-> /home/coder/.vscodium-server/data/User/settings.json
 
 # ------------------------------------------------------------------
 # Expose required port
