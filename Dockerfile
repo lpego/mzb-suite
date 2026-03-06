@@ -68,18 +68,18 @@ RUN mamba env create -y -f environment.yml && \
 # Make conda readable/executable for non-root user
 RUN chown -R coder:coder /home/coder
 
+# Register mzbsuite kernel in Jupyter notebooks
+RUN /opt/conda/envs/mzbsuite/bin/python -m ipykernel install \
+    --prefix=/opt/conda \
+    --name mzbsuite \
+    --display-name "Python (mzbsuite)"
+
 # Switch to non-root user
 USER coder
 
 # Activate environment automatically
 ENV CONDA_DEFAULT_ENV=mzbsuite
 ENV PATH=$MAMBA_ROOT_PREFIX/envs/mzbsuite/bin:$PATH
-
-# Register mzbsuite kernel in Jupyter notebooks
-RUN /opt/conda/envs/mzbsuite/bin/python -m ipykernel install \
-    --prefix=/opt/conda \
-    --name mzbsuite \
-    --display-name "Python (mzbsuite)"
 
 # Preinstall VS Codium extensions
 RUN code --install-extension ms-python.python \
