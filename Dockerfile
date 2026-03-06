@@ -75,6 +75,29 @@ USER coder
 ENV CONDA_DEFAULT_ENV=mzbsuite
 ENV PATH=$MAMBA_ROOT_PREFIX/envs/mzbsuite/bin:$PATH
 
+# Register mzbsuite kernel in Jupyter notebooks
+RUN /opt/conda/envs/mzbsuite/bin/python -m ipykernel install \
+    --prefix=/opt/conda \
+    --name mzbsuite \
+    --display-name "Python (mzbsuite)"
+
+# Preinstall VS Codium extensions
+RUN code --install-extension ms-python.python \
+    && code --install-extension ms-toolsai.jupyter \
+    # && code --install-extension ms-python.vscode-python-envs
+
+# # Make mamba env default python interpreter
+# RUN mkdir -p /home/coder/.local/share/code-server/User
+
+# RUN printf '{
+#     "python.defaultInterpreterPath": "/opt/conda/envs/mzbsuite/bin/python"
+# }\n' > /home/coder/.local/share/code-server/User/settings.json
+
+# Set VS Codium theme
+RUN mkdir -p /home/coder/.vscodium-server/data/User && \
+echo '{"workbench.colorTheme":"Default Dark","python.defaultInterpreterPath":"/opt/conda/envs/mzbsuite/bin/python"}' \
+> /home/coder/.vscodium-server/data/User/settings.json
+
 # ------------------------------------------------------------------
 # Expose required port
 # ------------------------------------------------------------------
