@@ -85,4 +85,4 @@ EXPOSE 8888
 # ------------------------------------------------------------------
 ENTRYPOINT ["sh", "-c"]
 
-CMD ["code serve-web --server-base-path $RENKU_BASE_URL_PATH/ --without-connection-token --host 0.0.0.0 --port 8888"]
+CMD ["if [ -n \"$RENKU_BASE_URL_PATH\" ]; then code serve-web /home/coder/mzb-suite --goto /home/coder/mzb-suite/README.md --server-base-path \"$RENKU_BASE_URL_PATH\" --without-connection-token --host 0.0.0.0 --port 8888; else code serve-web --without-connection-token --host 0.0.0.0 --port 8888; fi"]
