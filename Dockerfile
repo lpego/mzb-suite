@@ -76,7 +76,7 @@ RUN /opt/conda/envs/mzbsuite/bin/python -m ipykernel install \
 
 # Set VS Codium theme
 RUN mkdir -p /home/coder/.vscodium-server/data/User && \
-echo '{"workbench.colorTheme":"Default Dark","python.defaultInterpreterPath":"/opt/conda/envs/mzbsuite/bin/python"}' \
+echo '{"workbench.colorTheme":"Default Dark","python.defaultInterpreterPath":"/opt/conda/envs/mzbsuite/bin/python","python.terminal.activateEnvironment": true}' \
 > /home/coder/.vscodium-server/data/User/settings.json
 
 RUN chown -R coder:coder /home/coder/.vscodium-server/
@@ -89,13 +89,11 @@ ENV CONDA_DEFAULT_ENV=mzbsuite
 ENV PATH=$MAMBA_ROOT_PREFIX/envs/mzbsuite/bin:$PATH
 
 # Preinstall VS Codium extensions for server mode
-RUN mkdir -p /home/coder/.vscodium-server/extensions
-RUN code \
-    --extensions-dir /home/coder/.vscodium-server/extensions \
-    --install-extension ms-python.python \
- && code \
-    --extensions-dir /home/coder/.vscodium-server/extensions \
-    --install-extension ms-toolsai.jupyter
+RUN mkdir -p /home/coder/.vscodium-server/extensions && \
+    code --extensions-dir /home/coder/.vscodium-server/extensions \
+        --install-extension ms-python.python && \
+    code --extensions-dir /home/coder/.vscodium-server/extensions \
+        --install-extension ms-toolsai.jupyter
 
 # # Make mamba env default python interpreter
 # RUN mkdir -p /home/coder/.local/share/code-server/User
@@ -114,4 +112,4 @@ EXPOSE 8888
 # ------------------------------------------------------------------
 ENTRYPOINT ["sh", "-c"]
 
-CMD ["if [ -n \"$RENKU_BASE_URL_PATH\" ]; then code serve-web /home/coder/mzb-suite --goto /home/coder/mzb-suite/README.md --server-base-path \"$RENKU_BASE_URL_PATH\" --without-connection-token --host 0.0.0.0 --port 8888; else code serve-web --without-connection-token --host 0.0.0.0 --port 8888; fi"]
+CMD ["if [ -n \"$RENKU_BASE_URL_PATH\" ]; then code serve-web /home/coder/mzb-suite --goto /home/coder/mzb-suite/README.md --server-base-path \"$RENKU_BASE_URL_PATH\" --without-connection-token --host 0.0.0.0 --port 8888; else code serve-web /home/coder/mzb-suite --goto /home/coder/mzb-suite/README.md --without-connection-token --host 0.0.0.0 --port 8888; fi"]
