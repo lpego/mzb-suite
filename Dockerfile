@@ -70,7 +70,7 @@ RUN chown -R coder:coder /home/coder
 
 # Register mzbsuite kernel in Jupyter notebooks
 RUN /opt/conda/envs/mzbsuite/bin/python -m ipykernel install \
-    --prefix=/opt/conda \
+    --user \
     --name mzbsuite \
     --display-name "Python (mzbsuite)"
 
@@ -86,7 +86,7 @@ USER coder
 
 # Activate environment automatically
 ENV CONDA_DEFAULT_ENV=mzbsuite
-# ENV PATH=$MAMBA_ROOT_PREFIX/envs/mzbsuite/bin:$PATH
+ENV PATH=$MAMBA_ROOT_PREFIX/envs/mzbsuite/bin:$PATH
 
 # Preinstall VS Codium extensions for server mode
 RUN mkdir -p /home/coder/.vscodium-server/extensions
