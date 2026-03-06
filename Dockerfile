@@ -86,12 +86,16 @@ USER coder
 
 # Activate environment automatically
 ENV CONDA_DEFAULT_ENV=mzbsuite
-ENV PATH=$MAMBA_ROOT_PREFIX/envs/mzbsuite/bin:$PATH
+# ENV PATH=$MAMBA_ROOT_PREFIX/envs/mzbsuite/bin:$PATH
 
-# Preinstall VS Codium extensions
-RUN code --install-extension ms-python.python \
-    && code --install-extension ms-toolsai.jupyter \
-    # && code --install-extension ms-python.vscode-python-envs
+# Preinstall VS Codium extensions for server mode
+RUN mkdir -p /home/coder/.vscodium-server/extensions
+RUN code \
+    --extensions-dir /home/coder/.vscodium-server/extensions \
+    --install-extension ms-python.python \
+ && code \
+    --extensions-dir /home/coder/.vscodium-server/extensions \
+    --install-extension ms-toolsai.jupyter
 
 # # Make mamba env default python interpreter
 # RUN mkdir -p /home/coder/.local/share/code-server/User
