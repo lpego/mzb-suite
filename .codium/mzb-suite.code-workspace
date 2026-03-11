@@ -1,0 +1,19 @@
+{
+  "folders": [
+    {
+      "path": "/home/coder/mzb-suite"
+    }
+  ],
+  "settings": {},
+  "extensions": {
+    "recommendations": [
+      "ms-python.python",
+      "ms-toolsai.jupyter"
+    ]
+  },
+  "launch": {},
+  "filesToOpen": [
+    "/home/coder/mzb-suite/README.md",
+    "/home/coder/mzb-suite/notebooks/demo.ipynb"
+  ]
+}
