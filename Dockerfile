@@ -57,6 +57,7 @@ RUN ln -s /usr/bin/codium /usr/bin/code
 # Create non-root user
 RUN useradd -m -u 1000 -s /bin/bash coder
 
+RUN mkdir -p /home/coder/work && chown coder:coder /home/coder/work
 WORKDIR /home/coder/work
 RUN git clone -b new_renku --single-branch https://github.com/lpego/mzb-suite.git
 # WORKDIR /home/coder/work/mzb-suite
