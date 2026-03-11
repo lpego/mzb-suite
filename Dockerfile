@@ -57,12 +57,12 @@ RUN ln -s /usr/bin/codium /usr/bin/code
 # Create non-root user
 RUN useradd -m -u 1000 -s /bin/bash coder
 
-WORKDIR /home/coder
+WORKDIR /home/coder/work
 RUN git clone -b new_renku --single-branch https://github.com/lpego/mzb-suite.git
-WORKDIR /home/coder/mzb-suite
+# WORKDIR /home/coder/work/mzb-suite
 
 # Create environment as root
-RUN mamba env create -y -f environment.yml && \
+RUN mamba env create -y -f /home/coder/work/mzb-suite/environment.yml && \
     mamba clean -a -y
 
 # Make conda readable/executable for non-root user
@@ -95,13 +95,6 @@ RUN mkdir -p /home/coder/.vscodium-server/extensions && \
     code --extensions-dir /home/coder/.vscodium-server/extensions \
         --install-extension ms-toolsai.jupyter
 
-# # Make mamba env default python interpreter
-# RUN mkdir -p /home/coder/.local/share/code-server/User
-
-# RUN printf '{
-#     "python.defaultInterpreterPath": "/opt/conda/envs/mzbsuite/bin/python"
-# }\n' > /home/coder/.local/share/code-server/User/settings.json
-
 # ------------------------------------------------------------------
 # Expose required port
 # ------------------------------------------------------------------
@@ -112,4 +105,4 @@ EXPOSE 8888
 # ------------------------------------------------------------------
 ENTRYPOINT ["sh", "-c"]
 
-CMD ["if [ -n \"$RENKU_BASE_URL_PATH\" ]; then code serve-web /home/coder/mzb-suite --goto /home/coder/mzb-suite/README.md --server-base-path \"$RENKU_BASE_URL_PATH\" --without-connection-token --host 0.0.0.0 --port 8888; else code serve-web /home/coder/mzb-suite --goto /home/coder/mzb-suite/README.md --without-connection-token --host 0.0.0.0 --port 8888; fi"]
+CMD ["if [ -n \"$RENKU_BASE_URL_PATH\" ]; then code serve-web --server-base-path \"$RENKU_BASE_URL_PATH\" --without-connection-token --host 0.0.0.0 --port 8888; else code serve-web --without-connection-token --host 0.0.0.0 --port 8888; fi"]
