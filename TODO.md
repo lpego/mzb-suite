@@ -17,7 +17,7 @@ Updates to ensure repo runs on new Renku v2.x
 - [ ] Double check local install
     - [x] Update to new packages' versions
 	- [ ] check that everything still works
-	- [ ] Have to remake Dockerfile from scratch (not relying on Renku)
+	- [x] Have to remake Dockerfile from scratch (not relying on Renku)
     - [ ] Build and upload to (my personal) Dockerhub
 
 ### Extra
