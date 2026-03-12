@@ -1,8 +1,8 @@
 
 # Arguments not to be spec via CLI
 glob_random_seed: 222 
-glob_root_folder: /home/renku/work/mzb-suite
-glob_blobs_folder: /home/renku/work/mzb-suite/data/derived/blobs/
+glob_root_folder: /home/mzbuser/work/mzb-suite
+glob_blobs_folder: /home/mzbuser/work/mzb-suite/data/derived/blobs/
 glob_local_format: pdf
 model_logger: wandb
 
