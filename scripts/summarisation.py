@@ -28,7 +28,7 @@ def find_csv_in_folder(folder, pattern):
         if dt_folders:
             dt_folders.sort(reverse=True)
             folder = dt_folders[0][1]
-            print(f"Warning: Multiple folders found in {os.path.abspath(os.path.dirname(folder))}. Using most recent: {os.path.basename(folder)}")
+            print(f"Multiple folders found in {os.path.abspath(os.path.dirname(folder))}. Using most recent: {os.path.basename(folder)}")
     for fname in os.listdir(folder):
         if fname.endswith('.csv') and pattern in fname:
             return os.path.join(folder, fname)
@@ -179,23 +179,6 @@ def main(args, cfg):
 
 
 if __name__ == '__main__':
-     # # --- MANUAL ARGS BLOCK FOR NOTEBOOK OR SCRIPT TESTING ---
-    # # Uncomment and edit the following lines to override argparse for quick testing:
-    # class Args:
-    #     classification = r'D:\mzb-workflow\results\swiss-invertebrates\classification'
-    #     skeletons_supervised = r'D:\mzb-workflow\results\swiss-invertebrates\skeletons\supervised_skeletons'
-    #     skeletons_unsupervised = r'D:\mzb-workflow\results\swiss-invertebrates\skeletons\unsupervised_skeletons'
-    #     output_folder = r'D:\mzb-workflow\results\swiss-invertebrates'
-    #     config_file = r'D:\mzb-workflow\configs\mzb_example_config.yaml'
-    #     verbose = True
-    # args = Args()
-    
-    # args = parser.parse_args()
-    # with open(str(args.config_file), "r") as f: 
-    #     cfg = yaml.load(f, Loader=yaml.FullLoader)
-    # cfg = cfg_to_arguments(cfg)
-    # # --------------------------------------------------------
-
     parser = argparse.ArgumentParser(description='Merge classification, unsupervised skeletons and supervised skeleton into single CSV.')
     parser.add_argument('--classification', required=True, help='Folder containing classification_predictions.csv')
     parser.add_argument('--skeletons_supervised', required=True, help='Folder containing supervised_skeletons.csv')
@@ -204,14 +187,7 @@ if __name__ == '__main__':
     parser.add_argument('--output_folder', required=True, help='Folder to save merged output')
     parser.add_argument('--verbose', '-v', action='store_true', help='Print verbose output')
     parser.add_argument("--config_file", required=False, help="path to config file with per-script args")
-    # # Only parse args if not manually set above
-    # if 'args' not in locals():
-    #     args = parser.parse_args()
-        
-    #     with open(str(args.config_file), "r") as f:
-    #         cfg = yaml.load(f, Loader=yaml.FullLoader)
 
-    #     cfg = cfg_to_arguments(cfg)
     args = parser.parse_args()
 
     with open(str(args.config_file), "r") as f:
