@@ -9,11 +9,13 @@ except:
 else:
     prefix = "../"  # or "../"
 
+### Define the location for which you want to clean up file and directory names
+ROOT_DIR = Path(f"/data/shared/mzb-suite/data/raw/dubendorf_ponds/October_2019")
+
 # %% Step 1: make all paths lowercase, and ensure that " " are replaced by "_"
-main_root = Path(f"/data/shared/mzb-workflow/data/raw/dubendorf_ponds/October_2019")
-files_proc = list(main_root.glob("**/*.*"))
+files_proc = list(ROOT_DIR.glob("**/*.*"))
 files_proc.sort()
-files_proc
+# files_proc
 
 # %%  Step 2: parse also parent directories's names
 for i, file_base in enumerate(files_proc[:]):
@@ -45,10 +47,11 @@ for i, file_base in enumerate(files_proc[:]):
     #     print()
 
 # %% Step 4: remove all "*_mask.jpg" files, potential leftovers from previous scripts
-main_root = Path(f"{prefix}data/data_raw_custom_processing/")
-files_proc = list(main_root.glob("**/*_mask.jpg"))
+ROOT_DIR = Path(f"{prefix}data/data_raw_custom_processing/")
+files_proc = list(ROOT_DIR.glob("**/*_mask.jpg"))
 files_proc.sort()
 
 for i, file_base in enumerate(files_proc):
     os.remove(str(file_base))
+
 # %%
