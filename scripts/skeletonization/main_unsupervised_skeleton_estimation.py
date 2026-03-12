@@ -94,18 +94,18 @@ def main(args, cfg):
     else:
         exclude = []
 
-    # load in file names that are classified as error by our CNN
-    err_filenames = sorted(
-        list(
-            Path(
-                f"{cfg.glob_root_folder}/data/learning_sets/project_portable_flume/curated_learning_sets/errors"
-            ).glob("*.png")
-        )
-    )
-    exclude += [
-        ("_".join(a.name.split("_")[:-1]) + f"_mask.{cfg.impa_image_format}").lower()
-        for a in err_filenames
-    ]
+    # # load in file names that are classified as error by our CNN
+    # err_filenames = sorted(
+    #     list(
+    #         Path(
+    #             f"{cfg.glob_root_folder}/data/learning_sets/project_portable_flume/curated_learning_sets/errors"
+    #         ).glob("*.png")
+    #     )
+    # )
+    # exclude += [
+    #     ("_".join(a.name.split("_")[:-1]) + f"_mask.{cfg.impa_image_format}").lower()
+    #     for a in err_filenames
+    # ]
 
     files_to_skel = [a for a in mask_list if a.name.lower() not in exclude]
 
