@@ -3,7 +3,7 @@ Updates to ensure repo runs on new Renku v2.x
 ## New TODOs
 - [ ] Change paths to Renku container locations
 	- [x] config files in `config`
-	- [ ] hardcoded in some scripts
+	- [x] hardcoded in some scripts
 	- [ ] hardcoded in notebooks
 	- [ ] make sure to use mzb_example paths and not training/test_set
 
