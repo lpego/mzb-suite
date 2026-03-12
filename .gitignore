@@ -1,4 +1,3 @@
-
 # Created by https://www.gitignore.io/api/macos,python,R,linux,vim,emacs,visualstudiocode,intellij
 # Edit at https://www.gitignore.io/?templates=macos,python,R,linux,vim,emacs,visualstudiocode,intellij
 
@@ -18,6 +17,12 @@ data/mzb_example_data/derived
 ### ignore models checkpoints
 *.pth
 *.ckpt
+
+### Weights & Biases
+wandb/
+scripts/wandb/
+notebooks/wandb/
+workflows/wandb/
 
 ### Emacs ###
 # -*- mode: gitignore; -*-
