@@ -26,7 +26,8 @@ os.environ["MKL_THREADING_LAYER"] = "GNU"
 def main(args, cfg):
     """
     Function to train a model for skeletons (body, head) on macrozoobenthos images.
-    The model is trained on the dataset specified in the config file, and saved to the folder specified in the config file every 50 steps and at the end of the training.
+    The model is trained on the dataset specified in the config file, and saved to 
+    the folder specified in the config file every 50 steps and at the end of the training.
 
     Parameters
     ----------
@@ -79,7 +80,6 @@ def main(args, cfg):
     )
 
     # Check if there is a model to load, if there is, load it and continue training
-    # Check if there is a model to load, if there is, load it and train from there
     if args.save_model.is_dir():
         if args.verbose:
             print(f"Loading model from {args.save_model}")
@@ -159,7 +159,7 @@ if __name__ == "__main__":
     args.save_model = Path(args.save_model)
     args.save_model = args.save_model / "checkpoints"
 
-    np.random.seed(cfg.glob_random_seed)  # apply this seed to img tranfsorms
+    np.random.seed(cfg.glob_random_seed)  # apply this seed to img transforms
     torch.manual_seed(cfg.glob_random_seed)  # needed for torchvision 0.7
     torch.cuda.manual_seed(cfg.glob_random_seed)  # needed for torchvision 0.7
 

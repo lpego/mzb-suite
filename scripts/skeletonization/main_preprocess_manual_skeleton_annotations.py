@@ -31,7 +31,7 @@ from mzbsuite.utils import cfg_to_arguments  # , noneparse
 
 def main(args, cfg):
     """
-    Main function to prepare the manual annotations as prepared by phenopype (https://www.phenopype.org/). 
+    Main function to prepare the manual skeleton annotations as prepared by phenopype (https://www.phenopype.org/). 
     Collects and reorganises in a single file head width and body length measurements. 
     
     Parameters
@@ -81,13 +81,14 @@ def main(args, cfg):
     ):
         # print in red and then back to normal color
         raise ValueError(
-            f"\033[91m{output_dir} already exists and contains data. Please delete or sprecify another folder.\033[0m"
+            f"\033[91m{output_dir} already exists and contains data. Please delete or specify another folder.\033[0m"
         )
     else:
         output_dir.mkdir(exist_ok=True, parents=True)
 
     skel_save_attributes = Path(args.skel_save_attributes)
     skel_save_attributes.mkdir(exist_ok=True, parents=True)
+    
     # %%
     # define empty lists to store the data, columns and files to read
     measures = []
@@ -120,6 +121,7 @@ def main(args, cfg):
     all_measures.to_csv(
         skel_save_attributes / "manual_annotations_summary.csv", index=False
     )
+    
     # %%
     # Get clip based on the fact that it is an existing annotation in Danina's folder
     annot_files = sorted(list(input_raw_dir.glob("**/*/annotations_v1.json")))

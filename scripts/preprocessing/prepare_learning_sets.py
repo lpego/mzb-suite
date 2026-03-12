@@ -17,8 +17,6 @@ import yaml
 from mzbsuite.utils import cfg_to_arguments
 
 # %%
-
-
 def main(args, cfg):
     """
     Main function to prepare the learning sets for the classification task.
