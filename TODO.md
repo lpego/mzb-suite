@@ -4,8 +4,9 @@ Updates to ensure repo runs on new Renku v2.x
 - [ ] Change paths to Renku container locations
 	- [x] config files in `config`
 	- [x] hardcoded in some scripts
-	- [ ] hardcoded in notebooks
-	- [ ] make sure to use mzb_example paths and not training/test_set
+	- [x] hardcoded in notebooks
+	- [x] check files in `workflows/`
+	- [x] make sure to use mzb_example paths and not training/test_set
 
 - [x] Check summarisation output, seems not right...
 
@@ -14,11 +15,15 @@ Updates to ensure repo runs on new Renku v2.x
 - [ ] Double check local install (mamba/pip)
     - [x] Update to new packages' versions
 	- [ ] check that everything still works
-		- [ ] inference pipeline
+		- [x] inference pipeline
 		- [ ] preprocessing
 		- [ ] skeletonization retrain, evaluation
 		- [ ] classification retrain
 		- [ ] summarisation
+	- [ ] missing workflows:
+		- [ ] classification assessment (maybe just confusion matrix)
+		- [ ] skeletonization assessment (maybe combine with preprocess)
+		- [ ] Windows versions of finetuning for classifcationn, skeletonization
 
 - [ ] Docker containers, Renku
 	- [x] Have to remake Dockerfile from scratch (not relying on Renku's builder)
@@ -29,9 +34,11 @@ Updates to ensure repo runs on new Renku v2.x
 			- it automatically clones repo in WORKDIR;
 			- it runs as un-priviledged user, UID 1000;
 			- it downloads attached storage (i.e. Zenodo zipfile) in WORKDIR.
+	- [x] how to download files from Renku session?
+		- Right-click opens only "Paste" option; tap "Esc" and the normal contextual menu appears, with an option to download too (does not work for folders; multiple files open multiple download windows...) 
 	- [ ] Fix outstanding issues with container on Renku:
 		- [ ] Open dir mzb-suite in file explorer upon launch
-		- [ ] Open demo.py in tab upon launch
+		- [ ] Open demo.ipynb in tab upon launch
 		- [ ] Jupyter notebooks automatically pick up mzbsuite kernel
 		- [ ] running scripts in terminal picks up correct env
 
@@ -41,35 +48,9 @@ Updates to ensure repo runs on new Renku v2.x
     - [ ] Launching a session in new Renku 
     - [ ] unzipping the demo data
 
-- [ ] Docker containers, Renku
-	- [x] Have to remake Dockerfile from scratch (not relying on Renku's builder)
-	- [x] Build and upload to (my personal) Dockerhub
-	- [x] Test custom container on Renku
-		- Renku's quirks: 
-			- You need specify *both* mountdir and workdir manually in launcher, need to be the same as WORKDIR in Dockerfile;
-			- it automatically clones repo in WORKDIR;
-			- it runs as un-priviledged user, UID 1000;
-			- it downloads attached storage (i.e. Zenodo zipfile) in WORKDIR.
-	- [ ] Fix outstanding issues with container on Renku:
-		- [ ] Open dir mzb-suite in file explorer upon launch
-		- [ ] Open demo.py in tab upon launch
-		- [ ] Jupyter notebooks automatically pick up mzbsuite kernel
-		- [ ] running scripts in terminal picks up correct env
-		- [x] how to download files from Renku session?
-			- Right-click opens only "Paste" option; tap "Esc" and the normal contextual menu appears, with an option to download too (does not work for folders; multiple files open multiple download windows...) 
-
-- [ ] Double check local install (mamba/pip)
-    - [x] Update to new packages' versions
-	- [ ] check that everything still works
-		- [ ] inference pipeline
-		- [ ] preprocessing
-		- [ ] skeletonization retrain, evaluation
-		- [ ] classification retrain
-		- [ ] summarisation
-
 - [x] Make `docs\source\files\examples\demo.ipynb` actually run as an example
 	- [x] actually, it is mimicking CLI execution, which obviously cannot work in Jupyter notebooks. This might be confusing for users as well.. 
-	- [ ] make summarisation cell pick up latest run's results
+	- [x] make summarisation cell pick up latest run's results
 - [x] Write tiny python script to unzip Zenodo archive in appropriate location
 
 ### Extra
