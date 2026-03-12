@@ -5,6 +5,7 @@
 import os
 from glob import glob
 import zipfile
+from urllib.request import urlretrieve
 from tqdm import tqdm
 
 demodata_paths = [
@@ -20,17 +21,24 @@ print("working in dir: ", f"{cwd}")
 
 ### Finding demo data .zip file
 demodata = ""
+
 for path in demodata_paths:
     # print(path)
     for filename in glob(path):
         # print(filename)
-        try: 
-            os.path.isfile(filename)
+        if os.path.isfile(filename):
             print("Demo data archive found in: ", f"{filename}")
             demodata = filename
-        except FileNotFoundError:
-            print("Demo data archive not found in ", f"{filename}")
-            demodata = ""
+            break
+    if demodata:
+        break
+
+### Downloading the archive if .zip file not found locally
+if not demodata:
+    print("Demo data archive not found locally, downloading...")
+    url = "https://zenodo.org/records/17581223/files/mzbsuite_models_demodata.zip?download=1"
+    demodata = os.path.join("..", "mzbsuite_models_demodata.zip")
+    urlretrieve(url, demodata)
 # print(demodata)
 
 ### Finding the root of the repo
@@ -42,17 +50,17 @@ repo_paths = [
 ]
 
 repo = ""
+
 for path in repo_paths:
     # print(path)
     for dir in glob(path):
         # print(dir)
-        try: 
-            os.path.isdir(dir)
+        if os.path.isdir(dir):
             print("Repo root dir found in: ", f"{dir}")
             repo = dir
-        except FileNotFoundError:
-            print("Repo root dir not found in ", f"{dir}")
-            repo = ""
+            break
+    if repo:
+        break
 # print(repo)
 
 ### Unzipping demo data
