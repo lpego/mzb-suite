@@ -2,23 +2,69 @@ Updates to ensure repo runs on new Renku v2.x
 
 ## New TODOs
 - [ ] Change paths to Renku container locations
-    - [x] config files in `config`
-    - [ ] hardcoded in some scripts
-    - [ ] hardcoded in notebooks
+	- [x] config files in `config`
+	- [ ] hardcoded in some scripts
+	- [ ] hardcoded in notebooks
 
-- [ ] Make `docs\source\files\examples\demo.ipynb` actually run as an example
-	- [ ] actually, it is mimicking CLI execution, which obviously cannot work in Jupyter notebooks. This might be confusing for users as well.. 
-- [x] Write tiny python script to unzip Zenodo archive in appropriate location
+- [ ] Add download of Zenodo archive to `unzip_demodata.py`
+
+- [ ] Double check local install (mamba/pip)
+    - [x] Update to new packages' versions
+	- [ ] check that everything still works
+		- [ ] inference pipeline
+		- [ ] preprocessing
+		- [ ] skeletonization retrain, evaluation
+		- [ ] classification retrain
+		- [ ] summarisation
+
+- [ ] Docker containers, Renku
+	- [x] Have to remake Dockerfile from scratch (not relying on Renku's builder)
+	- [x] Build and upload to (my personal) Dockerhub
+	- [x] Test custom container on Renku
+		- Renku's quirks: 
+			- You need specify *both* mountdir and workdir manually in launcher, need to be the same as WORKDIR in Dockerfile;
+			- it automatically clones repo in WORKDIR;
+			- it runs as un-priviledged user, UID 1000;
+			- it downloads attached storage (i.e. Zenodo zipfile) in WORKDIR.
+	- [ ] Fix outstanding issues with container on Renku:
+		- [ ] Open dir mzb-suite in file explorer upon launch
+		- [ ] Open demo.py in tab upon launch
+		- [ ] Jupyter notebooks automatically pick up mzbsuite kernel
+		- [ ] running scripts in terminal picks up correct env
+
+- [ ] Clean up unused files in repo (e.g. `.dockerignore`, etc)
 
 - [ ] Update documentation 
     - [ ] Launching a session in new Renku 
     - [ ] unzipping the demo data
 
-- [ ] Double check local install
+- [ ] Docker containers, Renku
+	- [x] Have to remake Dockerfile from scratch (not relying on Renku's builder)
+	- [x] Build and upload to (my personal) Dockerhub
+	- [x] Test custom container on Renku
+		- Renku's quirks: 
+			- You need specify *both* mountdir and workdir manually in launcher, need to be the same as WORKDIR in Dockerfile;
+			- it automatically clones repo in WORKDIR;
+			- it runs as un-priviledged user, UID 1000;
+			- it downloads attached storage (i.e. Zenodo zipfile) in WORKDIR.
+	- [ ] Fix outstanding issues with container on Renku:
+		- [ ] Open dir mzb-suite in file explorer upon launch
+		- [ ] Open demo.py in tab upon launch
+		- [ ] Jupyter notebooks automatically pick up mzbsuite kernel
+		- [ ] running scripts in terminal picks up correct env
+
+- [ ] Double check local install (mamba/pip)
     - [x] Update to new packages' versions
 	- [ ] check that everything still works
-	- [x] Have to remake Dockerfile from scratch (not relying on Renku)
-    - [ ] Build and upload to (my personal) Dockerhub
+		- [ ] inference pipeline
+		- [ ] preprocessing
+		- [ ] skeletonization retrain, evaluation
+		- [ ] classification retrain
+		- [ ] summarisation
+
+- [x] Make `docs\source\files\examples\demo.ipynb` actually run as an example
+	- [x] actually, it is mimicking CLI execution, which obviously cannot work in Jupyter notebooks. This might be confusing for users as well.. 
+- [x] Write tiny python script to unzip Zenodo archive in appropriate location
 
 ### Extra
 - [ ] Look into streamlit frontend that can be launched on Renku
