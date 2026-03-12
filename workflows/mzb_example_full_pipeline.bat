@@ -2,7 +2,7 @@
 
 @REM ## ------------------------------------------------------------------------------------ ##
 @REM ## Definition of running parameters. 
-@REM ## The path specified in ROOT_DIR is for virtual sessions on Renkulab, yours may differ! 
+@REM ## You should substitute ROOT_DIR with the absolute path to your working directory 
 SET ROOT_DIR=your_path_here
 SET MODEL_C=convnext-small-v0
 SET MODEL_S=mit-b2-v0
@@ -27,11 +27,11 @@ python %ROOT_DIR%\scripts\classification\main_classification_inference.py^
  --input_dir %ROOT_DIR%\data\mzb_example_data\derived\blobs\^
  --input_model %ROOT_DIR%\models\mzb-classification-models\%MODEL_C%^
  --taxonomy_file %ROOT_DIR%\data\mzb_example_data\MZB_taxonomy.csv^
- --output_dir %ROOT_DIR%\results\mzb_example\classification\blobs\^
+ --output_dir %ROOT_DIR%\results\mzb_example\classification\^
  --config_file %ROOT_DIR%\configs\mzb_example_config.yaml^
  -v
 
-@REM ## SKELETONIZATION ## 
+@REM ## SKELETONIZATION UNSUPERVISED ## 
 @REM ## ------------------------------------------------------------------------------------ ##
 @REM ## This runs the unsupervised skeletonization and measurement. It will read all the mask 
 @REM ## clips created in the first step and will return a csv with the results. 
@@ -44,6 +44,7 @@ python %ROOT_DIR%\scripts\skeletonization\main_unsupervised_skeleton_estimation.
  --list_of_files None^
  -v
 
+@REM ## SKELETONIZATION SUPERVISED ## 
 @REM ## ------------------------------------------------------------------------------------ ##
 @REM ## This runs a supervised DL model to predict body length and head width skeletons; 
 @REM ## it stores the masks as images, and saves measurements into a csv file. 
@@ -58,10 +59,9 @@ python %ROOT_DIR%\scripts\skeletonization\main_supervised_skeleton_inference.py^
 
 @REM ## SUMMARISATION ##
 @REM ## ------------------------------------------------------------------------------------ ##
-@REM ## This runs a supervised DL model to predict body length and head width skeletons; 
-@REM ## it stores the masks as images, and saves measurements into a csv file. 
+@REM ## This module collects the outputs from the others and merges them into a csv file. 
 python %ROOT_DIR%\scripts\summarisation.py^
- --classification %ROOT_DIR%\results\mzb_example\classification\blobs^
+ --classification %ROOT_DIR%\results\mzb_example\classification^
  --skeletons_supervised %ROOT_DIR%\results\mzb_example\skeletons\supervised_skeletons^
  --skeletons_unsupervised %ROOT_DIR%\results\mzb_example\skeletons\unsupervised_skeletons^
  --output_folder %ROOT_DIR%\results\mzb_example^
