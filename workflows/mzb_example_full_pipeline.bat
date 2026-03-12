@@ -24,10 +24,10 @@ python %ROOT_DIR%\scripts\segmentation\main_raw_to_clips.py^
 @REM ## if run on e.g. a validaton \ test set, it will also produce accuracy metrics. 
 @REM ## Make sure to pass this module only clips generated with main_raw_to_clips.py
 python %ROOT_DIR%\scripts\classification\main_classification_inference.py^
- --input_dir %ROOT_DIR%\data\mzb_example_data\training_dataset\test_set\^
+ --input_dir %ROOT_DIR%\data\mzb_example_data\derived\blobs\^
  --input_model %ROOT_DIR%\models\mzb-classification-models\%MODEL_C%^
  --taxonomy_file %ROOT_DIR%\data\mzb_example_data\MZB_taxonomy.csv^
- --output_dir %ROOT_DIR%\results\mzb_example\classification\test_set\^
+ --output_dir %ROOT_DIR%\results\mzb_example\classification\blobs\^
  --config_file %ROOT_DIR%\configs\mzb_example_config.yaml^
  -v
 
@@ -53,5 +53,17 @@ python %ROOT_DIR%\scripts\skeletonization\main_supervised_skeleton_inference.py^
  --input_model %ROOT_DIR%\models\mzb-skeleton-models\%MODEL_S%^
  --output_dir %ROOT_DIR%\results\mzb_example\skeletons\supervised_skeletons\^
  --save_masks %ROOT_DIR%\data\mzb_example_data\derived\skeletons\supervised_skeletons\^
+ --config_file %ROOT_DIR%\configs\mzb_example_config.yaml^
+ -v
+
+@REM ## SUMMARISATION ##
+@REM ## ------------------------------------------------------------------------------------ ##
+@REM ## This runs a supervised DL model to predict body length and head width skeletons; 
+@REM ## it stores the masks as images, and saves measurements into a csv file. 
+python %ROOT_DIR%\scripts\summarisation.py^
+ --classification %ROOT_DIR%\results\mzb_example\classification\blobs^
+ --skeletons_supervised %ROOT_DIR%\results\mzb_example\skeletons\supervised_skeletons^
+ --skeletons_unsupervised %ROOT_DIR%\results\mzb_example\skeletons\unsupervised_skeletons^
+ --output_folder %ROOT_DIR%\results\mzb_example^
  --config_file %ROOT_DIR%\configs\mzb_example_config.yaml^
  -v
