@@ -9,7 +9,7 @@ Updates to ensure repo runs on new Renku v2.x
 
 - [x] Check summarisation output, seems not right...
 
-- [ ] Add download of Zenodo archive to `unzip_demodata.py`
+- [x] Add download of Zenodo archive to `unzip_demodata.py`
 
 - [ ] Double check local install (mamba/pip)
     - [x] Update to new packages' versions
