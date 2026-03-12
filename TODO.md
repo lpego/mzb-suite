@@ -5,8 +5,9 @@ Updates to ensure repo runs on new Renku v2.x
 	- [x] config files in `config`
 	- [ ] hardcoded in some scripts
 	- [ ] hardcoded in notebooks
+	- [ ] make sure to use mzb_example paths and not training/test_set
 
-- [ ] Check summarisation output, seems not right...
+- [x] Check summarisation output, seems not right...
 
 - [ ] Add download of Zenodo archive to `unzip_demodata.py`
 
