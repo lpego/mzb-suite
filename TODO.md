@@ -6,6 +6,8 @@ Updates to ensure repo runs on new Renku v2.x
 	- [ ] hardcoded in some scripts
 	- [ ] hardcoded in notebooks
 
+- [ ] Check summarisation output, seems not right...
+
 - [ ] Add download of Zenodo archive to `unzip_demodata.py`
 
 - [ ] Double check local install (mamba/pip)
@@ -52,6 +54,8 @@ Updates to ensure repo runs on new Renku v2.x
 		- [ ] Open demo.py in tab upon launch
 		- [ ] Jupyter notebooks automatically pick up mzbsuite kernel
 		- [ ] running scripts in terminal picks up correct env
+		- [x] how to download files from Renku session?
+			- Right-click opens only "Paste" option; tap "Esc" and the normal contextual menu appears, with an option to download too (does not work for folders; multiple files open multiple download windows...) 
 
 - [ ] Double check local install (mamba/pip)
     - [x] Update to new packages' versions
@@ -64,6 +68,7 @@ Updates to ensure repo runs on new Renku v2.x
 
 - [x] Make `docs\source\files\examples\demo.ipynb` actually run as an example
 	- [x] actually, it is mimicking CLI execution, which obviously cannot work in Jupyter notebooks. This might be confusing for users as well.. 
+	- [ ] make summarisation cell pick up latest run's results
 - [x] Write tiny python script to unzip Zenodo archive in appropriate location
 
 ### Extra
