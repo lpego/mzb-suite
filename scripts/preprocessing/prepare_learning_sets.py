@@ -5,8 +5,6 @@
 
 # The input directory tree is specified and curated by the user.
 
-##### Need to wrap in main() ???
-
 import argparse
 import shutil
 import sys
