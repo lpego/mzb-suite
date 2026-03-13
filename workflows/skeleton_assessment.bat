@@ -2,7 +2,7 @@
 
 @REM ## ------------------------------------------------------------------------------------ ##
 @REM ## Definition of running parameters. 
-@REM ## The path specified in ROOT_DIR is for virtual sessions on Renkulab, yours may differ! 
+@REM ## The path specified in ROOT_DIR will differ from your local path.
 SET ROOT_DIR=D:\mzb-suite
 
 @REM ## ------------------------------------------------------------------------------------ ##
@@ -15,11 +15,11 @@ python %ROOT_DIR%\scripts\skeletonization\main_preprocess_manual_skeleton_annota
  --config_file %ROOT_DIR%\configs\mzb_example_config.yaml^
  -v
 
-@REM @REM ## ------------------------------------------------------------------------------------ ##
-@REM @REM ## Assess supervised skeletons accuracy  
-@REM python %ROOT_DIR%\scripts\skeletonization\main_supervised_skeleton_assessment.py^
-@REM  --model_annotations %ROOT_DIR%\results\mzb_example\skeletons\supervised_skeletons\^
-@REM  --manual_annotations %ROOT_DIR%\data\mzb_example_data\derived\skeletons\supervised_skeletons\manual_anns^
-@REM  --output_dir %ROOT_DIR%\results\mzb_example_data\skeletons\supervised_skeletons\^
-@REM  --config_file %ROOT_DIR%\configs\mzb_example_config.yaml^
-@REM  -v
+@REM ## ------------------------------------------------------------------------------------ ##
+@REM ## Assess supervised skeletons accuracy  
+python %ROOT_DIR%\scripts\skeletonization\main_supervised_skeleton_assessment.py^
+ --model_annotations %ROOT_DIR%\results\mzb_example\skeletons\supervised_skeletons\blobs_supervised_20260312_1853\supervised_skeletons.csv^
+ --manual_annotations %ROOT_DIR%\results\mzb_example\skeletons\supervised_skeletons\assessment\manual_annotations_summary.csv^
+ --output_dir %ROOT_DIR%\results\mzb_example\skeletons\supervised_skeletons\assessment^
+ --config_file %ROOT_DIR%\configs\mzb_example_config.yaml^
+ -v
