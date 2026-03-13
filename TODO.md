@@ -19,7 +19,7 @@ Updates to ensure repo runs on new Renku v2.x
 		- [x] skeletonization preprocessing
 		- [x] skeletonization assessment
 		- [x] skeletonization retrain
-		- [ ] classification retrain
+		- [x] classification retrain
 		- [ ] summarisation
 	- [ ] missing workflows:
 		- [ ] classification assessment (maybe just confusion matrix)

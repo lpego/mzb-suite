@@ -5,6 +5,7 @@
 import argparse
 import os
 import sys
+import pathlib
 from pathlib import Path
 
 import numpy as np
@@ -63,6 +64,11 @@ def main(args, cfg):
         every_n_train_steps=50,
         # save_top_k=cfg.trcl_save_topk
     )
+    
+    ### resolving Path in Windows
+    if (sys.platform == "win32"):
+        temp = pathlib.PosixPath
+        pathlib.PosixPath = pathlib.WindowsPath
 
     # Define progress bar callback
     pbar_cb = pl.callbacks.progress.TQDMProgressBar(refresh_rate=5)
@@ -70,32 +76,51 @@ def main(args, cfg):
     # Define logger callback to log training date
     trdatelog = SaveLogCallback(model_folder=args.save_model)
 
-    # Define model from config
-    model = MZBModel(
-        data_dir=args.input_dir,
-        pretrained_network=cfg.trcl_model_pretrarch,
-        learning_rate=cfg.trcl_learning_rate,
-        batch_size=cfg.trcl_batch_size,
-        weight_decay=cfg.trcl_weight_decay,
-        num_workers_loader=cfg.trcl_num_workers,
-        step_size_decay=cfg.trcl_step_size_decay,
-        num_classes=cfg.trcl_num_classes,
-    )
+    # # Define model from config
+    # model = MZBModel(
+    #     data_dir=args.input_dir,
+    #     pretrained_network=cfg.trcl_model_pretrarch,
+    #     learning_rate=cfg.trcl_learning_rate,
+    #     batch_size=cfg.trcl_batch_size,
+    #     weight_decay=cfg.trcl_weight_decay,
+    #     num_workers_loader=cfg.trcl_num_workers,
+    #     step_size_decay=cfg.trcl_step_size_decay,
+    #     num_classes=cfg.trcl_num_classes,
+    # )
 
-    # Check if there is a model to load, if there is, load it and train from there
-    if args.save_model.exists() and args.save_model.is_dir():
+    # Check if there is a model to load, if there is, load it and continue training
+    if args.save_model.is_dir():
         if args.verbose:
             print(f"Loading model from {args.save_model}")
+        
+        # Find the checkpoint file
         try:
             fmodel = list(args.save_model.glob("last-*.ckpt"))[0]
-        except:
+        except IndexError:
             print("No last-* model in folder, loading best model")
-            fmodel = list(
+            # Ensure we get the latest best model
+            best_models = list(
                 args.save_model.glob("best-val-epoch=*-step=*-val_loss=*.*.ckpt")
-            )[-1]
+            )
+            if not best_models:
+                raise FileNotFoundError("No checkpoint files found in save directory.")
+            fmodel = best_models[-1]
+            
+        
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+       
+        model = MZBModel.load_from_checkpoint(
+            checkpoint_path=fmodel,
+            map_location=device,
+            weights_only=False, # due to legacy checkpoint
+        )
+        
+        # Override the data_dir with the command-line argument
+        # The checkpoint might have saved a Linux path or an old path.
+        model.data_dir = args.input_dir
 
-        print(f"Loading model from {fmodel}")
-        model = model.load_from_checkpoint(fmodel)
+        # print(f"Loading model from {fmodel}")
+        # model = model.load_from_checkpoint(fmodel)
 
     # Define logger and name of run
     name_run = f"classifier-{cfg.trcl_model_pretrarch}"  # f"{model.pretrained_network}"
@@ -119,9 +144,9 @@ def main(args, cfg):
     trainer = pl.Trainer(
         accelerator="auto",  # cfg.trcl_num_gpus outdated
         max_epochs=cfg.trcl_number_epochs,
-        strategy=DDPStrategy(
-            find_unused_parameters=False
-        ),  # TODO: check how to use in notebook
+        # strategy=DDPStrategy(
+        #     find_unused_parameters=False
+        # ),  # TODO: check how to use in notebook
         callbacks=cbacks,
         logger=logger,
         log_every_n_steps=1
@@ -129,6 +154,9 @@ def main(args, cfg):
     )
 
     trainer.fit(model)
+    
+    if (sys.platform == "win32"):
+        pathlib.PosixPath = temp ### restore original pathlib function
 
 
 if __name__ == "__main__":
