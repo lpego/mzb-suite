@@ -16,9 +16,9 @@ Updates to ensure repo runs on new Renku v2.x
     - [x] Update to new packages' versions
 	- [ ] check that everything still works
 		- [x] inference pipeline
-		- [ ] preprocessing
+		- [x] skeletonization preprocessing
 		- [x] skeletonization assessment
-		- [ ] skeletonization retrain
+		- [x] skeletonization retrain
 		- [ ] classification retrain
 		- [ ] summarisation
 	- [ ] missing workflows:
