@@ -163,9 +163,6 @@ def main(args, cfg):
         gen_name = "_".join(file.parent.name.split("__")[1].split("_")[:-1])
         rgb_clip = gen_name + f"_rgb.{cfg.impa_image_format}"
 
-        # Copy the image to the output folder
-        shutil.copy(input_clips_dir / rgb_clip, output_dir / "images" / rgb_clip)
-
         # Read the image and the annotation, to get the size of the image
         test_f_im = Path(input_clips_dir / rgb_clip)
         test_im = cv2.cvtColor(cv2.imread(str(test_f_im)), cv2.COLOR_BGR2RGB)
@@ -182,10 +179,13 @@ def main(args, cfg):
             print(f"  Body entries: {len(body)}")
             print(f"  Head entries: {len(head)}")
             
-            # Skip files with empty data
-            if not body or not head:
-                print(f"  ⚠️ Skipping - empty annotation data")
-                continue
+        # Skip files with empty data
+        if not body or not head:
+            print(f"  ⚠️ Skipping - empty annotation data")
+            continue
+        
+        # Copy the image to the output folder, only if annotations present
+        shutil.copy(input_clips_dir / rgb_clip, output_dir / "images" / rgb_clip)
         
         # Get the polyline coordinates from the annotation file
         head = line['line']['head']['data']['line']
