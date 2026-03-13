@@ -244,7 +244,7 @@ def main(args, cfg):
             # np.array(head[0]).reshape(-1, 1, 2),
             [head_coords],
             isClosed=False,
-            color=(255, 0, 0),
+            color=(0, 0, 255),
             thickness=cfg.skel_label_thickness,
         )
         cv2.imwrite(str(output_dir / "sk_head" / f"{gen_name}_head_skel.png"), head_img)
@@ -282,16 +282,20 @@ def main(args, cfg):
         axes[2].legend(loc='upper right')
         axes[2].axis('off')
         
+        # Adjust layout and display
         plt.tight_layout()
         
         # Save comparison plot
         save_path = output_dir / "plots" / f"{gen_name}_comparison.png"
         fig.savefig(save_path, dpi=150, bbox_inches='tight')
-        print(f"Saved comparison to: {save_path}")
         
-        if PLOTS:
-            # Adjust layout and display
+        if args.verbose: 
+            print(f"Saved comparison to: {save_path}")
+        
+        if PLOTS:            
             plt.show()
+        
+        plt.close()
     
     
 if __name__ == "__main__":
