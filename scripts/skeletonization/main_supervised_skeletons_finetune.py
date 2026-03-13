@@ -111,6 +111,14 @@ def main(args, cfg):
             map_location=device,
             weights_only=False, # due to legacy checkpoint
         )
+        
+        # Override the data_dir with the command-line argument
+        # The checkpoint might have saved a Linux path or an old path.
+        model.data_dir = args.input_dir
+        # Also update the internal folder references derived from data_dir
+        model.im_folder = model.data_dir / "images"
+        model.bo_folder = model.data_dir / "sk_body"
+        model.he_folder = model.data_dir / "sk_head"
 
     name_run = f"skel-{model.architecture}"
     cbacks = [pbar_cb, best_val_cb, last_mod_cb, trdatelog]
@@ -132,12 +140,31 @@ def main(args, cfg):
     trainer = Trainer(
         accelerator="auto",  # cfg.trcl_num_gpus outdated
         max_epochs=cfg.trsk_number_epochs,
-        strategy=DDPStrategy(find_unused_parameters=False),
-        precision=16,
+        # strategy=DDPStrategy(find_unused_parameters=False),
+        precision="16-mixed",
         callbacks=cbacks,
         logger=logger,
         log_every_n_steps=1,
     )
+    
+    ### ======================================= ###
+    # DEBUG: Check dataset info before training
+    if args.verbose:
+        print(f"\n=== DATASET DEBUG ===")
+        print(f"Image folder: {model.im_folder}")
+        print(f"Images found: {len(list(model.im_folder.glob('*.jpg')))}")
+        print(f"Train indices: {len(model.trn_inds) if hasattr(model, 'trn_inds') else 'N/A'}")
+        print(f"Val indices: {len(model.val_inds) if hasattr(model, 'val_inds') else 'N/A'}")
+        # List files in input directory
+        if args.input_dir.exists():
+            files = list(args.input_dir.glob("**/*"))
+            print(f"Files found in input_dir: {len(files)}")
+            if files:
+                print(f"First few files: {files[:5]}")
+        else:
+            print(f"WARNING: Input directory does not exist!")
+        print(f"=====================\n")
+    ### ======================================= ###
 
     trainer.fit(model)
     
