@@ -223,7 +223,7 @@ if __name__ == "__main__":
 
     args.manual_annotations = Path(args.manual_annotations)
     args.model_annotations = Path(args.model_annotations)
-    args.input_dir = Path(args.model_annotations).parents[0]
+    # args.input_dir = Path(args.model_annotations).parents[0]
     args.output_dir = Path(args.output_dir)
 
     with open(args.config_file, "r") as f:
