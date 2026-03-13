@@ -235,7 +235,7 @@ def main(args, cfg):
             color=(0, 255, 0),
             thickness=cfg.skel_label_thickness,
         )
-        cv2.imwrite(str(output_dir / "sk_body" / f"{gen_name}_body_skel.png"), body_img)
+        cv2.imwrite(str(output_dir / "sk_body" / f"{gen_name}_body_skel.jpg"), body_img)
 
         # Draw the lines corresponding to head size on the image and save
         bw_mask = np.zeros_like(test_im)
@@ -247,7 +247,7 @@ def main(args, cfg):
             color=(0, 0, 255),
             thickness=cfg.skel_label_thickness,
         )
-        cv2.imwrite(str(output_dir / "sk_head" / f"{gen_name}_head_skel.png"), head_img)
+        cv2.imwrite(str(output_dir / "sk_head" / f"{gen_name}_head_skel.jpg"), head_img)
         
         ### Comparison plots to check drawing seems sensible
         # Extract the actual coordinate arrays (remove the extra nesting level)
