@@ -1,7 +1,7 @@
 Updates to ensure repo runs on new Renku v2.x
 
 ## New TODOs
-- [ ] Change paths to Renku container locations
+- [x] Change paths to Renku container locations
 	- [x] config files in `config`
 	- [x] hardcoded in some scripts
 	- [x] hardcoded in notebooks
@@ -17,7 +17,8 @@ Updates to ensure repo runs on new Renku v2.x
 	- [ ] check that everything still works
 		- [x] inference pipeline
 		- [ ] preprocessing
-		- [ ] skeletonization retrain, evaluation
+		- [x] skeletonization assessment
+		- [ ] skeletonization retrain
 		- [ ] classification retrain
 		- [ ] summarisation
 	- [ ] missing workflows:
