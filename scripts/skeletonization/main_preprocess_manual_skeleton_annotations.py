@@ -150,10 +150,10 @@ def main(args, cfg):
     # get clip based on the fact that it is an existing annotation in the folder
     annot_files = sorted(input_raw_dir.glob("**/*/annotations_v1.json"), key=natural_sort_key)
     
-    # (output_dir / "images").mkdir(exist_ok=True, parents=True)
-    (output_dir / "plots").mkdir(exist_ok=True, parents=True)
+    (output_dir / "images").mkdir(exist_ok=True, parents=True)
     (output_dir / "sk_body").mkdir(exist_ok=True, parents=True)
     (output_dir / "sk_head").mkdir(exist_ok=True, parents=True)
+    (skel_save_attributes / "plots").mkdir(exist_ok=True, parents=True)
 
     # %% Loop over the annotations, save the manual skeleton and optionally save plots.
     for file in annot_files:
@@ -163,8 +163,8 @@ def main(args, cfg):
         gen_name = "_".join(file.parent.name.split("__")[1].split("_")[:-1])
         rgb_clip = gen_name + f"_rgb.{cfg.impa_image_format}"
 
-        # # Copy the image to the output folder
-        # shutil.copy(input_clips_dir / rgb_clip, output_dir / "images" / rgb_clip)
+        # Copy the image to the output folder
+        shutil.copy(input_clips_dir / rgb_clip, output_dir / "images" / rgb_clip)
 
         # Read the image and the annotation, to get the size of the image
         test_f_im = Path(input_clips_dir / rgb_clip)
@@ -286,7 +286,7 @@ def main(args, cfg):
         plt.tight_layout()
         
         # Save comparison plot
-        save_path = output_dir / "plots" / f"{gen_name}_comparison.png"
+        save_path = skel_save_attributes / "plots" / f"{gen_name}_comparison.png"
         fig.savefig(save_path, dpi=150, bbox_inches='tight')
         
         if args.verbose: 
