@@ -12,19 +12,19 @@ Updates to ensure repo runs on new Renku v2.x
 
 - [x] Add download of Zenodo archive to `unzip_demodata.py`
 
-- [ ] Double check local install (mamba/pip)
+- [x] Double check local install (mamba/pip)
     - [x] Update to new packages' versions
-	- [ ] check that everything still works
+	- [x] check that everything still works
 		- [x] inference pipeline
 		- [x] skeletonization preprocessing
 		- [x] skeletonization assessment
 		- [x] skeletonization retrain
 		- [x] classification retrain
-		- [ ] summarisation
-	- [ ] missing workflows:
-		- [ ] classification assessment (maybe just confusion matrix)
-		- [ ] skeletonization assessment (maybe combine with preprocess)
-		- [ ] Windows versions of finetuning for classifcationn, skeletonization
+		- [x] summarisation
+	- [x] missing workflows:
+		- [ ] ~~classification assessment (maybe just confusion matrix)~~
+		- [x] skeletonization assessment (maybe combine with preprocess)
+		- [x] Windows versions of finetuning for classifcationn, skeletonization
 
 - [ ] Docker containers, Renku
 	- [x] Have to remake Dockerfile from scratch (not relying on Renku's builder)
