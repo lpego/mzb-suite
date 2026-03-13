@@ -173,7 +173,7 @@ def main(args, cfg):
     df_merged = df_merged[final_order]
 
     os.makedirs(args.output_folder, exist_ok=True)
-    out_path = os.path.join(args.output_folder, 'merged_output.csv')
+    out_path = os.path.join(args.output_folder, 'summary_results.csv')
     df_merged.to_csv(out_path, index=False)
     print(f"Merged file saved as {out_path}")
 

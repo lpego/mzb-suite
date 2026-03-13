@@ -3,7 +3,7 @@
 @REM ## ------------------------------------------------------------------------------------ ##
 @REM ## Definition of running parameters. 
 @REM ## You should substitute ROOT_DIR with the absolute path to your working directory 
-SET ROOT_DIR=your_path_here
+SET ROOT_DIR=D:\mzb-suite
 SET MODEL_C=convnext-small-v0
 SET MODEL_S=mit-b2-v0
 
