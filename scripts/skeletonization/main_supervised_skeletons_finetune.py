@@ -5,6 +5,7 @@
 import argparse
 import os
 import sys
+import pathlib
 from pathlib import Path
 
 import numpy as np
@@ -67,17 +68,11 @@ def main(args, cfg):
 
     # Define logger callback to log training date
     trdatelog = SaveLogCallback(model_folder=args.save_model)
-
-    model = MZBModel_skels(
-        data_dir=args.input_dir,
-        pretrained_network=cfg.trsk_model_pretrarch,  # .replace("-", "_"),
-        learning_rate=cfg.trsk_learning_rate,
-        batch_size=cfg.trsk_batch_size,
-        weight_decay=cfg.trsk_weight_decay,
-        num_workers_loader=cfg.trsk_num_workers,
-        step_size_decay=cfg.trsk_step_size_decay,
-        num_classes=cfg.trsk_num_classes,
-    )
+        
+    ### resolving Path in Windows
+    if (sys.platform == "win32"):
+        temp = pathlib.PosixPath
+        pathlib.PosixPath = pathlib.WindowsPath
 
     # Check if there is a model to load, if there is, load it and continue training
     if args.save_model.is_dir():
@@ -96,22 +91,26 @@ def main(args, cfg):
             if not best_models:
                 raise FileNotFoundError("No checkpoint files found in save directory.")
             fmodel = best_models[-1]
+            
+        
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-        # Call load_from_checkpoint on the class, not the instance
+        # model = MZBModel_skels(
+        #     data_dir=args.input_dir,
+        #     pretrained_network=cfg.trsk_model_pretrarch,  # .replace("-", "_"),
+        #     learning_rate=cfg.trsk_learning_rate,
+        #     batch_size=cfg.trsk_batch_size,
+        #     weight_decay=cfg.trsk_weight_decay,
+        #     num_workers_loader=cfg.trsk_num_workers,
+        #     step_size_decay=cfg.trsk_step_size_decay,
+        #     num_classes=cfg.trsk_num_classes,
+        # )
+       
         model = MZBModel_skels.load_from_checkpoint(
-            str(fmodel),
-            data_dir=args.input_dir,
-            pretrained_network=cfg.trsk_model_pretrarch,
-            learning_rate=cfg.trsk_learning_rate,
-            batch_size=cfg.trsk_batch_size,
-            weight_decay=cfg.trsk_weight_decay,
-            num_workers_loader=cfg.trsk_num_workers,
-            step_size_decay=cfg.trsk_step_size_decay,
-            num_classes=cfg.trsk_num_classes,
-            weights_only=False,
+            checkpoint_path=fmodel,
+            map_location=device,
+            weights_only=False, # due to legacy checkpoint
         )
-
-        model = model.load_from_checkpoint(fmodel)
 
     name_run = f"skel-{model.architecture}"
     cbacks = [pbar_cb, best_val_cb, last_mod_cb, trdatelog]
@@ -141,6 +140,9 @@ def main(args, cfg):
     )
 
     trainer.fit(model)
+    
+    if (sys.platform == "win32"):
+        pathlib.PosixPath = temp ### restore original pathlib function
 
 
 if __name__ == "__main__":
