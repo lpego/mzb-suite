@@ -83,13 +83,33 @@ def main(args, cfg):
     if args.save_model.is_dir():
         if args.verbose:
             print(f"Loading model from {args.save_model}")
+        
+        # Find the checkpoint file
         try:
             fmodel = list(args.save_model.glob("last-*.ckpt"))[0]
-        except:
+        except IndexError:
             print("No last-* model in folder, loading best model")
-            fmodel = list(
+            # Ensure we get the latest best model
+            best_models = list(
                 args.save_model.glob("best-val-epoch=*-step=*-val_loss=*.*.ckpt")
-            )[-1]
+            )
+            if not best_models:
+                raise FileNotFoundError("No checkpoint files found in save directory.")
+            fmodel = best_models[-1]
+
+        # Call load_from_checkpoint on the class, not the instance
+        model = MZBModel_skels.load_from_checkpoint(
+            str(fmodel),
+            data_dir=args.input_dir,
+            pretrained_network=cfg.trsk_model_pretrarch,
+            learning_rate=cfg.trsk_learning_rate,
+            batch_size=cfg.trsk_batch_size,
+            weight_decay=cfg.trsk_weight_decay,
+            num_workers_loader=cfg.trsk_num_workers,
+            step_size_decay=cfg.trsk_step_size_decay,
+            num_classes=cfg.trsk_num_classes,
+            weights_only=False,
+        )
 
         model = model.load_from_checkpoint(fmodel)
 
