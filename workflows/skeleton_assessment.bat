@@ -11,7 +11,7 @@ python %ROOT_DIR%\scripts\skeletonization\main_preprocess_manual_skeleton_annota
  --input_raw_dir D:\phenopype\line_annotations\^
  --input_clips_dir D:\phenopype\data\^
  --skel_save_attributes %ROOT_DIR%\results\mzb_example\skeletons\supervised_skeletons\assessment^
- --output_dir %ROOT_DIR%\results\mzb_example\skeletons\supervised_skeletons\assessment^
+ --output_dir %ROOT_DIR%\data\mzb_example_data\skels_training_dataset^
  --config_file %ROOT_DIR%\configs\mzb_example_config.yaml^
  -v
 
